@@ -617,6 +617,27 @@ export default function App() {
   };
 
   const handleUpdateProfile = (updated: Partial<UserProfile> | UserProfile) => {
+    /*
+     * YALNIZCA KENDİ SATIRINI YAZABİLİRSİN.
+     *
+     * Bu koruma bildirilen hatanın köküydü: profil kaydetme yükü, GÖRÜNTÜLENEN üyenin
+     * nesnesinden türetiliyordu (`{...user}` — ProfileView'da `user` bakılan kişidir).
+     * Dolayısıyla `merged.id` başkasının kimliği olabiliyor ve `updateUserProfileInSupabase`
+     * O KİŞİNİN SATIRINA yazıyordu: oturum sahibinin vitrini, afişi ve biyografisi
+     * başkasının profiline kalıcı olarak geçiyordu. Üstelik `setUser(merged)` oturum
+     * sahibinin yerel profilini de o kişiyle değiştiriyordu.
+     *
+     * Kimlik uyuşmuyorsa yazma sessizce atlanmaz; bu bir programlama hatasıdır ve
+     * görünür olmalı.
+     */
+    if (updated.id && user.id && updated.id !== user.id) {
+      console.error(
+        '[c4e] Profil kaydetme reddedildi: yük başka bir üyenin satırını hedefliyor.',
+        { hedef: updated.id, oturum: user.id }
+      );
+      return;
+    }
+
     const finalBadges = Array.isArray(updated.badges)
       ? updated.badges
       : (Array.isArray(user.badges) && user.badges.length > 0)

@@ -720,6 +720,104 @@ kayıt olmuş, profil sütunu boş bir üyeyle başlayıp proje oluşturmaya kad
 
 ---
 
+## 2.7 Kapatılan açık: bir üyenin profil satırına başka bir üyenin verisi yazılıyordu
+
+**Bildirim:** "Başkasının profillerinde neden benim `nylithra` vitrinim görünüyor?"
+
+Bu ekranda geçici bir karışıklık değil, **veritabanında kalıcı veri bozulmasıydı.**
+
+### Sebep
+
+`updateUserProfileInSupabase` (`src/services/supabaseClient.ts`) yalnızca kendi profilin için
+değil, yönetici panelinden **başka üyeler** için de çağrılıyor (`handleAdminUpdateUser`:
+yasaklama, abonelik atama, rozet verme). Yönetici panelinden gelen yük küçüktür — örneğin
+`{ isBanned: true }`. İşlev, yükte olmayan alanları "kaybetmemek" için sırayla yedeklere
+düşüyordu:
+
+```
+pinned_repos = yük → yükün custom_fields'ı → hedefin custom_fields'ı → hedef → local
+```
+
+Bu zincirin son halkası, **oturum sahibinin tarayıcıda saklı profili**. Hedef üyenin vitrini
+hiç kurulmamışsa (çok yaygın) zincir oraya kadar iniyor ve yöneticinin `pinned_repos` değeri
+hedefin satırına PATCH ediliyordu. Aynı zincir `website`, `badges` ve `subscription` için de
+vardı. Hedef yerel önbellekte hiç yoksa taban nesnenin kendisi (`{...targetUser || local}`)
+oturum sahibinin **tüm** profili oluyordu.
+
+İki ek kapı aynı işlevde açıktı:
+
+- Hedef satır **kullanıcı adıyla da** eşleştiriliyordu. Yükteki ad oturum sahibinin adıyla
+  tutuyorsa farklı kimlikteki bir satır "benim satırım" sayılıyor, yük oturum sahibinin
+  profilinden kuruluyordu — ve `saveStoredProfile` ile kendi saklı profilim başkasının
+  verisiyle eziliyordu.
+- `userId` boş gelirse hiçbir şey engellemiyordu; PATCH filtresi `id=eq.` olarak çıkıyordu.
+
+### Düzeltme
+
+Kural tek cümle: **`userId` oturum sahibinin kimliği değilse, oturum sahibinin hiçbir verisi
+o yükün parçası olamaz.**
+
+- Hedef **yalnızca kimlikle** bulunuyor; kullanıcı adı eşleşmesi kaldırıldı.
+- `local` yedekleri (`pinned_repos`, `website`, `badges`, `subscription`) kaldırıldı. Meşru
+  bir kaynak yoksa değer `undefined` kalıyor ve **o kolona hiç dokunulmuyor** — boşluğu
+  başkasının verisiyle doldurmaktan iyisi boş bırakmaktır. Boş dizi yazmak da seçenek değil:
+  o, hedefin mevcut vitrinini silmek olurdu.
+- Hedef yerel önbellekte yoksa satır **veritabanından okunuyor**, çünkü `custom_fields` her
+  güncellemede yazılıyor ve hedefin mevcut alanlarını bilmeden yazmak onları `{}` ile silmek
+  demek. Okuma da başarısız olursa `custom_fields` kolonuna hiç dokunulmuyor.
+- `saveStoredProfile` yalnızca gerçekten kendi satırım güncellendiğinde çağrılıyor.
+- Kimliksiz çağrı en başta reddediliyor.
+
+Ders: **bir "veri kaybetmeyelim" yedeği, yanlış kişinin verisini kaynak gösterdiği anda veri
+sızıntısına dönüşür.** Eksik alanın doğru yedeği hedefin kendisidir; kaynak bulunamıyorsa
+doğru davranış yazmamaktır.
+
+### Zaten bozulmuş satırlar: `supabase_profile_repair.sql`
+
+İstemci düzeltmesi geçmişi geri almaz. Sızan değer, kaynağın değerinin **birebir** kopyası
+olduğu için ölçüt tahmin değil eşitlik: bir yönetici satırının `pinned_repos` / `website` /
+`badges` / `subscription` değeriyle tıpatıp aynı olan yönetici olmayan satırlar. Betik önce
+rapor veriyor (hiçbir şeyi değiştirmeden), onaydan sonra temizliyor, ikinci çalıştırmada
+zararsız. Her alan ayrı ayrı ölçülüyor: yalnızca sitesi sızmış bir üyenin kendi kurduğu
+vitrini silinmiyor.
+
+Testte yakalanan nokta: `trg_protect_profile_privileges`, `custom_fields` içindeki
+`subscription` anahtarını her UPDATE'te eski değerine geri yazıyor (normalde doğru davranış).
+Onarım tam o alanı düzeltmek istediği için tetikleyici işlem boyunca devre dışı bırakılıyor;
+DDL de işlem içinde olduğundan betik ortada başarısız olursa koruma kendiliğinden geri açılır.
+
+### Yan bulgu: `ProfileView` ekranı düzenleme formundan okuyordu
+
+`src/components/ProfileView.tsx` afişi, avatarı, adı, biyografiyi, rozetleri ve **vitrini**
+`formData`dan basıyordu. `formData` düzenleme formunun durumu; görüntülenen profil ise başkası
+olabilir. Bir effect `user` değiştiğinde `formData`yı yenilediği için bu, bildirilen hatanın
+sebebi *değildi* — ölçüm bunu doğruladı, kırık sürümde bile vitrin sızmıyor. Yine de yanlış
+kaynak yanlış kaynaktır: görüntüleme artık ayrı bir `view` nesnesinden okuyor, düzenleme
+alanları `formData`dan. Aynı dosyada iki somut hata da çıktı: "Mesaj Gönder" sohbeti
+`formData` ile açıyordu (yani kendinle), `UserBadges` başkasının profilinde oturum sahibinin
+yönetici/destekçi rozetlerini gösteriyordu. `isOwnProfile` ise oturum sahibi bilinmediğinde
+TRUE'ya düşüyordu — yanlış tarafa açılan bir kapı, bugün erişilemese de kapatıldı.
+
+Ayrıca kaydetme yükü artık görüntülenen üyeden değil oturum sahibinden kuruluyor, ve
+`App.tsx`'teki `handleUpdateProfile` başka bir üyenin satırını hedefleyen bir yükü reddediyor
+— aynı hatanın ikinci bir yoldan tekrarlamaması için.
+
+### Doğrulama
+
+- **34 tarayıcı doğrulaması** (`capraz-yazim`): gerçek `updateUserProfileInSupabase`, gerçek
+  `supabase-js` istemcisi ve `profiles` tablosunun PostgREST taklidi. Ölçüm noktası ekran
+  değil **sunucuya giden PATCH gövdesi**, çünkü ekrandaki yanlış veri bir sonraki yüklemede
+  önbellekten geri gelir ve test kendi kendini yanıltır. Kırık sürümde 8 doğrulama düşüyor:
+  hedefin satırında `YONETICININ-DEPOSU` ve yöneticinin sitesi görünüyor, hedefin kendi
+  `location` alanı siliniyor, saklı kendi profilim başkasının adını alıyor.
+- **22 veritabanı doğrulaması** (`onarim`): onarım betiği gerçek PostgreSQL üzerinde gerçek
+  şemaya karşı. Kurban temizleniyor, **masum üyenin kendi vitrini ve sitesi duruyor**,
+  yönetici satırlarına dokunulmuyor, ikinci çalıştırma hiçbir şeyi değiştirmiyor.
+- **23 tarayıcı doğrulaması** (`profil-leak`): başkasının profilinde oturum sahibinin
+  verisinin hiçbiri görünmüyor, kendi profiline dönünce geri geliyor.
+
+---
+
 ## 3. Bilinen sınırlamalar
 
 - **Mesajlaşma gerçek anlamda E2EE değildir.** AES anahtarı, herkese açık istemci paketindeki

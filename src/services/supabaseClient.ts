@@ -2853,27 +2853,69 @@ export const ALLOWED_PROFILE_COLUMNS = new Set([
   'updated_at'
 ]);
 
+/**
+ * Bir üyenin profil satırını güncelle.
+ *
+ * ÖNEMLİ — BURADA HER ŞEY `userId` İLE SINIRLIDIR.
+ *
+ * Bu işlev yalnızca kendi profilin için değil, yönetici panelinden BAŞKA üyeler için de
+ * çağrılıyor (yasaklama, abonelik atama, rozet verme). Eskiden eksik alanlar için sırayla
+ * `targetUser` → `local` yedeklerine düşülüyordu; `local` ise OTURUM SAHİBİNİN tarayıcıda
+ * saklı profili. Sonucu şuydu: bir yönetici, vitrini hiç dolu olmayan bir üyeye rozet
+ * verdiğinde o üyenin satırına YÖNETİCİNİN `pinned_repos`, `website` ve `subscription`
+ * değerleri yazılıyordu. Bildirilen "başkasının profilinde benim vitrinim görünüyor"
+ * hatası buydu — ve sunucu tarafında kalıcı olduğu için herkese görünüyordu.
+ *
+ * Kural: `userId` oturum sahibinin kimliği DEĞİLSE, oturum sahibinin hiçbir verisi bu
+ * yükün parçası olamaz. Hedefin kendi verisi yoksa doğru yanıt "dokunma"dır, "benimkini
+ * koy" değil. Eşleştirme de yalnızca kimlikle yapılır: kullanıcı adıyla eşleştirmek, adı
+ * tutan iki ayrı satırı birbirine karıştırmanın yoluydu.
+ */
 export async function updateUserProfileInSupabase(userId: string, updateData: Partial<UserProfile>): Promise<{ success: boolean; error?: string }> {
   const local = loadStoredProfile();
   const cachedUsers = loadStoredAllUsers();
-  const targetUser =
-    local &&
-    (local.id === userId ||
-      (local.username &&
-        updateData.username &&
-        local.username.toLowerCase() === updateData.username.toLowerCase()))
-      ? local
-      : cachedUsers.find(
-          (u) =>
-            u.id === userId ||
-            (u.username &&
-              updateData.username &&
-              u.username.toLowerCase() === updateData.username.toLowerCase())
-        );
 
-  // Safely parse existing custom_fields from targetUser or local
+  if (!userId) {
+    return { success: false, error: 'Profil güncellemesi için kimlik gerekli.' };
+  }
+
+  // Oturum sahibi gerçekten bu satırın sahibi mi? Aşağıdaki her "kendi verimden tamamla"
+  // adımı yalnızca bu doğruysa çalışır.
+  const isSelf = Boolean(local && local.id && local.id === userId);
+
+  // Hedef yalnızca kimlikle bulunur. Kullanıcı adı eşleşmesi kasten yok: yükteki ad
+  // başkasına aitse eski kod yanlış satırı "hedef" sayıyordu.
+  let targetUser = isSelf ? local : cachedUsers.find((u) => u.id === userId);
+
+  /*
+   * ÖNBELLEKTE YOKSA SATIRI VERİTABANINDAN OKU.
+   *
+   * `custom_fields` kolonu aşağıda her zaman yazılıyor. Hedefin mevcut alanlarını
+   * bilmeden yazmak, onları `{}` ile silmek demek. Oturum sahibinin verisiyle doldurmak
+   * (eski davranış) ise bu hatanın kaynağıydı. Doğrusu: gerçek satırı okuyup onun
+   * üzerine birleştirmek.
+   */
+  if (!targetUser) {
+    try {
+      const client = getSupabaseClient();
+      if (client) {
+        const { data } = await client
+          .from('profiles')
+          .select(PUBLIC_PROFILE_COLUMNS as '*')
+          .eq('id', userId)
+          .limit(1)
+          .maybeSingle();
+        if (data) targetUser = normalizeProfile(data);
+      }
+    } catch {
+      // Okuma başarısızsa aşağıda yalnızca yükün kendisi gönderilir; başka bir üyenin
+      // verisi asla ikame edilmez.
+    }
+  }
+
+  // Mevcut custom_fields YALNIZCA hedefin kendisinden okunur.
   let existingCustomFields: Record<string, any> = {};
-  const cfSource = targetUser?.custom_fields || (local?.id === userId ? local?.custom_fields : {});
+  const cfSource = targetUser?.custom_fields;
   if (typeof cfSource === 'string') {
     try { existingCustomFields = JSON.parse(cfSource); } catch {}
   } else if (typeof cfSource === 'object' && cfSource !== null) {
@@ -2893,15 +2935,35 @@ export async function updateUserProfileInSupabase(userId: string, updateData: Pa
     ...updateCustomFields
   };
 
-  const finalWebsite = updateData.website !== undefined 
-    ? updateData.website 
-    : (updateCustomFields.website !== undefined ? updateCustomFields.website : (existingCustomFields.website || targetUser?.website || local?.website));
+  /*
+   * YEDEKLER YALNIZCA HEDEFİN KENDİ VERİSİNDEN GELİR.
+   *
+   * `local?.website` / `local?.pinned_repos` yedekleri buradan kaldırıldı: yönetici başka
+   * bir üyeyi güncellediğinde kendi sitesini ve vitrinini o üyenin satırına yazıyorlardı.
+   * Hiçbir meşru kaynak yoksa değer `undefined` kalır ve o kolona HİÇ dokunulmaz — boşluğu
+   * oturum sahibinin verisiyle doldurmaktan iyisi, boş bırakmaktır.
+   */
+  const finalWebsite =
+    updateData.website !== undefined
+      ? updateData.website
+      : updateCustomFields.website !== undefined
+      ? updateCustomFields.website
+      : existingCustomFields.website !== undefined
+      ? existingCustomFields.website
+      : targetUser?.website;
 
-  const rawFinalPinned = updateData.pinned_repos !== undefined
-    ? updateData.pinned_repos
-    : (updateCustomFields.pinned_repos !== undefined ? updateCustomFields.pinned_repos : (existingCustomFields.pinned_repos || targetUser?.pinned_repos || local?.pinned_repos || []));
+  const rawFinalPinned =
+    updateData.pinned_repos !== undefined
+      ? updateData.pinned_repos
+      : updateCustomFields.pinned_repos !== undefined
+      ? updateCustomFields.pinned_repos
+      : existingCustomFields.pinned_repos !== undefined
+      ? existingCustomFields.pinned_repos
+      : targetUser?.pinned_repos;
 
-  let finalPinnedRepos: GitHubRepo[] = [];
+  // `undefined` = "bu güncellemenin vitrinle ilgisi yok". Boş dizi ile aynı şey değil:
+  // boş dizi yazmak, hedefin mevcut vitrinini silmek olurdu.
+  let finalPinnedRepos: GitHubRepo[] | undefined;
   if (Array.isArray(rawFinalPinned)) {
     finalPinnedRepos = rawFinalPinned;
   } else if (typeof rawFinalPinned === 'string') {
@@ -2916,20 +2978,28 @@ export async function updateUserProfileInSupabase(userId: string, updateData: Pa
   if (finalWebsite !== undefined) {
     mergedCustomFields.website = finalWebsite;
   }
-  mergedCustomFields.pinned_repos = finalPinnedRepos;
+  if (finalPinnedRepos !== undefined) {
+    mergedCustomFields.pinned_repos = finalPinnedRepos;
+  }
 
-  // Resilient Badge Preservation
-  const finalBadges: BadgeItem[] = Array.isArray(updateData.badges)
+  /*
+   * Rozetler de aynı kuralla korunur. Son yedekteki `|| !userId` koşulu kaldırıldı:
+   * kimlik boşken oturum sahibinin rozetlerini yüke koymak, yanlış satıra yönetici
+   * rozeti basmanın yoluydu (kimlik boşsa artık işlev en başta geri dönüyor).
+   */
+  const finalBadges: BadgeItem[] | undefined = Array.isArray(updateData.badges)
     ? updateData.badges
     : (Array.isArray(targetUser?.badges) && targetUser.badges.length > 0)
     ? targetUser.badges
     : (Array.isArray(existingCustomFields.badges) && existingCustomFields.badges.length > 0)
     ? existingCustomFields.badges
-    : (local && (local.id === userId || !userId) && Array.isArray(local.badges) && local.badges.length > 0)
+    : (isSelf && Array.isArray(local.badges) && local.badges.length > 0)
     ? local.badges
-    : [];
+    : undefined;
 
-  mergedCustomFields.badges = finalBadges;
+  if (finalBadges !== undefined) {
+    mergedCustomFields.badges = finalBadges;
+  }
 
   if (updateData.betaStatus !== undefined) {
     mergedCustomFields.betaStatus = updateData.betaStatus;
@@ -2954,56 +3024,69 @@ export async function updateUserProfileInSupabase(userId: string, updateData: Pa
     mergedCustomFields.suspendedUntil = updateData.suspendedUntil;
   }
 
+  // `local?.subscription` yedeği kaldırıldı: yöneticinin kendi aboneliğini güncellediği
+  // üyeye devretmesi demekti.
   const resolvedSubscription = ('subscription' in updateData)
     ? (updateData.subscription || { planId: '', planName: '', isActive: false, assignedAt: '', expiresAt: '' })
-    : (targetUser?.subscription || local?.subscription || mergedCustomFields.subscription);
+    : (targetUser?.subscription || mergedCustomFields.subscription);
 
+  /*
+   * Taban nesne yalnızca HEDEF olabilir. Eski `|| local` yedeği, önbellekte bulunmayan bir
+   * üyeyi güncellerken oturum sahibinin TÜM profilini o üyenin kaydının temeli yapıyordu.
+   */
   const updatedUser: UserProfile = {
-    ...(targetUser || local || {} as UserProfile),
+    ...((targetUser || {}) as UserProfile),
     ...updateData,
-    badges: finalBadges,
-    website: finalWebsite || undefined,
-    pinned_repos: finalPinnedRepos,
+    id: userId,
+    ...(finalBadges !== undefined ? { badges: finalBadges } : {}),
+    ...(finalWebsite ? { website: finalWebsite } : {}),
+    ...(finalPinnedRepos !== undefined ? { pinned_repos: finalPinnedRepos } : {}),
     subscription: resolvedSubscription,
     custom_fields: mergedCustomFields
   };
 
-  if (local && (local.id === userId || local.username === (updateData as any).username || !local.id)) {
+  // Tarayıcıda saklı "benim profilim" kaydı yalnızca gerçekten benim satırım
+  // güncellendiğinde değişir. Eski koşuldaki kullanıcı adı eşleşmesi ve `!local.id`
+  // yedeği, başkasının güncellemesini kendi profilimin üzerine yazabiliyordu.
+  if (isSelf) {
     saveStoredProfile(updatedUser);
   }
 
   // Also update cached allUsers so other views reflect the update immediately
   try {
-    const idx = cachedUsers.findIndex(
-      (u) => u.id === userId || (u.username && updateData.username && u.username.toLowerCase() === updateData.username.toLowerCase())
-    );
+    // Yalnızca kimlikle: kullanıcı adı eşleşmesi yanlış satırı güncelliyordu.
+    const idx = cachedUsers.findIndex((u) => u.id === userId);
     if (idx !== -1) {
       cachedUsers[idx] = {
         ...cachedUsers[idx],
         ...updateData,
-        badges: finalBadges,
-        website: finalWebsite || undefined,
-        pinned_repos: finalPinnedRepos,
+        id: userId,
+        ...(finalBadges !== undefined ? { badges: finalBadges } : {}),
+        ...(finalWebsite ? { website: finalWebsite } : {}),
+        ...(finalPinnedRepos !== undefined ? { pinned_repos: finalPinnedRepos } : {}),
         subscription: resolvedSubscription,
         custom_fields: mergedCustomFields
       };
       saveStoredAllUsers(cachedUsers);
     } else {
-      cachedUsers.push({
-        ...updatedUser,
-        id: userId,
-        badges: finalBadges,
-        custom_fields: mergedCustomFields
-      });
+      cachedUsers.push(updatedUser);
       saveStoredAllUsers(cachedUsers);
     }
   } catch {}
 
   // Map frontend fields to PostgreSQL table column names
   const sanitizedUpdate: Record<string, any> = {
-    updated_at: new Date().toISOString(),
-    custom_fields: mergedCustomFields
+    updated_at: new Date().toISOString()
   };
+
+  /*
+   * `custom_fields` kolonuna yalnızca birleştirilecek bir tabanımız varsa dokunulur.
+   * Hedef satırı ne önbellekte ne de veritabanında bulunamadıysa ve yük de custom_fields
+   * taşımıyorsa, burada `{}` yazmak üyenin mevcut alanlarını silmek olurdu.
+   */
+  if (targetUser || updateData.custom_fields !== undefined) {
+    sanitizedUpdate.custom_fields = mergedCustomFields;
+  }
 
   if ('isAdmin' in updateData) {
     sanitizedUpdate.is_admin = Boolean(updateData.isAdmin);

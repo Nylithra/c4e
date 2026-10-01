@@ -118,9 +118,19 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
   const isNylithra = verifyAdminAccess(activeUser);
 
-  const isOwnProfile =
-    (currentUser && (currentUser.id === user.id || currentUser.username?.toLowerCase() === user.username?.toLowerCase())) ||
-    (!currentUser);
+  /*
+   * KİMLİK BELİRSİZSE "BENİM DEĞİL" DENİR.
+   *
+   * Eskiden `currentUser` yoksa bu değer TRUE oluyordu, yani oturum sahibi bilinmediğinde
+   * HER profil "kendi profilin" sayılıyordu: düzenleme düğmeleri açılır ve "beğenilerini
+   * gizle" tercihi atlanırdı. Yanlış tarafa açılan bir kapı; bu bileşende düzeltilen
+   * sızıntının aynı sınıfından.
+   */
+  const isOwnProfile = Boolean(
+    currentUser &&
+      (currentUser.id === user.id ||
+        (currentUser.username || '').toLowerCase() === (user.username || '').toLowerCase())
+  );
 
   // Spark gradient theme of the profile being viewed. Visitors only see it when the owner
   // shared it; the value is re-validated by getVisibleProfileTheme before it becomes CSS.
@@ -204,8 +214,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     e.preventDefault();
     setErrorMessage(null);
 
+    /*
+     * YÜK OTURUM SAHİBİNDEN KURULUR, GÖRÜNTÜLENEN ÜYEDEN DEĞİL.
+     *
+     * `user` bu bileşende BAKILAN kişidir. Yükü ondan türetmek, `id` alanının başkasının
+     * kimliği olması demekti ve kaydetme o kişinin satırına yazıyordu — bildirilen
+     * "başkasının profilinde benim vitrinim" hatasının kaynağı buydu.
+     *
+     * Düzenleme zaten yalnızca kendi profilinde açılıyor; `self` o durumda `user` ile
+     * aynı nesne. Farklı oldukları tek durum bir hata durumudur ve o hâlde de yazma
+     * oturum sahibinin kendi satırına gider. Bu yüzden aşağıdaki HER okuma `self`ten
+     * yapılıyor: tek bir `user` kalıntısı bile yükü yine başkasına yönlendirirdi.
+     */
+    const self = currentUser || user;
+
     const rawUsername = formData.username.replace(/^@/, '').toLowerCase().trim();
-    const currentUsername = (user.username || '').toLowerCase().trim();
+    const currentUsername = (self.username || '').toLowerCase().trim();
 
     // If username is being changed to something new
     if (rawUsername !== currentUsername) {
@@ -216,7 +240,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       }
 
       // Strict uniqueness check across all registered users
-      const availCheck = checkUsernameAvailability(rawUsername, user.id, allUsers);
+      const availCheck = checkUsernameAvailability(rawUsername, self.id, allUsers);
       if (!availCheck.isAvailable) {
         setUsernameTakenError(availCheck.reason || 'Bu kullanıcı adı zaten başka bir kullanıcı tarafından kullanılmaktadır.');
         return;
@@ -250,24 +274,25 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
     const finalPinned = (formData.pinned_repos && formData.pinned_repos.length > 0)
       ? formData.pinned_repos
-      : (user.pinned_repos && user.pinned_repos.length > 0)
-      ? user.pinned_repos
-      : (user.custom_fields?.pinned_repos && Array.isArray(user.custom_fields.pinned_repos))
-      ? user.custom_fields.pinned_repos
+      : (self.pinned_repos && self.pinned_repos.length > 0)
+      ? self.pinned_repos
+      : (self.custom_fields?.pinned_repos && Array.isArray(self.custom_fields.pinned_repos))
+      ? self.custom_fields.pinned_repos
       : [];
 
     // Sanitize user-provided text & URLs, and safeguard protected role & badges
     const updatedProfile: UserProfile = {
-      ...user,
+      ...self,
+      id: self.id,
       username: cleanUsername,
       display_name: sanitizeText(formData.display_name, 50) || cleanUsername,
-      avatar_url: sanitizeUrl(formData.avatar_url) || user.avatar_url,
-      banner_url: sanitizeUrl(formData.banner_url) || user.banner_url,
+      avatar_url: sanitizeUrl(formData.avatar_url) || self.avatar_url,
+      banner_url: sanitizeUrl(formData.banner_url) || self.banner_url,
       bio: sanitizeText(formData.bio, 500),
       website: sanitizedWeb || undefined,
       pinned_repos: finalPinned,
       custom_fields: {
-        ...(user.custom_fields || {}),
+        ...(self.custom_fields || {}),
         ...(formData.custom_fields || {}),
         github: sanitizeText(formData.custom_fields?.github, 100),
         location: sanitizeText(formData.custom_fields?.location, 100),
@@ -302,9 +327,47 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     }, 2500);
   };
 
-  const profileUrl = `${window.location.host}/@${formData.username || 'user'}`;
+  /**
+   * GÖSTERİLEN PROFİL — ekranda ne varsa buradan okunur.
+   *
+   * NEDEN AYRI BİR NESNE: bu ekran eskiden her şeyi `formData`dan basıyordu. `formData`
+   * DÜZENLEME FORMUNUN durumu ve oturum sahibinden besleniyor; görüntülenen profil ise
+   * başkası olabilir. Sonuç, bildirilen hataydı: başkasının profilinde oturum sahibinin
+   * afişi, avatarı, adı, biyografisi ve VİTRİNİ görünüyordu.
+   *
+   * Hata özellikle sinsiydi çünkü `formData`, `user` değiştiğinde bir effect ile
+   * güncelleniyor — yani yanlış veri yalnızca BİR kare boyunca değil, kendi profilinden
+   * başkasınınkine geçerken (bileşen yeniden bağlanmadığı için) gözle görülür bir süre
+   * duruyordu.
+   *
+   * Kural basit: GÖRÜNTÜLEME `view`den okur, DÜZENLEME ALANLARI `formData`dan.
+   */
+  const view = useMemo(() => {
+    const cf = user.custom_fields || {};
+    const pinned =
+      Array.isArray(user.pinned_repos) && user.pinned_repos.length > 0
+        ? user.pinned_repos
+        : Array.isArray(cf.pinned_repos)
+        ? cf.pinned_repos
+        : [];
+    return {
+      username: user.username || '',
+      display_name: user.display_name || user.username || '',
+      avatar_url: user.avatar_url || '',
+      banner_url: user.banner_url || '',
+      bio: user.bio || '',
+      location: cf.location || '',
+      website: user.website || cf.website || '',
+      github: cf.github || '',
+      pinned_repos: pinned as GitHubRepo[]
+    };
+  }, [user]);
 
-  const isLikesHidden = !isOwnProfile && (user.show_liked_posts === false || formData.show_liked_posts === false);
+  const profileUrl = `${window.location.host}/@${view.username || 'user'}`;
+
+  // Görüntülenen üyenin tercihi; oturum sahibininki değil. `formData`ya bakmak, kendi
+  // ayarını başkasının profiline uygulamak olurdu.
+  const isLikesHidden = !isOwnProfile && user.show_liked_posts === false;
 
   const displayedList =
     profileTab === 'posts'
@@ -327,7 +390,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <div className={`c4e-theme-banner w-full h-full ${profileTheme!.banner.gradient.animate ? 'c4e-theme-animated' : ''}`} />
           ) : (
             <img
-              src={formData.banner_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80'}
+              src={view.banner_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80'}
               alt="Profile Banner"
               className="w-full h-full object-cover"
             />
@@ -341,8 +404,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         <div className="px-6 relative -mt-14 flex items-end justify-between pb-4 border-b border-zinc-800/40">
           <div className="relative">
             <UserAvatar
-              src={formData.avatar_url}
-              name={formData.display_name || formData.username}
+              src={view.avatar_url}
+              name={view.display_name || view.username}
               className="w-24 h-24 ring-4 ring-[#09090b] shadow-2xl text-xl"
             />
           </div>
@@ -362,7 +425,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           ) : (
             onStartDirectChat && (
               <button
-                onClick={() => onStartDirectChat(formData)}
+                // Sohbet GÖRÜNTÜLENEN üyeyle açılır. `formData` düzenleme formunun durumu,
+                // yani oturum sahibi: buradan beslemek "mesaj gönder"i kendi kendine
+                // mesaj atmaya çeviriyordu.
+                onClick={() => onStartDirectChat(user)}
                 className={`px-4 py-2 rounded-xl text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer ${
                   profileTheme ? 'c4e-theme-accent' : 'bg-blue-600 hover:bg-blue-500'
                 }`}
@@ -385,46 +451,48 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-xl font-bold text-white tracking-tight">{formData.display_name}</h2>
-            <UserBadges user={formData} showTextLabels={false} />
+            <h2 className="text-xl font-bold text-white tracking-tight">{view.display_name}</h2>
+            {/* Rozetler görüntülenen üyenin; `formData` oturum sahibininkini basıyordu,
+                yani başkasının profilinde kendi yönetici/destekçi rozetin görünüyordu. */}
+            <UserBadges user={user} showTextLabels={false} />
           </div>
-            <p className="text-xs text-zinc-400 font-mono">@{formData.username}</p>
+            <p className="text-xs text-zinc-400 font-mono">@{view.username}</p>
 
         </div>
 
         <p className="text-xs text-zinc-300 leading-relaxed bg-[#0c0c0e] p-3 rounded-xl border border-zinc-800/40 user-text">
-          {formData.bio || (language === 'tr' ? 'Code4Ever geliştirici üyesi.' : 'Code4Ever developer member.')}
+          {view.bio || (language === 'tr' ? 'Code4Ever geliştirici üyesi.' : 'Code4Ever developer member.')}
         </p>
 
         <div className="flex flex-wrap gap-4 text-xs font-mono text-zinc-400 border-b border-zinc-800/40 pb-3">
           <span className="flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5 text-zinc-500" />
-            {formData.custom_fields?.location || 'Türkiye'}
+            {view.location || 'Türkiye'}
           </span>
 
-          {(formData.website || user.website || formData.custom_fields?.website || user.custom_fields?.website) && (
+          {view.website && (
             <a
-              href={sanitizeUrl(formData.website || user.website || formData.custom_fields?.website || user.custom_fields?.website)}
+              href={sanitizeUrl(view.website)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 py-1 -my-1 text-zinc-200 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Globe className="w-3.5 h-3.5 text-zinc-400" />
               <span className="truncate max-w-[200px]">
-                {(formData.website || user.website || formData.custom_fields?.website || user.custom_fields?.website)?.replace(/^https?:\/\//, '')}
+                {view.website.replace(/^https?:\/\//, '')}
               </span>
               <ExternalLink className="w-2.5 h-2.5 text-zinc-500" />
             </a>
           )}
 
           <a
-            href={`https://github.com/${formData.username}`}
+            href={`https://github.com/${view.username}`}
             target="_blank"
             rel="noreferrer noopener"
             className="flex items-center gap-1 py-1 -my-1 hover:text-white rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Github className="w-3.5 h-3.5 text-zinc-500" />
-            github.com/{formData.username}
+            github.com/{view.username}
           </a>
           <span className="flex items-center gap-1">
             <Calendar className="w-3.5 h-3.5 text-zinc-500" />
@@ -454,13 +522,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
 
           {(() => {
-            const displayedRepos: GitHubRepo[] = (user.pinned_repos && Array.isArray(user.pinned_repos) && user.pinned_repos.length > 0)
-              ? user.pinned_repos
-              : (user.custom_fields?.pinned_repos && Array.isArray(user.custom_fields.pinned_repos) && user.custom_fields.pinned_repos.length > 0)
-              ? user.custom_fields.pinned_repos
-              : (formData.pinned_repos && Array.isArray(formData.pinned_repos) && formData.pinned_repos.length > 0)
-              ? formData.pinned_repos
-              : (Array.isArray(formData.custom_fields?.pinned_repos) ? formData.custom_fields.pinned_repos : []);
+            /*
+              YALNIZCA GÖRÜNTÜLENEN ÜYENİN DEPOLARI.
+              Buradaki `formData` yedekleri bildirilen hatanın ta kendisiydi: görüntülenen
+              üyenin vitrini boşsa oturum sahibininki gösteriliyordu. Vitrin boşsa doğru
+              yanıt "boş"tur.
+            */
+            const displayedRepos: GitHubRepo[] = view.pinned_repos;
 
             if (!displayedRepos || displayedRepos.length === 0) {
               return (
@@ -1087,21 +1155,20 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         <ShowcaseReposModal
           isOpen={isShowcaseModalOpen}
           user={user}
-          pinnedRepos={
-            (user.pinned_repos && user.pinned_repos.length > 0)
-              ? user.pinned_repos
-              : (user.custom_fields?.pinned_repos && Array.isArray(user.custom_fields.pinned_repos) && user.custom_fields.pinned_repos.length > 0)
-              ? user.custom_fields.pinned_repos
-              : (formData.pinned_repos || [])
-          }
+          // Yine yalnızca görüntülenen üyenin depoları; `formData` yedeği, vitrini boş
+          // olan birinin penceresini oturum sahibinin depolarıyla doldururdu.
+          pinnedRepos={view.pinned_repos}
           language={language}
           onClose={() => setIsShowcaseModalOpen(false)}
           onSavePinnedRepos={(repos) => {
+            // Yine oturum sahibinin satırı; `user` burada bakılan kişi olabilir.
+            const self = currentUser || user;
             const updated = {
-              ...user,
+              ...self,
+              id: self.id,
               pinned_repos: repos,
               custom_fields: {
-                ...(user.custom_fields || {}),
+                ...(self.custom_fields || {}),
                 pinned_repos: repos
               },
               updated_at: new Date().toISOString()
