@@ -478,7 +478,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               href={sanitizeUrl(view.website)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 py-1 -my-1 text-zinc-200 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex min-h-9 items-center gap-1 -my-1.5 rounded px-1 -mx-1 text-zinc-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Globe className="w-3.5 h-3.5 text-zinc-400" />
               <span className="truncate max-w-[200px]">
@@ -492,7 +492,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             href={`https://github.com/${view.username}`}
             target="_blank"
             rel="noreferrer noopener"
-            className="flex items-center gap-1 py-1 -my-1 hover:text-white rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            /* min-h-9: dokunmatikte 24px yuksekligindeki bir baglantiya isabet
+               ettirmek zor. Satirin gorsel yuksekligi degismesin diye negatif
+               dikey kenar bosluguyla dengeleniyor. */
+            className="inline-flex min-h-9 items-center gap-1 -my-1.5 rounded px-1 -mx-1 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Github className="w-3.5 h-3.5 text-zinc-500" />
             github.com/{view.username}
