@@ -40,9 +40,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
   };
 
   return (
-    <aside className="w-80 min-w-[320px] max-w-[320px] flex-shrink-0 hidden xl:block p-4 space-y-4 border-l border-zinc-800/60 app-rail h-screen sticky top-0 overflow-y-auto z-20 select-none">
-      <div className="c4e-surface border border-zinc-800/60 rounded-2xl p-4 space-y-3">
-        <div className="flex items-center gap-2 border-b border-zinc-800/40 pb-2.5">
+    <aside className="w-80 min-w-[320px] max-w-[320px] flex-shrink-0 hidden xl:block p-5 space-y-7 app-rail overflow-y-auto z-20 select-none">
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 pb-1">
           <TrendingUp className="w-4 h-4 text-zinc-300" />
           <h3 className="text-xs font-bold text-white tracking-wider uppercase">
             {language === 'tr' ? 'Trendler' : 'Trending'}
@@ -50,8 +50,8 @@ export const RightPanel: React.FC<RightPanelProps> = ({
         </div>
 
         {trends.length === 0 ? (
-          <div className="c4e-empty flex flex-col items-center gap-2 px-4 py-6 text-center">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-900 text-zinc-600">
+          <div className="c4e-empty flex flex-col items-center gap-2 px-4 py-7 text-center">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/[0.06] text-zinc-400">
               <TrendingUp className="h-4 w-4" />
             </span>
             <p className="text-xs font-semibold text-zinc-400">
@@ -86,8 +86,8 @@ export const RightPanel: React.FC<RightPanelProps> = ({
         )}
       </div>
 
-      <div className="c4e-surface border border-zinc-800/60 rounded-2xl p-4 space-y-3">
-        <div className="flex items-center gap-2 border-b border-zinc-800/40 pb-2.5">
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 pb-1">
           <Users className="w-4 h-4 text-zinc-300" />
           <h3 className="text-xs font-bold text-white tracking-wider uppercase">
             {language === 'tr' ? 'Topluluklar' : 'Communities'}

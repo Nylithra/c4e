@@ -74,7 +74,7 @@ const ProjectCard: React.FC<{
   const followed = project.followed_by_me === true;
 
   return (
-    <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-4 space-y-3 transition-colors hover:border-zinc-700">
+    <div className="c4e-card c4e-hover p-5 space-y-3.5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-1">
           <a
@@ -153,7 +153,7 @@ const ProjectCard: React.FC<{
           className={`flex min-h-9 items-center gap-1.5 rounded-xl border px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             liked
               ? 'border-rose-500/40 bg-rose-500/10 text-rose-300'
-              : 'border-zinc-800 text-zinc-400 hover:text-white'
+              : 'border-white/[0.08] text-zinc-300 hover:text-white'
           }`}
         >
           <Heart className={`h-3.5 w-3.5 ${liked ? 'fill-current' : ''}`} />
@@ -188,7 +188,7 @@ const ProjectCard: React.FC<{
           className={`flex min-h-9 items-center gap-1.5 rounded-xl border px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             followed
               ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-              : 'border-zinc-800 text-zinc-400 hover:text-white'
+              : 'border-white/[0.08] text-zinc-300 hover:text-white'
           }`}
         >
           {followed ? <Bell className="h-3.5 w-3.5" /> : <BellOff className="h-3.5 w-3.5" />}
@@ -205,7 +205,7 @@ const ProjectCard: React.FC<{
             onClick={onShare}
             title={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
             aria-label={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
-            className="flex min-h-9 items-center gap-1.5 rounded-xl border border-zinc-800 px-3 text-[11px] font-semibold text-zinc-400 transition-colors hover:border-indigo-500/40 hover:bg-indigo-500/10 hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            className="flex min-h-9 items-center gap-1.5 rounded-xl border border-white/[0.08] px-3 text-[11px] font-semibold text-zinc-300 transition-colors hover:border-indigo-400/40 hover:bg-indigo-500/[0.12] hover:text-indigo-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
           >
             <Users className="h-3.5 w-3.5" />
             <span>{tr ? 'Topluluğa ekle' : 'Add to community'}</span>

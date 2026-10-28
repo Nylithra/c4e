@@ -105,9 +105,9 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
         <button
           type="button"
           onClick={onOpenShare}
-          className="group flex w-full items-center gap-3 rounded-2xl border border-dashed border-zinc-700/80 bg-zinc-950/40 px-4 py-3.5 text-left transition-all hover:border-indigo-500/60 hover:bg-indigo-500/5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="group flex w-full items-center gap-3 c4e-empty px-5 py-4 text-left transition-all hover:border-indigo-400/50 hover:bg-indigo-500/[0.07] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-zinc-900 text-zinc-400 transition-colors group-hover:bg-indigo-500/15 group-hover:text-indigo-300">
+          <span className="flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-white/[0.06] text-zinc-300 transition-colors group-hover:bg-indigo-500/20 group-hover:text-indigo-200">
             <Plus className="h-4 w-4" />
           </span>
           <span className="min-w-0">
@@ -124,7 +124,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
       )}
 
       {projects.length === 0 ? (
-        <div className="rounded-2xl border border-zinc-800/70 bg-zinc-950/40 px-6 py-14 text-center">
+        <div className="c4e-empty px-6 py-16 text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 text-zinc-600">
             <Code2 className="h-5 w-5" />
           </div>
@@ -143,7 +143,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
           return (
             <article
               key={project.id}
-              className="group rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-4 transition-colors hover:border-zinc-700"
+              className="group c4e-card c4e-hover p-5"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1 space-y-1">
@@ -182,7 +182,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
                     disabled={busyId === project.id}
                     title={tr ? 'Topluluktan kaldır' : 'Remove from community'}
                     aria-label={tr ? 'Topluluktan kaldır' : 'Remove from community'}
-                    className="flex h-8 w-8 flex-none items-center justify-center rounded-xl border border-zinc-800 text-zinc-500 transition-colors hover:border-rose-500/40 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-8 w-8 flex-none items-center justify-center rounded-xl border border-white/[0.08] text-zinc-400 transition-colors hover:border-rose-500/40 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {busyId === project.id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -199,7 +199,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
                 </p>
               )}
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-zinc-800/60 pt-3 font-mono text-[11px] text-zinc-500">
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-white/[0.06] pt-3.5 font-mono text-[11px] text-zinc-500">
                 <span className="inline-flex items-center gap-1.5">
                   <Heart className="h-3 w-3 text-rose-400" />
                   <strong className="text-zinc-300">{project.likes_count}</strong>

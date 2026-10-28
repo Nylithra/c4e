@@ -83,7 +83,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
   };
 
   return (
-    <div className="relative border-b border-zinc-800/60">
+    <div className="relative border-b border-white/[0.06]">
       {/* Banner */}
       <div className={`h-32 md:h-40 w-full overflow-hidden relative ${ownBanner ? 'bg-zinc-900' : 'c4e-banner-fallback'}`}>
         {ownBanner && <img src={ownBanner} alt="" className="w-full h-full object-cover opacity-80" />}

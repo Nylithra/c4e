@@ -1398,7 +1398,7 @@ export default function App() {
 
         {/* Bottom padding comes from index.css so it can account for the floating
             mobile nav bar, the iOS home indicator and the PWA install banner. */}
-        <main className="flex-1 flex min-h-screen w-full pt-[52px] md:pt-0 min-w-0">
+        <main className="c4e-shell flex-1 flex min-h-screen w-full pt-[52px] md:pt-0 min-w-0">
           {/* One failing view must not take the shell down with it: the sidebar, the header
               and navigation stay usable, and `key` resets the boundary on every tab change so
               a view that broke once is retried when the member comes back to it. */}

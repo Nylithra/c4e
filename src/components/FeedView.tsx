@@ -499,7 +499,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
   });
 
   return (
-    <div className="content-column flex-1 min-w-0 w-full border-r border-zinc-800/60 min-h-screen pb-16 relative">
+    <div className="content-column flex-1 min-w-0 w-full min-h-screen pb-16 relative">
       {toastMessage && (
         <div className="fixed top-4 right-4 z-50 bg-zinc-900 border border-zinc-700 text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce">
           <Check className="w-4 h-4 text-emerald-400" />
@@ -523,7 +523,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
       ) : (
         <>
           {/* Sticky Header */}
-          <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#09090b]/90 border-b border-zinc-800/40 px-5 py-3.5 flex items-center justify-between">
+          <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/70 border-b border-white/[0.07] px-6 py-4 flex items-center justify-between">
             <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
               <span>{language === 'tr' ? 'Akış & Gönderiler' : 'Feed & Posts'}</span>
               <span className="w-2 h-2 rounded-full bg-zinc-400" />
@@ -540,15 +540,11 @@ export const FeedView: React.FC<FeedViewProps> = ({
           </div>
 
           {/* Feed source switcher: everything / general only / jump into a community feed */}
-          <div className="px-4 py-2.5 bg-[#09090b] border-b border-zinc-800/40 overflow-x-auto no-scrollbar flex items-center gap-1.5">
+          <div className="px-5 py-2.5 border-b border-white/[0.05] overflow-x-auto no-scrollbar flex items-center gap-1.5 opacity-90">
             <button
               type="button"
               onClick={() => setFeedSourceFilter('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                feedSourceFilter === 'all'
-                  ? 'bg-zinc-100 text-zinc-950 shadow-md font-extrabold'
-                  : 'bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800/80'
-              }`}
+              className={`c4e-pill text-xs font-bold whitespace-nowrap cursor-pointer ${feedSourceFilter === 'all' ? 'c4e-pill-on' : ''}`}
             >
               <Sparkles className="w-3.5 h-3.5" />
               {language === 'tr' ? 'Her Şey' : 'Everything'}
@@ -557,11 +553,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
             <button
               type="button"
               onClick={() => setFeedSourceFilter('general')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-                feedSourceFilter === 'general'
-                  ? 'bg-zinc-100 text-zinc-950 shadow-md font-extrabold'
-                  : 'bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800/80'
-              }`}
+              className={`c4e-pill text-xs font-bold whitespace-nowrap cursor-pointer ${feedSourceFilter === 'general' ? 'c4e-pill-on' : ''}`}
               title={language === 'tr' ? 'Topluluk gönderilerini gizle' : 'Hide community posts'}
             >
               <Globe className="w-3.5 h-3.5" />
@@ -594,11 +586,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
         <button
           type="button"
           onClick={() => setFeedCategoryFilter('all')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
-            feedCategoryFilter === 'all'
-              ? 'bg-zinc-100 text-zinc-950 shadow-md font-extrabold'
-              : 'bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800/80'
-          }`}
+          className={`c4e-pill text-xs font-bold whitespace-nowrap cursor-pointer ${feedCategoryFilter === 'all' ? 'c4e-pill-on' : ''}`}
         >
           <span>🌟</span>
           <span>{language === 'tr' ? 'Tüm Akış' : 'All Posts'}</span>
@@ -653,7 +641,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
       {/* Non-members see a join prompt instead of the composer */}
       {communityScope && !isScopeMember && !communityScope.is_private && (
-        <div className="p-5 border-b border-zinc-800/60 bg-[#0c0c0e] flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+        <div className="p-5 border-b border-white/[0.06] flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
           <div className="flex items-start gap-3 min-w-0">
             <span className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/25 text-purple-300 flex items-center justify-center flex-shrink-0">
               <Users className="w-4 h-4" />
@@ -686,7 +674,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
           Gizli ve kilitli bir toplulukta sekme göstermiyoruz — iki sekme de boş olurdu
           ve kullanıcıya tıklayacak bir şey verip hiçbir şey göstermemek olurdu. */}
       {communityScope && !isPrivateLocked && (
-        <div className="sticky top-0 z-20 flex items-center gap-1 border-b border-zinc-800/60 bg-[#09090b]/95 px-4 py-2 backdrop-blur-xl">
+        <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-white/[0.06] bg-[#0a0a14]/70 px-5 py-3 backdrop-blur-xl">
           {([
             ['posts', language === 'tr' ? 'Gönderiler' : 'Posts', scopedPosts.length],
             ['projects', language === 'tr' ? 'Projeler' : 'Projects', communityScope.projects_count ?? null]
@@ -696,17 +684,15 @@ export const FeedView: React.FC<FeedViewProps> = ({
               type="button"
               onClick={() => setCommunityTab(key)}
               aria-current={communityTab === key}
-              className={`relative flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                communityTab === key
-                  ? 'bg-zinc-100 text-zinc-950 shadow-md'
-                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+              className={`c4e-pill text-xs font-bold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                communityTab === key ? 'c4e-pill-on' : ''
               }`}
             >
               <span>{label}</span>
               {count !== null && count !== undefined && (
                 <span
                   className={`rounded-md px-1.5 py-0.5 font-mono text-[10px] ${
-                    communityTab === key ? 'bg-zinc-900/10 text-zinc-700' : 'bg-zinc-800/80 text-zinc-500'
+                    communityTab === key ? 'bg-black/10 text-zinc-700' : 'bg-white/10 text-zinc-400'
                   }`}
                 >
                   {count}
@@ -719,7 +705,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
       {/* Post Composer */}
       <div
-        className={`p-4 border-b border-zinc-800/60 bg-[#0c0c0e] ${
+        className={`p-5 border-b border-white/[0.06] ${
           (communityScope && !isScopeMember) || (communityScope && communityTab === 'projects') ? 'hidden' : ''
         }`}
       >
@@ -772,7 +758,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between bg-zinc-950/80 border border-zinc-800 rounded-xl px-3 py-2 text-xs min-h-[38px]">
+                  <div className="flex items-center justify-between c4e-input rounded-xl px-3 py-2 text-xs min-h-[38px]">
                     <span className="text-zinc-400 font-mono text-[11px] flex items-center gap-1.5">
                       <Users className="w-3.5 h-3.5 text-purple-400" />
                       <span>{language === 'tr' ? 'Topluluk:' : 'Scope:'}</span>
@@ -1058,13 +1044,13 @@ export const FeedView: React.FC<FeedViewProps> = ({
       )}
 
       <div
-        className={`divide-y divide-zinc-800/40 ${
+        className={`divide-y divide-white/[0.06] ${
           isPrivateLocked || (communityScope && communityTab === 'projects') ? 'hidden' : ''
         }`}
       >
         {isLoading && filteredPosts.length === 0 ? (
           /* First sync: show the shape of the content instead of a "nothing here" message. */
-          <div className="divide-y divide-zinc-800/40" aria-busy="true" aria-live="polite">
+          <div className="divide-y divide-white/[0.06]" aria-busy="true" aria-live="polite">
             {[0, 1, 2].map((index) => (
               <div key={index} className="p-4 space-y-3">
                 <div className="flex items-center gap-3">
@@ -1166,9 +1152,9 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   en ucuz sinyal bu, biraz belirginleştirildi ve sol kenara ince
                   bir aksan çizgisi eklendi.
                 */
-                className={`group/post c4e-interactive relative select-text space-y-3 p-4 before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:bg-gradient-to-b before:from-blue-500/0 before:via-indigo-500/60 before:to-violet-500/0 before:opacity-0 before:transition-opacity hover:bg-zinc-900/50 hover:before:opacity-100 ${
+                className={`group/post relative select-text space-y-3.5 p-5 transition-colors hover:bg-white/[0.03] ${
                   isNylithra ? 'cursor-context-menu' : ''
-                } ${longPressingPostId === post.id ? 'bg-zinc-900/60 scale-[0.995] transition-transform' : ''}`}
+                } ${longPressingPostId === post.id ? 'bg-white/[0.05] scale-[0.995] transition-transform' : ''}`}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2">
@@ -1311,7 +1297,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
                 {/* Project Card */}
                 {post.project_card && (
-                  <div className="p-3 bg-[#0c0c0e] border border-blue-900/40 rounded-xl space-y-2">
+                  <div className="p-3 c4e-card border-indigo-400/20 rounded-xl space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-xs text-white flex items-center gap-1.5">
                         <GitBranch className="w-3.5 h-3.5 text-blue-400" />

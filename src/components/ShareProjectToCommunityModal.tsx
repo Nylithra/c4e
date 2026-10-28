@@ -138,9 +138,9 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
                       key={p.id}
                       type="button"
                       onClick={() => onPickProject?.(p)}
-                      className="flex w-full items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-950/40 px-3 py-2.5 text-left transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="flex w-full items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5 text-left transition-all hover:border-indigo-400/45 hover:bg-indigo-500/[0.07] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-zinc-800 text-xs font-extrabold text-zinc-300">
+                      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-white/[0.07] text-xs font-extrabold text-zinc-200">
                         {p.name.charAt(0).toUpperCase()}
                       </span>
                       <span className="min-w-0 flex-1">
@@ -171,7 +171,7 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
         )}
 
         {project && mine.length > 3 && (
-          <div className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-950/60 px-3 py-2">
+          <div className="flex items-center gap-2 c4e-input px-3 py-2.5">
             <Search className="h-3.5 w-3.5 flex-none text-zinc-500" />
             <input
               value={query}
@@ -226,13 +226,13 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
                   aria-pressed={on}
                   className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all disabled:opacity-60 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     on
-                      ? 'border-indigo-500/50 bg-indigo-500/10'
-                      : 'border-zinc-800 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/60'
+                      ? 'border-indigo-400/45 bg-indigo-500/[0.14]'
+                      : 'border-white/[0.07] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.05]'
                   }`}
                 >
                   <span
                     className={`flex h-8 w-8 flex-none items-center justify-center rounded-lg text-xs font-extrabold ${
-                      on ? 'bg-indigo-500 text-white' : 'bg-zinc-800 text-zinc-400'
+                      on ? 'c4e-mono-av' : 'bg-white/[0.07] text-zinc-300'
                     }`}
                   >
                     {community.name.charAt(0).toUpperCase()}

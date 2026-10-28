@@ -465,7 +465,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* ======================================================== */}
       {/* 4. DESKTOP PERMANENT SIDEBAR (Screens >= md)              */}
       {/* ======================================================== */}
-      <aside className="hidden md:flex w-64 flex-shrink-0 flex-col justify-between h-screen sticky top-0 p-4 border-r border-zinc-800/60 app-rail backdrop-blur-md z-30 select-none">
+      <aside className="hidden md:flex w-64 flex-shrink-0 flex-col justify-between p-4 app-rail z-30 select-none">
         <div className="space-y-5">
           <div className="px-2 pt-2 pb-1">
             {/* Marka işareti + kelime. Önceden yalnızca yazıydı; uygulama kenar
@@ -475,7 +475,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className="group flex cursor-pointer items-center gap-2.5 transition-opacity hover:opacity-90"
               onClick={() => setActiveTab('feed')}
             >
-              <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[10px] bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 shadow-[0_4px_14px_-2px_rgba(99,102,241,0.6)]">
+              <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[11px] bg-gradient-to-br from-blue-400 via-indigo-500 to-fuchsia-500 shadow-[0_6px_18px_-4px_rgba(129,140,248,0.85)]">
                 <Code2 className="h-4 w-4 text-white" strokeWidth={2.6} />
               </span>
               <span className="brand-gradient-text text-xl font-extrabold tracking-tight">Code4Ever</span>
@@ -497,16 +497,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     }
                   }}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative w-full flex items-center justify-between overflow-hidden px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    isActive
-                      ? 'c4e-nav-active text-white'
-                      : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60'
+                  className={`c4e-nav w-full justify-between text-[13px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    isActive ? 'c4e-nav-on' : ''
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
                       className={`w-4 h-4 transition-colors ${
-                        isActive ? 'text-indigo-300' : 'text-zinc-400 group-hover:text-zinc-300'
+                        isActive ? 'text-violet-200' : 'text-zinc-400'
                       }`}
                     />
                     <span>{item.label}</span>
@@ -544,7 +542,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <Button
                 onClick={onOpenReportError}
                 variant="ghost"
-                className="w-full border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300"
+                className="w-full rounded-[14px] border border-rose-400/20 bg-rose-500/[0.08] text-rose-300 hover:bg-rose-500/15 hover:text-rose-200"
               >
                 <Bug />
                 <span>{language === 'tr' ? 'Bir Hata Bildir' : 'Report an Issue'}</span>
