@@ -385,7 +385,7 @@ export const UserBadges: React.FC<UserBadgesProps> = ({
           }}
         >
           <div
-            className="relative w-full max-w-sm rounded-3xl overflow-hidden border border-zinc-800 bg-[#09090b] shadow-2xl text-center p-6 space-y-4"
+            className="relative w-full max-w-sm rounded-3xl overflow-hidden border border-white/[0.07] bg-[#0a0a14] shadow-2xl text-center p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Glow in badge color */}
@@ -397,7 +397,7 @@ export const UserBadges: React.FC<UserBadgesProps> = ({
             {/* Close Button */}
             <button
               onClick={() => setSelectedBadgeForDetail(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-full bg-zinc-900/80 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.09] text-zinc-400 hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -438,7 +438,7 @@ export const UserBadges: React.FC<UserBadgesProps> = ({
             {/* Close Action */}
             <button
               onClick={() => setSelectedBadgeForDetail(null)}
-              className="w-full py-2.5 rounded-xl font-bold text-xs text-white bg-zinc-800 hover:bg-zinc-700 transition-colors border border-zinc-700/60 shadow-md"
+              className="w-full py-2.5 rounded-xl font-bold text-xs text-white bg-white/[0.07] hover:bg-zinc-700 transition-colors border border-white/[0.12] shadow-md"
             >
               Tamam
             </button>

@@ -26,18 +26,18 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
   const bookmarkedPosts = posts.filter((p) => p.is_bookmarked);
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-zinc-800/60 min-h-screen pb-16 bg-[#09090b]">
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#09090b]/90 border-b border-zinc-800/40 px-5 py-3.5 flex items-center justify-between">
+    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14]">
+      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
         <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
           <Bookmark className="w-5 h-5 text-zinc-300" />
           <span>{language === 'tr' ? 'Yer İşaretleri' : 'Bookmarks'}</span>
         </h2>
       </div>
 
-      <div className="divide-y divide-zinc-800/40">
+      <div className="divide-y divide-white/[0.06]">
         {bookmarkedPosts.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-300">
+            <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-300">
               <Bookmark className="w-6 h-6 text-white" />
             </div>
             <h3 className="text-sm font-bold text-white">
@@ -51,13 +51,13 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
           </div>
         ) : (
           bookmarkedPosts.map((post) => (
-            <article key={post.id} className="p-4 hover:bg-zinc-900/30 transition-colors space-y-3">
+            <article key={post.id} className="p-4 hover:bg-white/[0.06] transition-colors space-y-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <UserAvatar
                     src={post.author.avatar_url}
                     name={post.author.display_name || post.author.username}
-                    className="w-10 h-10 ring-1 ring-zinc-800"
+                    className="w-10 h-10 ring-1 ring-white/[0.08]"
                   />
                   <div>
                     <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
               {post.content && <p className="text-xs text-zinc-200 leading-relaxed font-sans user-text">{post.content}</p>}
 
               {post.media_url && (
-                <div className="rounded-2xl overflow-hidden border border-zinc-800 bg-black max-h-[400px] flex items-center justify-center">
+                <div className="rounded-2xl overflow-hidden border border-white/[0.07] bg-black max-h-[400px] flex items-center justify-center">
                   {post.media_type === 'video' || post.media_url.startsWith('data:video') ? (
                     <video
                       src={post.media_url}

@@ -127,7 +127,7 @@ export const AccountLinksSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lang
   return (
     <div className="space-y-4">
       {/* LANUX */}
-      <div className="rounded-xl border border-zinc-800/80 bg-zinc-950 p-3.5 space-y-3">
+      <div className="rounded-xl border border-white/[0.07] bg-black/25 p-3.5 space-y-3">
         {/*
           Telefonda alt alta. Yan yana dizildiğinde düğme genişliğin yarısını alıyor ve
           açıklama dört satıra sıkışıyordu; kartın anlattığı şey tam da o açıklama.
@@ -160,7 +160,7 @@ export const AccountLinksSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lang
               type="button"
               onClick={handleUnlink}
               disabled={busy}
-              className="flex min-h-11 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border border-zinc-800 px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex min-h-11 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border border-white/[0.07] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Unlink className="h-3.5 w-3.5" />
               <span>{tr ? 'Kaldır' : 'Unlink'}</span>
@@ -186,7 +186,7 @@ export const AccountLinksSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lang
       {/* GITHUB */}
       <div
         className={`rounded-xl border p-3.5 space-y-3 ${
-          githubRequired ? 'border-amber-700/50 bg-amber-950/20' : 'border-zinc-800/80 bg-zinc-950'
+          githubRequired ? 'border-amber-700/50 bg-amber-950/20' : 'border-white/[0.07] bg-black/25'
         }`}
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -221,7 +221,7 @@ export const AccountLinksSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lang
               type="button"
               onClick={handleGithubUnlink}
               disabled={busy}
-              className="flex min-h-11 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border border-zinc-800 px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex min-h-11 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border border-white/[0.07] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Unlink className="h-3.5 w-3.5" />
               <span>{tr ? 'Kaldır' : 'Unlink'}</span>

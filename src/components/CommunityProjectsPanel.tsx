@@ -125,7 +125,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
 
       {projects.length === 0 ? (
         <div className="c4e-empty px-6 py-16 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 text-zinc-600">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.04] text-zinc-600">
             <Code2 className="h-5 w-5" />
           </div>
           <p className="text-sm font-bold text-zinc-300">

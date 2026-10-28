@@ -108,7 +108,7 @@ const ProjectCard: React.FC<{
             onClick={onDelete}
             disabled={busy}
             aria-label={tr ? 'Projeyi kaldır' : 'Remove project'}
-            className="flex min-h-9 min-w-9 flex-shrink-0 items-center justify-center rounded-xl border border-zinc-800 text-zinc-500 transition-colors hover:text-red-400 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex min-h-9 min-w-9 flex-shrink-0 items-center justify-center rounded-xl border border-white/[0.07] text-zinc-500 transition-colors hover:text-red-400 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
@@ -343,10 +343,10 @@ const CreateProjectDialog: React.FC<{
       onClick={onClose}
     >
       <div
-        className="flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-zinc-800 bg-[#09090b] sm:rounded-3xl"
+        className="flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-white/[0.07] bg-[#0a0a14] sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-zinc-800/60 px-4 py-3">
+        <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3">
           <h2 className="text-sm font-bold text-white">{tr ? 'Proje Oluştur' : 'Create Project'}</h2>
           <button
             type="button"
@@ -376,7 +376,7 @@ const CreateProjectDialog: React.FC<{
               onChange={(e) => setName(e.target.value)}
               maxLength={80}
               placeholder={tr ? 'Projenin adı' : 'Project name'}
-              className="min-h-11 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -391,12 +391,12 @@ const CreateProjectDialog: React.FC<{
               maxLength={600}
               rows={3}
               placeholder={tr ? 'Proje ne yapıyor?' : 'What does this project do?'}
-              className="w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full resize-none rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             <p className="text-right text-[10px] text-zinc-600">{about.length}/600</p>
           </div>
 
-          <div className="space-y-2 rounded-xl border border-zinc-800/60 p-3">
+          <div className="space-y-2 rounded-xl border border-white/[0.07] p-3">
             <p className="text-[11px] font-bold uppercase tracking-wide text-zinc-500">
               {tr ? 'GitHub deposu' : 'GitHub repository'}{' '}
               <span className="font-semibold normal-case text-zinc-600">{tr ? '(isteğe bağlı)' : '(optional)'}</span>
@@ -412,7 +412,7 @@ const CreateProjectDialog: React.FC<{
                 <button
                   type="button"
                   onClick={loadRepos}
-                  className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-zinc-800 text-[11px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-white/[0.07] text-[11px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Github className="h-3.5 w-3.5" />
                   <span>{tr ? 'GitHub deposu bağla' : 'Attach a GitHub repository'}</span>
@@ -440,7 +440,7 @@ const CreateProjectDialog: React.FC<{
                 <button
                   type="button"
                   onClick={() => setWantRepo(false)}
-                  className="min-h-11 w-full rounded-xl border border-zinc-800 text-[11px] font-semibold text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="min-h-11 w-full rounded-xl border border-white/[0.07] text-[11px] font-semibold text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {tr ? 'Depo eklemeden devam et' : 'Continue without a repository'}
                 </button>
@@ -455,11 +455,11 @@ const CreateProjectDialog: React.FC<{
                     onChange={(e) => setFilter(e.target.value)}
                     placeholder={tr ? 'Depolarında ara' : 'Search your repositories'}
                     aria-label={tr ? 'Depo ara' : 'Search repositories'}
-                    className="min-h-11 w-full rounded-xl border border-zinc-800 bg-zinc-900 pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                 </div>
 
-                <div className="max-h-44 space-y-1.5 overflow-y-auto rounded-xl border border-zinc-800/60 p-1.5">
+                <div className="max-h-44 space-y-1.5 overflow-y-auto rounded-xl border border-white/[0.07] p-1.5">
                   {visible.length === 0 ? (
                     <p className="p-4 text-center text-[11px] text-zinc-500">
                       {tr ? 'Depo bulunamadı.' : 'No repositories found.'}
@@ -473,7 +473,7 @@ const CreateProjectDialog: React.FC<{
                         className={`flex min-h-11 w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                           selected?.full_name === repo.full_name
                             ? 'bg-indigo-500/15 text-white'
-                            : 'text-zinc-400 hover:bg-zinc-900'
+                            : 'text-zinc-400 hover:bg-white/[0.06]'
                         }`}
                       >
                         <span className="user-text min-w-0 text-[12px] font-semibold">{repo.name}</span>
@@ -507,11 +507,11 @@ const CreateProjectDialog: React.FC<{
           )}
         </div>
 
-        <div className="flex gap-2 border-t border-zinc-800/60 p-4">
+        <div className="flex gap-2 border-t border-white/[0.07] p-4">
           <button
             type="button"
             onClick={onClose}
-            className="min-h-11 flex-1 rounded-xl border border-zinc-800 text-xs font-semibold text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="min-h-11 flex-1 rounded-xl border border-white/[0.07] text-xs font-semibold text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {tr ? 'Vazgeç' : 'Cancel'}
           </button>
@@ -609,8 +609,8 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
   ];
 
   return (
-    <div className="content-column min-h-screen w-full min-w-0 flex-1 border-r border-zinc-800/60 pb-16">
-      <div className="sticky top-0 z-20 border-b border-zinc-800/40 bg-[#09090b]/90 px-4 py-3 backdrop-blur-xl">
+    <div className="content-column min-h-screen w-full min-w-0 flex-1 border-r border-white/[0.07] pb-16">
+      <div className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#0a0a14]/90 px-4 py-3 backdrop-blur-xl">
         <div className="flex items-center justify-between gap-3">
           <h2 className="flex items-center gap-2 text-lg font-bold tracking-tight text-white">
             <Github className="h-5 w-5 text-indigo-400" />
@@ -683,7 +683,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
             <span>{tr ? 'Projeler yükleniyor...' : 'Loading projects...'}</span>
           </div>
         ) : projects.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-8 text-center">
+          <div className="rounded-2xl border border-dashed border-white/[0.07] p-8 text-center">
             <Github className="mx-auto mb-3 h-7 w-7 text-zinc-700" />
             <p className="text-xs text-zinc-400">
               {sort === 'mine'

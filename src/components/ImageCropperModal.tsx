@@ -104,11 +104,11 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
-      <div className="bg-[#121215] border border-zinc-800 rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl relative text-white">
+      <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl relative text-white">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3.5">
+        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200">
+            <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-200">
               <ImageIcon className="w-4 h-4" />
             </div>
             <div>
@@ -122,7 +122,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors"
+            className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.09] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -135,10 +135,10 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className={`relative mx-auto overflow-hidden bg-black/90 border-2 border-zinc-700/80 cursor-grab active:cursor-grabbing shadow-inner flex items-center justify-center ${
+          className={`relative mx-auto overflow-hidden bg-black/90 border-2 border-white/[0.12] cursor-grab active:cursor-grabbing shadow-inner flex items-center justify-center ${
             aspectRatio === 'banner'
               ? 'w-full h-44 rounded-2xl'
-              : 'w-64 h-64 rounded-full ring-4 ring-zinc-800/80'
+              : 'w-64 h-64 rounded-full ring-4 ring-white/[0.08]'
           }`}
         >
           <img
@@ -177,7 +177,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
         {/* Controls */}
         <div className="space-y-4 pt-1">
           {/* Zoom Slider */}
-          <div className="space-y-1.5 bg-zinc-950/80 p-3 rounded-2xl border border-zinc-800/80">
+          <div className="space-y-1.5 bg-black/25 p-3 rounded-2xl border border-white/[0.07]">
             <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
               <span className="flex items-center gap-1">
                 <ZoomOut className="w-3.5 h-3.5" />
@@ -192,7 +192,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               step={0.1}
               value={zoom}
               onChange={(e) => setZoom(parseFloat(e.target.value))}
-              className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-zinc-200"
+              className="w-full h-1.5 bg-white/[0.07] rounded-lg appearance-none cursor-pointer accent-zinc-200"
             />
           </div>
 
@@ -202,7 +202,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleRotate(-90)}
-                className="px-3 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 hover:text-white border border-white/[0.07] text-xs font-semibold flex items-center gap-1.5 transition-colors"
                 title={language === 'tr' ? 'Sola Döndür (-90°)' : 'Rotate Left'}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -211,7 +211,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleRotate(90)}
-                className="px-3 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 hover:text-white border border-white/[0.07] text-xs font-semibold flex items-center gap-1.5 transition-colors"
                 title={language === 'tr' ? 'Sağa Döndür (+90°)' : 'Rotate Right'}
               >
                 <RotateCw className="w-3.5 h-3.5" />
@@ -222,7 +222,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
             <button
               type="button"
               onClick={handleReset}
-              className="px-3 py-2 rounded-xl bg-zinc-900/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800 text-xs font-mono transition-colors"
+              className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-400 hover:text-zinc-200 border border-white/[0.07] text-xs font-mono transition-colors"
             >
               {language === 'tr' ? 'Sıfırla' : 'Reset'}
             </button>
@@ -230,11 +230,11 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-end gap-3 pt-2 border-t border-zinc-800/80">
+        <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/[0.07]">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-semibold border border-zinc-800 transition-colors"
+            className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 text-xs font-semibold border border-white/[0.07] transition-colors"
           >
             {language === 'tr' ? 'İptal' : 'Cancel'}
           </button>

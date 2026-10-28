@@ -32,11 +32,11 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[#0e0e11] border border-zinc-800 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div className="bg-white/[0.04] border border-white/[0.07] rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-900/40">
+        <div className="px-6 py-4 border-b border-white/[0.07] flex items-center justify-between bg-white/[0.04]">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-zinc-800 text-zinc-200 border border-zinc-700/60">
+            <div className="p-2 rounded-xl bg-white/[0.07] text-zinc-200 border border-white/[0.12]">
               <Users className="w-4 h-4" />
             </div>
             <div>
@@ -51,7 +51,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl hover:bg-white/[0.09] text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -61,7 +61,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
         <div className="p-6 space-y-4 overflow-y-auto">
           {applications.length === 0 ? (
             <div className="p-12 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
+              <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-500">
                 <Users className="w-6 h-6 text-zinc-400" />
               </div>
               <h4 className="text-sm font-bold text-white">
@@ -77,14 +77,14 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
             applications.map((app, index) => (
               <div
                 key={app.id || index}
-                className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800/80 space-y-3"
+                className="p-4 rounded-2xl bg-black/25 border border-white/[0.07] space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <img
                       src={app.applicant_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}
                       alt={app.applicant_username}
-                      className="w-10 h-10 rounded-full object-cover ring-1 ring-zinc-800"
+                      className="w-10 h-10 rounded-full object-cover ring-1 ring-white/[0.08]"
                     />
                     <div>
                       <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
                           {app.name || app.applicant_display_name || app.applicant_username}
                         </button>
                         <span className="text-[11px] text-zinc-500 font-mono">@{app.applicant_username}</span>
-                        <span className="px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-mono text-[10px]">
+                        <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-zinc-400 font-mono text-[10px]">
                           {app.age} {language === 'tr' ? 'yaşında' : 'y/o'}
                         </span>
                       </div>
@@ -127,7 +127,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
                         });
                         onClose();
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-xs flex items-center gap-1.5 transition-all border border-zinc-700 cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-white/[0.07] hover:bg-zinc-700 text-white font-semibold text-xs flex items-center gap-1.5 transition-all border border-white/[0.12] cursor-pointer"
                     >
                       <MessageSquare className="w-3.5 h-3.5 text-zinc-300" />
                       <span>{language === 'tr' ? 'Mesaj Gönder' : 'Direct Message'}</span>
@@ -137,13 +137,13 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
 
                 {/* Details Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded-xl bg-zinc-900/60 border border-zinc-800/60">
+                  <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07]">
                     <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                       {language === 'tr' ? 'Deneyim:' : 'Experience:'}
                     </span>
                     <p className="text-zinc-200">{app.experience}</p>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-zinc-900/60 border border-zinc-800/60">
+                  <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07]">
                     <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                       {language === 'tr' ? 'Bildiği Diller / Teknolojiler:' : 'Languages & Tech:'}
                     </span>
@@ -152,7 +152,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
                 </div>
 
                 {/* Description */}
-                <div className="p-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800/40 text-xs">
+                <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-xs">
                   <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                     {language === 'tr' ? 'Açıklama:' : 'Applicant Note:'}
                   </span>

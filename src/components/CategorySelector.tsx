@@ -87,7 +87,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
             setTimeout(() => inputRef.current?.focus(), 50);
           }
         }}
-        className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-zinc-950/80 hover:bg-zinc-900 border border-zinc-800 text-xs cursor-pointer transition-all min-h-[38px]"
+        className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-black/25 hover:bg-white/[0.06] border border-white/[0.07] text-xs cursor-pointer transition-all min-h-[38px]"
       >
         <div className="flex items-center gap-2 overflow-hidden">
           <Tag className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
@@ -128,7 +128,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1.5 p-2 bg-[#121215] border border-zinc-700/80 rounded-2xl shadow-2xl space-y-2 animate-in fade-in zoom-in-95 min-w-[240px]">
+        <div className="absolute z-50 top-full left-0 right-0 mt-1.5 p-2 bg-white/[0.06] border border-white/[0.12] rounded-2xl shadow-2xl space-y-2 animate-in fade-in zoom-in-95 min-w-[240px]">
           {/* Search / Create Input */}
           <div className="relative">
             <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -154,7 +154,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
                   ? 'Kategori ara veya yaz...'
                   : 'Search or type category...'
               }
-              className="w-full pl-8 pr-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 font-mono"
+              className="w-full pl-8 pr-3 py-1.5 bg-black/25 border border-white/[0.07] rounded-xl text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 font-mono"
             />
           </div>
 
@@ -189,7 +189,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
                     className={`w-full px-3 py-2 rounded-xl text-left text-xs flex items-center justify-between gap-2 transition-colors cursor-pointer ${
                       isSelected
                         ? 'bg-blue-600 text-white font-bold'
-                        : 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
+                        : 'text-zinc-300 hover:bg-white/[0.06] hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate">

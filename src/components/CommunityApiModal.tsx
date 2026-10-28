@@ -267,7 +267,7 @@ print(res.json()["post"]["url"])`;
     <button
       type="button"
       onClick={() => handleCopy(text, token)}
-      className="flex h-7 items-center gap-1 rounded-lg px-2 text-[11px] text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="flex h-7 items-center gap-1 rounded-lg px-2 text-[11px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       {copied === token ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
       <span>{copied === token ? (tr ? 'Kopyalandı' : 'Copied') : (tr ? 'Kopyala' : 'Copy')}</span>
@@ -288,7 +288,7 @@ print(res.json()["post"]["url"])`;
         </span>
         <CopyButton text={code} token={token} />
       </div>
-      <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-[11px] leading-relaxed text-zinc-300">
+      <pre className="overflow-x-auto rounded-xl border border-white/[0.07] bg-black/25 p-3 text-[11px] leading-relaxed text-zinc-300">
         {code}
       </pre>
     </div>
@@ -306,11 +306,11 @@ print(res.json()["post"]["url"])`;
       onClick={onClose}
     >
       <div
-        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0e0e11] shadow-2xl"
+        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.04] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 border-b border-zinc-800 bg-zinc-950/60 p-5">
+        <div className="flex items-center justify-between gap-3 border-b border-white/[0.07] bg-black/25 p-5">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-amber-800/40 bg-amber-950/40">
               <Code2 className="h-5 w-5 text-amber-400" />
@@ -328,21 +328,21 @@ print(res.json()["post"]["url"])`;
           <button
             onClick={onClose}
             aria-label={tr ? 'Kapat' : 'Close'}
-            className="flex-shrink-0 rounded-xl p-2 text-zinc-400 transition-colors hover:bg-zinc-800/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex-shrink-0 rounded-xl p-2 text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-1 border-b border-zinc-800/60 px-4 pt-3">
+        <div className="flex items-center gap-1 border-b border-white/[0.07] px-4 pt-3">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 rounded-t-xl border-b-2 px-3 py-2 text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 activeTab === tab.id
-                  ? 'border-blue-500 bg-zinc-900/50 text-white'
+                  ? 'border-blue-500 bg-white/[0.04] text-white'
                   : 'border-transparent text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -356,7 +356,7 @@ print(res.json()["post"]["url"])`;
           {/* ---------------- DOCS ---------------- */}
           {activeTab === 'docs' && (
             <div className="space-y-4">
-              <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-950 p-3.5">
+              <div className="space-y-2 rounded-xl border border-white/[0.07] bg-black/25 p-3.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                     Endpoint
@@ -394,7 +394,7 @@ print(res.json()["post"]["url"])`;
                 href="/dev/docs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/60 py-2.5 text-xs font-semibold text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
+                className="flex items-center justify-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.04] py-2.5 text-xs font-semibold text-zinc-300 transition-colors hover:bg-white/[0.09] hover:text-white"
               >
                 <span>{tr ? 'Tam dokümantasyon' : 'Full documentation'}</span>
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -422,7 +422,7 @@ print(res.json()["post"]["url"])`;
                   value={testKey}
                   onChange={(e) => setTestKey(e.target.value)}
                   placeholder="lnx_live_..."
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 font-mono text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 font-mono text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
 
@@ -436,7 +436,7 @@ print(res.json()["post"]["url"])`;
                   value={testContent}
                   onChange={(e) => setTestContent(e.target.value)}
                   maxLength={2000}
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
 
@@ -449,7 +449,7 @@ print(res.json()["post"]["url"])`;
                     id="api-test-lang"
                     value={testLanguage}
                     onChange={(e) => setTestLanguage(e.target.value)}
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3 py-2 text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {CODE_LANGUAGES.map((lang) => (
                       <option key={lang} value={lang}>
@@ -469,7 +469,7 @@ print(res.json()["post"]["url"])`;
                     value={testAuthorName}
                     onChange={(e) => setTestAuthorName(e.target.value)}
                     maxLength={60}
-                    className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                 </div>
               </div>
@@ -484,7 +484,7 @@ print(res.json()["post"]["url"])`;
                   onChange={(e) => setTestCode(e.target.value)}
                   rows={6}
                   maxLength={10000}
-                  className="w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 p-3 font-mono text-xs leading-relaxed text-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full resize-none rounded-xl border border-white/[0.07] bg-black/25 p-3 font-mono text-xs leading-relaxed text-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
 
@@ -540,7 +540,7 @@ print(res.json()["post"]["url"])`;
           {activeTab === 'keys' && (
             <div className="space-y-4">
               {!canManage ? (
-                <div className="flex items-start gap-2.5 rounded-xl border border-zinc-800 bg-zinc-900/40 p-3.5 text-xs leading-relaxed text-zinc-400">
+                <div className="flex items-start gap-2.5 rounded-xl border border-white/[0.07] bg-white/[0.04] p-3.5 text-xs leading-relaxed text-zinc-400">
                   <ShieldAlert className="mt-0.5 h-4 w-4 flex-shrink-0 text-zinc-500" />
                   <span>
                     {tr
@@ -573,7 +573,7 @@ print(res.json()["post"]["url"])`;
                     </div>
                   )}
 
-                  <div className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-950 p-3.5">
+                  <div className="space-y-2 rounded-xl border border-white/[0.07] bg-black/25 p-3.5">
                     <label htmlFor="new-key-name" className="text-xs font-bold text-white">
                       {tr ? 'Yeni anahtar' : 'New key'}
                     </label>
@@ -585,7 +585,7 @@ print(res.json()["post"]["url"])`;
                         onChange={(e) => setNewKeyName(e.target.value)}
                         maxLength={60}
                         placeholder={tr ? 'Etiket (ör. ci-bot)' : 'Label (e.g. ci-bot)'}
-                        className="min-w-0 flex-1 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="min-w-0 flex-1 rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       />
                       <button
                         type="button"
@@ -626,15 +626,15 @@ print(res.json()["post"]["url"])`;
                           key={key.id}
                           className={`flex flex-wrap items-center gap-3 rounded-xl border p-3 ${
                             key.revoked_at
-                              ? 'border-zinc-800/60 bg-zinc-950/60 opacity-60'
-                              : 'border-zinc-800 bg-zinc-950'
+                              ? 'border-white/[0.07] bg-black/25 opacity-60'
+                              : 'border-white/[0.07] bg-black/25'
                           }`}
                         >
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center gap-2">
                               <span className="text-xs font-bold text-white">{key.name}</span>
                               {key.revoked_at ? (
-                                <span className="rounded-full bg-zinc-800 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                                <span className="rounded-full bg-white/[0.07] px-2 py-0.5 font-mono text-[10px] text-zinc-400">
                                   {tr ? 'iptal' : 'revoked'}
                                 </span>
                               ) : (
@@ -657,7 +657,7 @@ print(res.json()["post"]["url"])`;
                               onClick={() => handleRevokeKey(key.id)}
                               disabled={revokingId === key.id}
                               aria-label={tr ? 'Anahtarı iptal et' : 'Revoke key'}
-                              className="flex h-9 items-center gap-1.5 rounded-xl border border-zinc-800 px-3 text-[11px] font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-400 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                              className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] px-3 text-[11px] font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-400 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             >
                               {revokingId === key.id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />

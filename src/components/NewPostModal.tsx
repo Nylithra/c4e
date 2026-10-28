@@ -137,13 +137,13 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 select-none">
-      <div className="bg-[#121215] border border-zinc-800 rounded-3xl p-6 w-full max-w-lg space-y-4 shadow-2xl relative">
-        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+      <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl p-6 w-full max-w-lg space-y-4 shadow-2xl relative">
+        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
           <div className="flex items-center gap-3">
             <img
               src={user.avatar_url}
               alt={user.display_name}
-              className="w-8 h-8 rounded-full object-cover ring-1 ring-zinc-800"
+              className="w-8 h-8 rounded-full object-cover ring-1 ring-white/[0.08]"
             />
             <span className="text-sm font-bold text-white">
               {language === 'tr' ? 'Yeni Gönderi Paylaş' : 'Create New Post'}
@@ -151,7 +151,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors cursor-pointer"
+            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -173,7 +173,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
             />
 
             {/* Target Community Selection */}
-            <div className="flex items-center justify-between bg-zinc-950/80 border border-zinc-800 rounded-xl px-3 py-2 text-xs min-h-[38px]">
+            <div className="flex items-center justify-between bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs min-h-[38px]">
               <span className="text-zinc-400 font-mono text-[11px] flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-purple-400" />
                 <span>{language === 'tr' ? 'Topluluk:' : 'Community:'}</span>
@@ -181,7 +181,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
               <select
                 value={selectedCommunityId || ''}
                 onChange={(e) => setSelectedCommunityId(e.target.value || null)}
-                className="bg-zinc-900 border border-zinc-700/80 text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none font-mono cursor-pointer max-w-[130px]"
+                className="bg-white/[0.04] border border-white/[0.12] text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none font-mono cursor-pointer max-w-[130px]"
               >
                 <option value="">🌐 {language === 'tr' ? 'Genel Feed' : 'Public Feed'}</option>
                 {communities
@@ -205,7 +205,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                   : 'What are you working on? Add #hashtag or @mention...'
               }
               rows={4}
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-3.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 resize-none pb-7"
+              className="w-full bg-black/25 border border-white/[0.07] rounded-2xl p-3.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 resize-none pb-7"
             />
             {/* Character counter */}
             <div className="absolute right-3 bottom-3 flex items-center gap-1.5">
@@ -220,7 +220,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                     ? 'bg-red-500/20 text-red-400 border border-red-500/50 font-bold animate-pulse'
                     : content.length >= MAX_CONTENT_LENGTH * 0.8
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 font-semibold'
-                    : 'bg-zinc-900/80 text-zinc-400 border border-zinc-800'
+                    : 'bg-white/[0.04] text-zinc-400 border border-white/[0.07]'
                 }`}
                 title={
                   content.length > MAX_CONTENT_LENGTH
@@ -234,7 +234,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
           </div>
 
           {mediaUrl && (
-            <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-black max-h-56">
+            <div className="relative rounded-2xl overflow-hidden border border-white/[0.07] bg-black max-h-56">
               {mediaType === 'video' ? (
                 <video src={mediaUrl} controls className="w-full h-full max-h-56 object-cover" />
               ) : (
@@ -254,19 +254,19 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
           )}
 
           {showCode && (
-            <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-2">
+            <div className="p-3 bg-black/25 border border-white/[0.07] rounded-2xl space-y-2">
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={codeTitle}
                   onChange={(e) => setCodeTitle(e.target.value)}
                   placeholder={language === 'tr' ? 'Kod Başlığı' : 'Snippet Title'}
-                  className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none font-mono"
+                  className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none font-mono"
                 />
                 <select
                   value={codeLang}
                   onChange={(e) => setCodeLang(e.target.value)}
-                  className="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-xl px-3 py-1.5 text-xs focus:outline-none font-mono cursor-pointer"
+                  className="bg-white/[0.04] border border-white/[0.07] text-zinc-300 rounded-xl px-3 py-1.5 text-xs focus:outline-none font-mono cursor-pointer"
                 >
                   <option value="TypeScript">TypeScript</option>
                   <option value="React">React</option>
@@ -285,7 +285,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                   onChange={(e) => setCodeSnippet(e.target.value)}
                   placeholder="code snippet goes here..."
                   rows={4}
-                  className="w-full bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 text-xs text-emerald-400 font-mono focus:outline-none resize-none pb-7"
+                  className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl p-3 text-xs text-emerald-400 font-mono focus:outline-none resize-none pb-7"
                 />
                 {/* Code Snippet Counter */}
                 <div className="absolute right-2.5 bottom-2.5">
@@ -295,7 +295,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                         ? 'bg-red-500/20 text-red-400 border border-red-500/50 font-bold animate-pulse'
                         : codeSnippet.length >= 4000
                         ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 font-semibold'
-                        : 'bg-zinc-900/80 text-zinc-400 border border-zinc-800'
+                        : 'bg-white/[0.04] text-zinc-400 border border-white/[0.07]'
                     }`}
                     title={
                       codeSnippet.length > MAX_CODE_LENGTH
@@ -322,7 +322,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-xs font-mono flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors border border-transparent hover:border-zinc-800 cursor-pointer"
+                className="text-xs font-mono flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors border border-transparent hover:border-white/[0.11] cursor-pointer"
               >
                 <ImageIcon className="w-4 h-4 text-zinc-300" />
                 <Video className="w-4 h-4 text-zinc-300" />
@@ -334,8 +334,8 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                 onClick={() => setShowCode(!showCode)}
                 className={`text-xs font-mono flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-colors cursor-pointer ${
                   showCode
-                    ? 'bg-zinc-800 text-white border border-zinc-700'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                    ? 'bg-white/[0.07] text-white border border-white/[0.12]'
+                    : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
                 <Code className="w-4 h-4" />

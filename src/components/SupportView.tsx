@@ -254,7 +254,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
   return (
     <div className="w-full max-w-5xl mx-auto p-4 md:p-6 space-y-8 animate-in fade-in duration-300">
       {/* Hero Banner */}
-      <div className="relative rounded-3xl p-6 md:p-10 border border-zinc-800 bg-gradient-to-b from-zinc-900/90 via-[#0c0c0e] to-[#09090b] shadow-2xl overflow-hidden text-center space-y-4">
+      <div className="relative rounded-3xl p-6 md:p-10 border border-white/[0.07] bg-gradient-to-b from-zinc-900/90 via-[#0a0a14] to-[#0a0a14] shadow-2xl overflow-hidden text-center space-y-4">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
@@ -273,7 +273,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
         </p>
 
         {/* Live Support Verification Active Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-zinc-900/80 border border-zinc-700/80 text-zinc-300 text-xs font-mono shadow-md">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-white/[0.04] border border-white/[0.12] text-zinc-300 text-xs font-mono shadow-md">
           <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
           <span>{language === 'tr' ? 'Bağış Doğrulama Sistemi Aktif' : 'Donation Verification Active'}</span>
           <span className="text-zinc-500 hidden sm:inline">•</span>
@@ -301,7 +301,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
             <span>{language === 'tr' ? 'Spark Destekçi Paketi' : 'Spark Supporter Package'}</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-b border-zinc-800/80 pb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-b border-white/[0.07] pb-6">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-2xl font-black text-white">Spark Destekçi</h2>
@@ -320,7 +320,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
             </div>
 
             <div className="text-left sm:text-right flex-shrink-0">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-xs font-mono text-zinc-300">
                 <CreditCard className="w-3.5 h-3.5 text-amber-400" />
                 <span>{language === 'tr' ? 'Serbest Miktar' : 'Flexible Amount'}</span>
               </div>
@@ -331,7 +331,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
           </div>
 
           {/* Awarded Badge Preview */}
-          <div className="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 space-y-2">
+          <div className="p-4 rounded-2xl bg-black/25 border border-white/[0.07] space-y-2">
             <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider block font-bold">
               {language === 'tr' ? 'Kazanılacak Profil Rozeti:' : 'Earned Profile Badge:'}
             </span>
@@ -423,7 +423,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                 type="button"
                 onClick={handleCheckDonation}
                 disabled={isCheckingDonation}
-                className="w-full sm:flex-1 py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-zinc-900 text-zinc-300 border border-zinc-800 hover:border-amber-500/40 hover:text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:flex-1 py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all bg-white/[0.04] text-zinc-300 border border-white/[0.07] hover:border-amber-500/40 hover:text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RefreshCw className={`w-3.5 h-3.5 text-amber-400 ${isCheckingDonation ? 'animate-spin' : ''}`} />
                 <span>
@@ -513,7 +513,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsClaimModalOpen(true)}
-                className="mt-1 px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-200 text-xs font-semibold hover:border-amber-500/40 hover:text-white transition-colors"
+                className="mt-1 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.12] text-zinc-200 text-xs font-semibold hover:border-amber-500/40 hover:text-white transition-colors"
               >
                 {language === 'tr' ? 'Manuel Bildirim Yap' : 'Report Manually'}
               </button>
@@ -521,7 +521,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
           )}
 
           {/* Stream ID Information Footer Box */}
-          <div className="p-3.5 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between gap-3 text-zinc-400 text-[11px] font-mono">
+          <div className="p-3.5 rounded-2xl bg-black/25 border border-white/[0.07] flex items-center justify-between gap-3 text-zinc-400 text-[11px] font-mono">
             <div className="flex items-center gap-2 overflow-hidden">
               <Radio className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
               <span className="truncate">{language === 'tr' ? 'Doğrulama Kanalı: Aktif' : 'Verification Channel: Active'}</span>
@@ -532,7 +532,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
       </div>
 
       {/* Feature Comparison Table */}
-      <div className="rounded-3xl border border-zinc-800 bg-[#0c0c0e] p-6 space-y-4">
+      <div className="rounded-3xl border border-white/[0.07] bg-white/[0.03] p-6 space-y-4">
         <h3 className="text-base font-extrabold text-white">
           {language === 'tr' ? 'Normal Kullanıcı vs. Spark Destekçi Karşılaştırması' : 'Free User vs. Spark Supporter'}
         </h3>
@@ -540,13 +540,13 @@ export const SupportView: React.FC<SupportViewProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-400 font-mono">
+              <tr className="border-b border-white/[0.07] text-zinc-400 font-mono">
                 <th className="py-3 px-4 font-bold">{language === 'tr' ? 'Özellik' : 'Feature'}</th>
                 <th className="py-3 px-4 font-bold">{language === 'tr' ? 'Normal Kullanıcı' : 'Normal User'}</th>
                 <th className="py-3 px-4 font-bold text-amber-400">{language === 'tr' ? 'Spark Destekçi' : 'Spark Supporter'}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+            <tbody className="divide-y divide-white/[0.06] text-zinc-300">
               <tr>
                 <td className="py-3 px-4 font-medium flex items-center gap-2">
                   <HardDrive className="w-4 h-4 text-zinc-500" />
@@ -602,7 +602,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
             <button
               type="button"
               onClick={() => setIsClaimModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="absolute top-4 right-4 p-1.5 rounded-xl bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.09] transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -642,7 +642,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                     type="text"
                     disabled
                     value={`@${cleanUsername}`}
-                    className="w-full px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-mono font-bold cursor-not-allowed"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-400 text-xs font-mono font-bold cursor-not-allowed"
                   />
                 </div>
 
@@ -660,7 +660,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                         className={`py-2 rounded-xl text-xs font-bold font-mono transition-all cursor-pointer ${
                           claimAmount === preset
                             ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20'
-                            : 'bg-zinc-900 border border-zinc-800 text-zinc-300 hover:border-zinc-700'
+                            : 'bg-white/[0.04] border border-white/[0.07] text-zinc-300 hover:border-white/[0.16]'
                         }`}
                       >
                         {preset} ₺
@@ -672,7 +672,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                     placeholder={language === 'tr' ? 'Farklı bir tutar girin (örn: 75)' : 'Custom amount (e.g. 75)'}
                     value={claimAmount}
                     onChange={(e) => setClaimAmount(e.target.value)}
-                    className="w-full mt-1.5 px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs focus:border-amber-500 focus:outline-none"
+                    className="w-full mt-1.5 px-3.5 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-200 text-xs focus:border-amber-500 focus:outline-none"
                   />
                 </div>
 
@@ -687,7 +687,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                     placeholder={language === 'tr' ? 'Örn: REF-981245 veya İşlem No' : 'e.g. REF-981245'}
                     value={claimReference}
                     onChange={(e) => setClaimReference(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs focus:border-amber-500 focus:outline-none font-mono"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-200 text-xs focus:border-amber-500 focus:outline-none font-mono"
                   />
                 </div>
 
@@ -702,7 +702,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                     placeholder={language === 'tr' ? 'Bağışta yazdığınız mesaj' : 'Message you included with donation'}
                     value={claimMessage}
                     onChange={(e) => setClaimMessage(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs focus:border-amber-500 focus:outline-none"
+                    className="w-full px-3.5 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-200 text-xs focus:border-amber-500 focus:outline-none"
                   />
                 </div>
 
@@ -744,7 +744,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
             <button
               type="button"
               onClick={() => setIsNoticeModalOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              className="absolute top-4 right-4 p-1.5 rounded-xl bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.09] transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -766,7 +766,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
             </div>
 
             {/* Copyable Username Box for Convenience */}
-            <div className="p-3.5 rounded-2xl bg-zinc-950 border border-zinc-800 text-left space-y-1.5">
+            <div className="p-3.5 rounded-2xl bg-black/25 border border-white/[0.07] text-left space-y-1.5">
               <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider block font-bold">
                 {language === 'tr' ? 'Bağış Sayfasına Yazılacak Kullanıcı Adınız:' : 'Your Username to Enter on Donation Page:'}
               </span>
@@ -777,7 +777,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                 <button
                   type="button"
                   onClick={handleCopyUsername}
-                  className="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700 text-xs font-mono font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-200 border border-white/[0.12] text-xs font-mono font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {copiedUsername ? (
                     <>

@@ -211,7 +211,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
   return (
     <div className="min-h-screen pb-20">
       {/* ÜST ÇUBUK */}
-      <div className="sticky top-0 z-20 border-b border-zinc-800/40 bg-[#09090b]/90 px-4 py-3 backdrop-blur-xl">
+      <div className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#0a0a14]/90 px-4 py-3 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
           <button
             type="button"
@@ -226,7 +226,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             <button
               type="button"
               onClick={beginEdit}
-              className="flex min-h-9 items-center gap-1.5 rounded-xl border border-zinc-800 px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex min-h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Pencil className="h-3.5 w-3.5" />
               <span>{tr ? 'Düzenle' : 'Edit'}</span>
@@ -239,7 +239,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 type="button"
                 onClick={() => setEditing(false)}
                 disabled={busy}
-                className="min-h-9 rounded-xl border border-zinc-800 px-3 text-xs font-semibold text-zinc-400 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-9 rounded-xl border border-white/[0.07] px-3 text-xs font-semibold text-zinc-400 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {tr ? 'Vazgeç' : 'Cancel'}
               </button>
@@ -259,7 +259,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
 
       <div className="mx-auto max-w-3xl space-y-5 p-4">
         {/* KAPAK */}
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950">
+        <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-black/25">
           {(editing ? cover : project.cover_url) ? (
             <img
               src={(editing ? cover : project.cover_url) as string}
@@ -317,7 +317,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 value={draft.name}
                 maxLength={80}
                 onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
-                className="min-h-11 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="space-y-1.5">
@@ -331,7 +331,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 maxLength={600}
                 onChange={(e) => setDraft((d) => ({ ...d, about: e.target.value }))}
                 placeholder={tr ? 'Listede görünen tek satır' : 'One line shown in the list'}
-                className="min-h-11 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
@@ -386,7 +386,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             aria-label={tr ? `${project.name} projesini beğen` : `Like ${project.name}`}
             title={!currentUserId ? (tr ? 'Beğenmek için giriş yap' : 'Sign in to like') : undefined}
             className={`flex min-h-11 items-center gap-1.5 rounded-xl border px-3.5 text-xs font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-              liked ? 'border-rose-500/40 bg-rose-500/10 text-rose-300' : 'border-zinc-800 text-zinc-400 hover:text-white'
+              liked ? 'border-rose-500/40 bg-rose-500/10 text-rose-300' : 'border-white/[0.07] text-zinc-400 hover:text-white'
             }`}
           >
             <Heart className={`h-3.5 w-3.5 ${liked ? 'fill-current' : ''}`} />
@@ -412,7 +412,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             className={`flex min-h-11 items-center gap-1.5 rounded-xl border px-3.5 text-xs font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               followed
                 ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                : 'border-zinc-800 text-zinc-400 hover:text-white'
+                : 'border-white/[0.07] text-zinc-400 hover:text-white'
             }`}
           >
             {followed ? <Bell className="h-3.5 w-3.5" /> : <BellOff className="h-3.5 w-3.5" />}
@@ -438,13 +438,13 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                   ? 'Proje ne yapıyor, nasıl çalışıyor, neden yazdın?'
                   : 'What does it do, how does it work, why did you build it?'
               }
-              className="w-full resize-y rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full resize-y rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             <p className="text-right text-[10px] text-zinc-600">{draft.description.length}/4000</p>
           </div>
         ) : (
           project.description && (
-            <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-4">
+            <div className="rounded-2xl border border-white/[0.07] bg-black/25 p-4">
               {/*
                 whitespace-pre-wrap: açıklama düz metin olarak saklanıyor ve satır araları
                 yazanın niyetidir. HTML olarak basmıyoruz — React metni kaçışlıyor ve
@@ -471,7 +471,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
 
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {shownGallery.map((src, index) => (
-                <div key={`${index}-${src.slice(-24)}`} className="group relative overflow-hidden rounded-xl border border-zinc-800/80">
+                <div key={`${index}-${src.slice(-24)}`} className="group relative overflow-hidden rounded-xl border border-white/[0.07]">
                   <img
                     src={src}
                     alt={tr ? `${project.name} görsel ${index + 1}` : `${project.name} image ${index + 1}`}
@@ -503,7 +503,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                     type="button"
                     onClick={() => galleryInput.current?.click()}
                     disabled={busy}
-                    className="flex h-28 items-center justify-center gap-1.5 rounded-xl border border-dashed border-zinc-800 text-[11px] font-semibold text-zinc-500 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-28 items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/[0.07] text-[11px] font-semibold text-zinc-500 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
                     <span>{tr ? 'Görsel ekle' : 'Add image'}</span>
@@ -552,7 +552,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             type="button"
             onClick={() => setLightbox(null)}
             aria-label={tr ? 'Kapat' : 'Close'}
-            className="absolute right-4 top-4 flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-zinc-900/80 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute right-4 top-4 flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-white/[0.04] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-5 w-5" />
           </button>

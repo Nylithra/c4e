@@ -57,7 +57,7 @@ const TYPE_STYLES: Record<
   project_commit: { icon: GitCommit, badge: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30', tint: 'text-indigo-400' }
 };
 
-const FALLBACK_STYLE = { icon: Bell, badge: 'bg-zinc-800 text-zinc-300 border-zinc-700', tint: 'text-zinc-300' };
+const FALLBACK_STYLE = { icon: Bell, badge: 'bg-white/[0.07] text-zinc-300 border-white/[0.12]', tint: 'text-zinc-300' };
 
 /**
  * Buckets notifications by age. Reading a long list top to bottom is much easier when
@@ -155,9 +155,9 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
     permission === 'default' && !isPromptDismissed && notifications.length > 0;
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-zinc-800/60 min-h-screen bg-[#09090b]">
+    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen bg-[#0a0a14]">
       {/* Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#09090b]/90 border-b border-zinc-800/40">
+      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07]">
         <div className="px-5 py-3.5 flex items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2 min-w-0">
             <Bell className="w-5 h-5 text-zinc-300 flex-shrink-0" />
@@ -174,7 +174,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
               type="button"
               onClick={onMarkAllAsRead}
               disabled={unreadCount === 0}
-              className="h-9 px-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 disabled:opacity-40 disabled:hover:text-zinc-400 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5 text-[11px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-9 px-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-400 hover:text-white hover:border-white/[0.16] disabled:opacity-40 disabled:hover:text-zinc-400 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5 text-[11px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               title={tr ? 'Tümünü okundu işaretle' : 'Mark all as read'}
             >
               <CheckCheck className="w-4 h-4" />
@@ -184,7 +184,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
               type="button"
               onClick={onClearNotifications}
               disabled={notifications.length === 0}
-              className="h-9 w-9 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-red-400 hover:border-red-500/40 disabled:opacity-40 disabled:hover:text-zinc-400 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-9 w-9 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-400 hover:text-red-400 hover:border-red-500/40 disabled:opacity-40 disabled:hover:text-zinc-400 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               title={tr ? 'Tüm bildirimleri sil' : 'Clear all notifications'}
               aria-label={tr ? 'Tüm bildirimleri sil' : 'Clear all notifications'}
             >
@@ -206,7 +206,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                 className={`h-9 flex-shrink-0 rounded-full px-3.5 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isActive
                     ? 'bg-zinc-100 text-zinc-950'
-                    : 'bg-zinc-900/70 text-zinc-400 hover:text-white border border-zinc-800'
+                    : 'bg-white/[0.04] text-zinc-400 hover:text-white border border-white/[0.07]'
                 }`}
               >
                 <span>{tab.label}</span>
@@ -225,7 +225,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
 
       {/* Browser permission prompt: one quiet line, dismissable, no marketing copy. */}
       {showPermissionPrompt && (
-        <div className="mx-4 mt-4 flex items-center gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-3">
+        <div className="mx-4 mt-4 flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.04] p-3">
           <Bell className="h-4 w-4 flex-shrink-0 text-zinc-400" />
           <p className="flex-1 min-w-0 text-[11px] leading-snug text-zinc-400">
             {tr
@@ -243,7 +243,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
             type="button"
             onClick={() => setIsPromptDismissed(true)}
             aria-label={tr ? 'Kapat' : 'Dismiss'}
-            className="h-8 w-8 flex-shrink-0 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/70 transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="h-8 w-8 flex-shrink-0 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.09] transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <BellOff className="h-4 w-4" />
           </button>
@@ -253,7 +253,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
       {/* List */}
       {groups.length === 0 ? (
         <div className="px-6 py-20 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/60 text-zinc-500">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.04] text-zinc-500">
             <Inbox className="h-6 w-6" />
           </div>
           <h3 className="text-sm font-bold text-white">
@@ -273,11 +273,11 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
         <div>
           {groups.map((group) => (
             <section key={group.id}>
-              <h3 className="bg-[#0c0c0e] px-5 py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500 border-y border-zinc-800/30">
+              <h3 className="bg-white/[0.03] px-5 py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500 border-y border-white/[0.07]">
                 {group.label}
               </h3>
 
-              <ul className="divide-y divide-zinc-800/40">
+              <ul className="divide-y divide-white/[0.06]">
                 {group.items.map((item) => {
                   const style = TYPE_STYLES[item.type] || FALLBACK_STYLE;
                   const TypeIcon = style.icon;
@@ -290,7 +290,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                         type="button"
                         onClick={() => handleOpen(item)}
                         className={`group w-full text-left px-4 py-3.5 flex items-start gap-3 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
-                          item.is_read ? 'hover:bg-zinc-900/40' : 'bg-zinc-900/30 hover:bg-zinc-900/50'
+                          item.is_read ? 'hover:bg-white/[0.06]' : 'bg-white/[0.04] hover:bg-white/[0.06]'
                         }`}
                       >
                         {/* Unread marker: a thin rail, not a coloured blob to dismiss. */}
@@ -305,10 +305,10 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                           <UserAvatar
                             src={item.actor?.avatar_url}
                             name={actorName || '?'}
-                            className="h-10 w-10 text-[11px] ring-1 ring-zinc-800"
+                            className="h-10 w-10 text-[11px] ring-1 ring-white/[0.08]"
                           />
                           <span
-                            className={`absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border ${style.badge} ring-2 ring-[#09090b]`}
+                            className={`absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border ${style.badge} ring-2 ring-[#0a0a14]`}
                           >
                             <TypeIcon className="h-2.5 w-2.5" />
                           </span>

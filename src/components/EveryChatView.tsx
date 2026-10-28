@@ -116,7 +116,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
 
   if (!isNylithra) {
     return (
-      <div className="flex-1 min-w-0 w-full border-r border-zinc-800/60 min-h-screen bg-[#09090b] flex flex-col items-center justify-center p-6 text-center select-none">
+      <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen bg-[#0a0a14] flex flex-col items-center justify-center p-6 text-center select-none">
         <div className="w-16 h-16 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-4 shadow-xl">
           <Lock className="w-8 h-8" />
         </div>
@@ -128,7 +128,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
             ? 'EveryChat Şuanda BETA Aşamasındadır.'
             : 'EveryChat Is Now Beta'}
         </p>
-        <div className="px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-[11px] font-mono text-zinc-500">
+        <div className="px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-[11px] font-mono text-zinc-500">
           Oturum Sahibi: <span className="text-zinc-300">@{user.username || 'misafir'}</span>
         </div>
       </div>
@@ -143,9 +143,9 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
   ];
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-zinc-800/60 h-screen flex flex-col bg-[#09090b]">
+    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] h-screen flex flex-col bg-[#0a0a14]">
       {/* Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#09090b]/90 border-b border-zinc-800/40 px-5 py-3.5 flex items-center justify-between">
+      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
             <Bot className="w-5 h-5" />
@@ -178,7 +178,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
               }
             ])
           }
-          className="p-2 rounded-xl text-zinc-400 hover:text-red-400 hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-all"
+          className="p-2 rounded-xl text-zinc-400 hover:text-red-400 hover:bg-white/[0.06] border border-transparent hover:border-white/[0.11] transition-all"
           title="Sohbeti Temizle"
         >
           <Trash2 className="w-4 h-4" />
@@ -198,7 +198,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
                 className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 text-xs font-bold ${
                   isUser
                     ? 'bg-blue-600 text-white'
-                    : 'bg-zinc-800 border border-zinc-700 text-blue-400'
+                    : 'bg-white/[0.07] border border-white/[0.12] text-blue-400'
                 }`}
               >
                 {isUser ? (
@@ -224,7 +224,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
                   className={`p-4 rounded-2xl text-xs leading-relaxed ${
                     isUser
                       ? 'bg-blue-600 text-white rounded-tr-none shadow-lg shadow-blue-600/10'
-                      : 'bg-[#121215] border border-zinc-800 text-zinc-200 rounded-tl-none shadow-md'
+                      : 'bg-white/[0.06] border border-white/[0.07] text-zinc-200 rounded-tl-none shadow-md'
                   }`}
                 >
                   <div className="whitespace-pre-wrap break-words font-sans">
@@ -232,7 +232,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
                   </div>
 
                   {!isUser && (
-                    <div className="mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-end">
+                    <div className="mt-2 pt-2 border-t border-white/[0.07] flex items-center justify-end">
                       <button
                         onClick={() => handleCopy(msg.content, msg.id)}
                         className="flex items-center gap-1 text-[10px] text-zinc-400 hover:text-white transition-colors"
@@ -259,10 +259,10 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
 
         {loading && (
           <div className="flex gap-3 max-w-xl mr-auto">
-            <div className="w-8 h-8 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-blue-400 flex-shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-white/[0.07] border border-white/[0.12] flex items-center justify-center text-blue-400 flex-shrink-0">
               <Sparkles className="w-4 h-4 animate-spin" />
             </div>
-            <div className="p-4 rounded-2xl rounded-tl-none bg-[#121215] border border-zinc-800 text-xs text-zinc-400 flex items-center gap-2">
+            <div className="p-4 rounded-2xl rounded-tl-none bg-white/[0.06] border border-white/[0.07] text-xs text-zinc-400 flex items-center gap-2">
               <Zap className="w-3.5 h-3.5 text-blue-400 animate-bounce" />
               <span>Groq Llama 3.3 70B düşünüyor...</span>
             </div>
@@ -279,7 +279,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
             <button
               key={i}
               onClick={() => handleSendMessage(prompt)}
-              className="text-[11px] bg-[#121215] hover:bg-zinc-800 border border-zinc-800 text-zinc-300 px-3 py-1.5 rounded-xl transition-all text-left truncate max-w-full"
+              className="text-[11px] bg-white/[0.06] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 px-3 py-1.5 rounded-xl transition-all text-left truncate max-w-full"
             >
               💡 {prompt}
             </button>
@@ -288,13 +288,13 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
       )}
 
       {/* Input Area */}
-      <div className="p-4 border-t border-zinc-800/60 bg-[#09090b]/90 backdrop-blur-md">
+      <div className="p-4 border-t border-white/[0.07] bg-[#0a0a14]/90 backdrop-blur-md">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSendMessage();
           }}
-          className="flex items-center gap-2 bg-[#121215] border border-zinc-800 focus-within:border-blue-500/80 rounded-2xl p-1.5 transition-all shadow-xl"
+          className="flex items-center gap-2 bg-white/[0.06] border border-white/[0.07] focus-within:border-blue-500/80 rounded-2xl p-1.5 transition-all shadow-xl"
         >
           <input
             type="text"

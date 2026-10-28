@@ -92,9 +92,9 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-lg bg-[#0c0c0e] border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl space-y-0 text-white">
+      <div className="w-full max-w-lg bg-white/[0.03] border border-white/[0.07] rounded-3xl overflow-hidden shadow-2xl space-y-0 text-white">
         {/* Header */}
-        <div className="p-5 border-b border-zinc-800/80 flex items-center justify-between bg-zinc-950/60">
+        <div className="p-5 border-b border-white/[0.07] flex items-center justify-between bg-black/25">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
               <Bug className="w-5 h-5" />
@@ -113,7 +113,7 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+            className="w-8 h-8 rounded-full bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -157,7 +157,7 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
                     className={`py-2 px-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all cursor-pointer ${
                       errorType === item.id
                         ? 'bg-red-950/40 border-red-500/60 text-red-300 shadow-sm'
-                        : 'bg-zinc-950 border-zinc-800/80 text-zinc-400 hover:text-white hover:border-zinc-700'
+                        : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:text-white hover:border-white/[0.16]'
                     }`}
                   >
                     <span>{item.icon}</span>
@@ -183,7 +183,7 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
                     : 'e.g. Discord Webhook Send, Explore Feed, Profile Editor...'
                 }
                 required
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-red-500"
+                className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-red-500"
               />
             </div>
 
@@ -203,7 +203,7 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
                     : 'Steps to reproduce the error or what went wrong...'
                 }
                 required
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-red-500"
+                className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-3 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-red-500"
               />
             </div>
 
@@ -227,17 +227,17 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
                     ? '{"error": "Webhook returned 404", "status": 404, ...}'
                     : 'Paste error stack or response logs here...'
                 }
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-[11px] font-mono text-zinc-300 placeholder:text-zinc-700 focus:outline-none focus:border-red-500"
+                className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-2.5 text-[11px] font-mono text-zinc-300 placeholder:text-zinc-700 focus:outline-none focus:border-red-500"
               />
             </div>
 
             {/* Footer Buttons */}
-            <div className="pt-2 flex items-center justify-end gap-2 border-t border-zinc-800/80">
+            <div className="pt-2 flex items-center justify-end gap-2 border-t border-white/[0.07]">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
               >
                 {language === 'tr' ? 'Vazgeç' : 'Cancel'}
               </button>

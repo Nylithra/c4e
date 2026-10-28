@@ -128,8 +128,8 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
   };
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-zinc-800/60 min-h-screen pb-16 bg-[#09090b]">
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#09090b]/90 border-b border-zinc-800/40 px-5 py-3.5 flex items-center justify-between">
+    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14]">
+      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
         <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
           <Users className="w-5 h-5 text-zinc-300" />
           <span>{language === 'tr' ? 'Topluluklar' : 'Communities'}</span>
@@ -146,7 +146,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
 
       <div className="p-5 space-y-4">
         {communities.length === 0 ? (
-          <div className="py-12 text-center text-zinc-500 text-xs font-mono bg-[#0c0c0e] rounded-2xl border border-zinc-800/40">
+          <div className="py-12 text-center text-zinc-500 text-xs font-mono bg-white/[0.03] rounded-2xl border border-white/[0.07]">
             {language === 'tr' ? 'Henüz hiçbir topluluk oluşturulmamış.' : 'No communities created yet.'}
           </div>
         ) : (
@@ -156,17 +156,17 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
               return (
                 <div
                   key={comm.id}
-                  className="overflow-hidden bg-[#0c0c0e] border border-zinc-800/60 rounded-2xl hover:border-zinc-700 transition-all group shadow-sm flex flex-col"
+                  className="overflow-hidden bg-white/[0.03] border border-white/[0.07] rounded-2xl hover:border-white/[0.16] transition-all group shadow-sm flex flex-col"
                 >
                   {/* Subtle Community Banner Strip if available */}
                   {comm.banner_url && (
-                    <div className="h-16 sm:h-14 w-full overflow-hidden relative bg-zinc-900 cursor-pointer" onClick={() => onSelectCommunity && onSelectCommunity(comm)}>
+                    <div className="h-16 sm:h-14 w-full overflow-hidden relative bg-white/[0.04] cursor-pointer" onClick={() => onSelectCommunity && onSelectCommunity(comm)}>
                       <img
                         src={comm.banner_url}
                         alt={comm.name}
                         className="w-full h-full object-cover opacity-45 group-hover:opacity-65 transition-opacity"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0e] via-[#0c0c0e]/50 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0e] via-[#0a0a14]/50 to-transparent" />
                     </div>
                   )}
 
@@ -177,8 +177,8 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                       className="flex items-start sm:items-center gap-3.5 sm:gap-4 overflow-hidden cursor-pointer flex-1 min-w-0"
                     >
                       <div className="relative flex-shrink-0">
-                        <UserAvatar src={comm.avatar_url} name={comm.name} className="w-20 h-20 sm:w-16 sm:h-16 rounded-2xl ring-2 ring-zinc-800 shadow-xl group-hover:scale-105 transition-transform bg-zinc-900 text-[10px]" />
-                        <div className="absolute -bottom-1 -right-1 bg-purple-600/95 text-white p-1 rounded-lg border-2 border-[#0c0c0e] shadow-md">
+                        <UserAvatar src={comm.avatar_url} name={comm.name} className="w-20 h-20 sm:w-16 sm:h-16 rounded-2xl ring-2 ring-white/[0.08] shadow-xl group-hover:scale-105 transition-transform bg-white/[0.04] text-[10px]" />
+                        <div className="absolute -bottom-1 -right-1 bg-purple-600/95 text-white p-1 rounded-lg border-2 border-white/[0.07] shadow-md">
                           <Users className="w-3 h-3" />
                         </div>
                       </div>
@@ -222,14 +222,14 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                     </div>
 
                     {/* Community Actions */}
-                    <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-center pt-3 sm:pt-0 border-t border-zinc-800/40 sm:border-t-0 w-full sm:w-auto justify-end">
+                    <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-center pt-3 sm:pt-0 border-t border-white/[0.07] sm:border-t-0 w-full sm:w-auto justify-end">
                       <button
                         type="button"
                         onClick={(e) => handleCopyLink(e, comm)}
                         className={`p-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1 text-xs font-mono ${
                           copiedId === comm.id
                             ? 'bg-emerald-950/40 text-emerald-300 border-emerald-700/60 shadow-md'
-                            : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 border-zinc-800'
+                            : 'bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.09] border-white/[0.07]'
                         }`}
                         title={copiedId === comm.id ? (language === 'tr' ? 'Bağlantı kopyalandı!' : 'Link copied!') : (language === 'tr' ? 'Topluluk Linkini Kopyala (/c/@name)' : 'Copy Community Link (/c/@name)')}
                       >
@@ -250,7 +250,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                         <button
                           type="button"
                           onClick={() => setEditingCommunity(comm)}
-                          className="p-2 rounded-xl bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800 transition-colors cursor-pointer"
+                          className="p-2 rounded-xl bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.09] border border-white/[0.07] transition-colors cursor-pointer"
                           title={language === 'tr' ? 'Topluluk Ayarları' : 'Community Settings'}
                         >
                           <Settings className="w-4 h-4" />
@@ -263,7 +263,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                         onClick={() => handleJoinClick(comm.id)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 ${
                           comm.is_joined
-                            ? 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-zinc-800'
+                            ? 'bg-white/[0.04] text-zinc-300 hover:bg-white/[0.09] border border-white/[0.07]'
                             : 'bg-zinc-100 hover:bg-white text-zinc-950 shadow-md'
                         }`}
                       >
@@ -338,7 +338,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
       {/* Create Community Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#121215] border border-zinc-800 rounded-3xl p-6 w-full max-w-md space-y-5 shadow-2xl">
+          <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl p-6 w-full max-w-md space-y-5 shadow-2xl">
             <h3 className="text-base font-bold text-white">
               {language === 'tr' ? 'Yeni Topluluk Oluştur' : 'Create New Community'}
             </h3>
@@ -361,7 +361,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="ör. Rust Developers TR"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500"
                 />
               </div>
 
@@ -374,7 +374,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={handle}
                   onChange={(e) => setHandle(e.target.value)}
                   placeholder="@rust_tr"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500 font-mono"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500 font-mono"
                 />
               </div>
 
@@ -387,7 +387,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={avatarUrl}
                   onChange={(e) => setAvatarUrl(e.target.value)}
                   placeholder="https://..."
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500 font-mono"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500 font-mono"
                 />
               </div>
 
@@ -399,7 +399,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none resize-none"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none resize-none"
                 />
               </div>
 
@@ -408,13 +408,13 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                 type="button"
                 onClick={() => setIsPrivate((prev) => !prev)}
                 className={`w-full flex items-center justify-between gap-3 p-3 rounded-xl border text-left transition-colors cursor-pointer ${
-                  isPrivate ? 'bg-amber-500/10 border-amber-500/30' : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700'
+                  isPrivate ? 'bg-amber-500/10 border-amber-500/30' : 'bg-black/25 border-white/[0.07] hover:border-white/[0.16]'
                 }`}
               >
                 <span className="flex items-start gap-2.5 min-w-0">
                   <span
                     className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      isPrivate ? 'bg-amber-500/15 text-amber-400' : 'bg-zinc-900 text-zinc-400'
+                      isPrivate ? 'bg-amber-500/15 text-amber-400' : 'bg-white/[0.04] text-zinc-400'
                     }`}
                   >
                     {isPrivate ? <Lock className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
@@ -453,7 +453,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-semibold transition-colors cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-400 hover:text-white font-semibold transition-colors cursor-pointer"
                 >
                   {language === 'tr' ? 'İptal' : 'Cancel'}
                 </button>

@@ -155,7 +155,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-start justify-between gap-3 rounded-xl border border-zinc-800/80 bg-zinc-950 p-3.5">
+      <div className="flex items-start justify-between gap-3 rounded-xl border border-white/[0.07] bg-black/25 p-3.5">
         <div className="min-w-0 space-y-0.5">
           <p className="flex items-center gap-2 text-xs font-bold text-white">
             <Mail className="h-3.5 w-3.5 text-blue-400" />
@@ -175,7 +175,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
       </div>
 
       {!master && (
-        <p className="user-text rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-3 text-[11px] leading-relaxed text-zinc-400">
+        <p className="user-text rounded-xl border border-white/[0.07] bg-white/[0.04] p-3 text-[11px] leading-relaxed text-zinc-400">
           {tr
             ? 'Ana anahtar kapalı: hiçbir bildirim e-postası gönderilmiyor. Uygulama içi bildirimler etkilenmez.'
             : 'Master switch is off: no notification e-mails are sent. In-app notifications are unaffected.'}
@@ -185,7 +185,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
       {GROUPS.map((group) => (
         <div
           key={group.title}
-          className={`space-y-2 rounded-xl border border-zinc-800/60 p-3.5 transition-opacity ${
+          className={`space-y-2 rounded-xl border border-white/[0.07] p-3.5 transition-opacity ${
             master ? '' : 'pointer-events-none opacity-40'
           }`}
         >
@@ -194,7 +194,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
             <p className="user-text text-[11px] leading-relaxed text-zinc-500">{group.hint}</p>
           </div>
 
-          <div className="divide-y divide-zinc-800/50">
+          <div className="divide-y divide-white/[0.06]">
             {group.items.map((item) => (
               <div key={item.id} className="flex items-center justify-between gap-3 py-2.5">
                 <div className="min-w-0">

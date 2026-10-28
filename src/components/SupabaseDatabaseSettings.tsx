@@ -51,7 +51,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
   return (
     <div className="space-y-6">
       {/* Overview Banner */}
-      <div className="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 space-y-2">
+      <div className="p-4 rounded-2xl bg-black/25 border border-white/[0.07] space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Database className="w-5 h-5 text-emerald-400" />
@@ -64,7 +64,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
             type="button"
             onClick={fetchStatus}
             disabled={loading}
-            className="px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-mono text-zinc-300 flex items-center gap-1.5 cursor-pointer disabled:opacity-40 transition-all"
+            className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-xs font-mono text-zinc-300 flex items-center gap-1.5 cursor-pointer disabled:opacity-40 transition-all"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span>{language === 'tr' ? 'Yenile' : 'Refresh'}</span>
@@ -78,8 +78,8 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
       </div>
 
       {/* Table Status Grid */}
-      <div className="bg-[#0c0c0e] border border-zinc-800/80 rounded-2xl p-5 space-y-4">
-        <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
+      <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
           <span className="text-sm font-bold text-white">
             {language === 'tr' ? 'Canlı Tablo Durumu' : 'Live Table Status'}
           </span>
@@ -108,7 +108,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
                 className={`p-3 rounded-xl border transition-all ${
                   tableExists
                     ? 'bg-emerald-950/20 border-emerald-500/30'
-                    : 'bg-zinc-950 border-zinc-800/80'
+                    : 'bg-black/25 border-white/[0.07]'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
@@ -130,8 +130,8 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
       </div>
 
       {/* SQL Setup Script Box */}
-      <div className="bg-[#0c0c0e] border border-zinc-800/80 rounded-2xl p-5 space-y-4">
-        <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
+      <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
           <div>
             <span className="text-sm font-bold text-white block">
               {language === 'tr' ? 'Otomatik Tablo & Güvenlik SQL Scripti' : 'Auto Table & Security SQL Script'}
@@ -152,7 +152,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
         </div>
 
         <div className="relative">
-          <pre className="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl text-[11px] font-mono text-zinc-300 max-h-48 overflow-y-auto leading-relaxed">
+          <pre className="p-3.5 bg-black/25 border border-white/[0.07] rounded-xl text-[11px] font-mono text-zinc-300 max-h-48 overflow-y-auto leading-relaxed">
             {SUPABASE_SETUP_SQL}
           </pre>
         </div>

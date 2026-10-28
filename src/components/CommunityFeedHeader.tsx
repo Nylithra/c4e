@@ -85,9 +85,9 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
   return (
     <div className="relative border-b border-white/[0.06]">
       {/* Banner */}
-      <div className={`h-32 md:h-40 w-full overflow-hidden relative ${ownBanner ? 'bg-zinc-900' : 'c4e-banner-fallback'}`}>
+      <div className={`h-32 md:h-40 w-full overflow-hidden relative ${ownBanner ? 'bg-white/[0.04]' : 'c4e-banner-fallback'}`}>
         {ownBanner && <img src={ownBanner} alt="" className="w-full h-full object-cover opacity-80" />}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/40 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a14] via-[#09090b]/40 to-black/30" />
 
         {onBack && (
           <button
@@ -121,12 +121,12 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
             <img
               src={ownAvatar}
               alt={community.name}
-              className="w-20 h-20 rounded-2xl object-cover ring-4 ring-[#09090b] shadow-2xl bg-zinc-900"
+              className="w-20 h-20 rounded-2xl object-cover ring-4 ring-[#0a0a14] shadow-2xl bg-white/[0.04]"
             />
           ) : (
             <span
               aria-label={community.name}
-              className="flex h-20 w-20 select-none items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-2xl font-extrabold text-white ring-4 ring-[#09090b] shadow-2xl"
+              className="flex h-20 w-20 select-none items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-2xl font-extrabold text-white ring-4 ring-[#0a0a14] shadow-2xl"
             >
               {initials}
             </span>
@@ -136,7 +136,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
             <button
               type="button"
               onClick={handleCopyLink}
-              className="px-3 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
               title={language === 'tr' ? 'Bağlantıyı kopyala' : 'Copy link'}
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Link2 className="w-3.5 h-3.5" />}
@@ -149,7 +149,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
               <button
                 type="button"
                 onClick={() => onOpenSettings(community)}
-                className="px-3 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Settings className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">{language === 'tr' ? 'Yönet' : 'Manage'}</span>
@@ -162,7 +162,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
                 onClick={() => onToggleJoin(community.id)}
                 className={`px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer ${
                   isJoined
-                    ? 'bg-zinc-800 hover:bg-red-500/15 hover:text-red-400 border border-zinc-700 text-zinc-200'
+                    ? 'bg-white/[0.07] hover:bg-red-500/15 hover:text-red-400 border border-white/[0.12] text-zinc-200'
                     : 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-600/20'
                 }`}
               >

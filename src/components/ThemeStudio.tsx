@@ -70,7 +70,7 @@ const ColorField: React.FC<{
   };
 
   return (
-    <label className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/70">
+    <label className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-black/25 border border-white/[0.07]">
       <span className="min-w-0">
         <span className="block text-[11px] font-bold text-zinc-200 truncate">{label}</span>
         {hint && <span className="block text-[10px] text-zinc-500 truncate">{hint}</span>}
@@ -81,13 +81,13 @@ const ColorField: React.FC<{
           value={draft}
           onChange={(e) => commit(e.target.value.trim())}
           spellCheck={false}
-          className="w-[88px] px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
+          className="w-[88px] px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.12] text-[11px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
         />
         <input
           type="color"
           value={isValidColor(draft) ? draft.slice(0, 7) : '#000000'}
           onChange={(e) => commit(e.target.value)}
-          className="w-9 h-9 rounded-lg bg-transparent border border-zinc-700 cursor-pointer p-0.5"
+          className="w-9 h-9 rounded-lg bg-transparent border border-white/[0.12] cursor-pointer p-0.5"
           aria-label={label}
         />
       </span>
@@ -104,7 +104,7 @@ const SliderField: React.FC<{
   unit?: string;
   onChange: (value: number) => void;
 }> = ({ label, value, min, max, step = 1, unit = '', onChange }) => (
-  <label className="block p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/70">
+  <label className="block p-2.5 rounded-xl bg-black/25 border border-white/[0.07]">
     <span className="flex items-center justify-between text-[11px] font-bold text-zinc-200 mb-1.5">
       <span>{label}</span>
       <span className="font-mono text-zinc-400">
@@ -133,7 +133,7 @@ const ToggleField: React.FC<{
   <button
     type="button"
     onClick={() => onChange(!checked)}
-    className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/70 hover:border-zinc-700 transition-colors text-left cursor-pointer"
+    className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-black/25 border border-white/[0.07] hover:border-white/[0.16] transition-colors text-left cursor-pointer"
   >
     <span className="min-w-0">
       <span className="block text-[11px] font-bold text-zinc-100">{label}</span>
@@ -192,7 +192,7 @@ const GradientEditor: React.FC<{
   return (
     <div className="space-y-2.5">
       <div
-        className="h-16 rounded-xl border border-zinc-700/70 shadow-inner"
+        className="h-16 rounded-xl border border-white/[0.12] shadow-inner"
         style={{ backgroundImage: gradientToCss(gradient) }}
       />
 
@@ -205,7 +205,7 @@ const GradientEditor: React.FC<{
             className={`py-2 rounded-xl text-[11px] font-bold border transition-colors cursor-pointer ${
               gradient.kind === kind
                 ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
-                : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:border-zinc-700'
+                : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:border-white/[0.16]'
             }`}
           >
             {kind === 'linear' ? t(language, 'Doğrusal', 'Linear') : kind === 'radial' ? t(language, 'Dairesel', 'Radial') : t(language, 'Konik', 'Conic')}
@@ -233,7 +233,7 @@ const GradientEditor: React.FC<{
                 className={`py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
                   gradient.angle === direction.angle
                     ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
-                    : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:border-zinc-700'
+                    : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:border-white/[0.16]'
                 }`}
               >
                 {direction.label}
@@ -274,7 +274,7 @@ const GradientEditor: React.FC<{
               className={`py-2 rounded-xl text-[11px] font-bold border transition-colors cursor-pointer ${
                 gradient.shape === shape
                   ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
-                  : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:border-zinc-700'
+                  : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:border-white/[0.16]'
               }`}
             >
               {shape === 'ellipse' ? t(language, 'Elips', 'Ellipse') : t(language, 'Daire', 'Circle')}
@@ -292,7 +292,7 @@ const GradientEditor: React.FC<{
             type="button"
             onClick={addStop}
             disabled={gradient.stops.length >= MAX_GRADIENT_STOPS}
-            className="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed text-[10px] font-bold text-zinc-200 flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1 rounded-lg bg-white/[0.07] hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed text-[10px] font-bold text-zinc-200 flex items-center gap-1 cursor-pointer"
           >
             <Plus className="w-3 h-3" />
             {t(language, 'Renk Ekle', 'Add colour')}
@@ -300,13 +300,13 @@ const GradientEditor: React.FC<{
         </div>
 
         {gradient.stops.map((stop, index) => (
-          <div key={index} className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/70 space-y-2">
+          <div key={index} className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] space-y-2">
             <div className="flex items-center gap-2">
               <input
                 type="color"
                 value={isValidColor(stop.color) ? stop.color.slice(0, 7) : '#000000'}
                 onChange={(e) => updateStop(index, { color: e.target.value })}
-                className="w-9 h-9 rounded-lg bg-transparent border border-zinc-700 cursor-pointer p-0.5 flex-shrink-0"
+                className="w-9 h-9 rounded-lg bg-transparent border border-white/[0.12] cursor-pointer p-0.5 flex-shrink-0"
                 aria-label={`${t(language, 'Renk', 'Colour')} ${index + 1}`}
               />
               <input
@@ -317,13 +317,13 @@ const GradientEditor: React.FC<{
                   const next = e.target.value.trim();
                   if (isValidColor(next)) updateStop(index, { color: next });
                 }}
-                className="flex-1 min-w-0 px-2 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
+                className="flex-1 min-w-0 px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.12] text-[11px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
               />
               <button
                 type="button"
                 onClick={() => removeStop(index)}
                 disabled={gradient.stops.length <= MIN_GRADIENT_STOPS}
-                className="p-2 rounded-lg bg-zinc-900 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
+                className="p-2 rounded-lg bg-white/[0.04] hover:bg-red-500/20 text-zinc-400 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex-shrink-0"
                 aria-label={t(language, 'Rengi sil', 'Remove colour')}
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -364,9 +364,9 @@ const FillSection: React.FC<{
   onChange: (fill: ThemeFill) => void;
   children?: React.ReactNode;
 }> = ({ language, title, description, icon, fill, onChange, children }) => (
-  <section className="rounded-2xl bg-zinc-900/50 border border-zinc-800 p-4 space-y-3">
+  <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-3">
     <header className="flex items-start gap-2.5">
-      <span className="w-8 h-8 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-amber-400 flex-shrink-0">
+      <span className="w-8 h-8 rounded-xl bg-black/25 border border-white/[0.07] flex items-center justify-center text-amber-400 flex-shrink-0">
         {icon}
       </span>
       <span className="min-w-0">
@@ -384,7 +384,7 @@ const FillSection: React.FC<{
           className={`py-2 rounded-xl text-[11px] font-bold border transition-colors cursor-pointer ${
             fill.kind === kind
               ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
-              : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:border-zinc-700'
+              : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:border-white/[0.16]'
           }`}
         >
           {kind === 'solid' ? t(language, 'Düz Renk', 'Solid') : t(language, 'Gradyan', 'Gradient')}
@@ -419,7 +419,7 @@ const ThemePreview: React.FC<{ theme: ProfileTheme; user: UserProfile; language:
   >
     <div
       className={`h-20 w-full relative overflow-hidden ${
-        usesGradientBanner ? `c4e-theme-banner ${theme.banner.gradient.animate ? 'c4e-theme-animated' : ''}` : 'bg-zinc-900'
+        usesGradientBanner ? `c4e-theme-banner ${theme.banner.gradient.animate ? 'c4e-theme-animated' : ''}` : 'bg-white/[0.04]'
       }`}
     >
       {!usesGradientBanner && user.banner_url && (
@@ -565,7 +565,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
 
   return (
     <div className="space-y-4">
-      <header className="rounded-3xl border border-zinc-800 bg-gradient-to-r from-amber-500/10 via-zinc-950 to-zinc-950 p-5 flex flex-col md:flex-row md:items-center gap-3 justify-between">
+      <header className="rounded-3xl border border-white/[0.07] bg-gradient-to-r from-amber-500/10 via-zinc-950 to-zinc-950 p-5 flex flex-col md:flex-row md:items-center gap-3 justify-between">
         <div className="flex items-start gap-3 min-w-0">
           <span className="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center flex-shrink-0">
             <Palette className="w-5 h-5" />
@@ -591,7 +591,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           <button
             type="button"
             onClick={() => setLivePreview((prev) => !prev)}
-            className="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-[11px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:border-white/[0.16] text-[11px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
             title={t(language, 'Canlı önizleme', 'Live preview')}
           >
             {livePreview ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -600,7 +600,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           <button
             type="button"
             onClick={handleReset}
-            className="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-[11px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:border-white/[0.16] text-[11px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             {t(language, 'Sıfırla', 'Reset')}
@@ -619,7 +619,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-4 items-start">
         <div className="space-y-4 min-w-0">
           {/* Presets */}
-          <section className="rounded-2xl bg-zinc-900/50 border border-zinc-800 p-4 space-y-3">
+          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-3">
             <header className="flex items-center gap-2">
               <Wand2 className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Hazır Temalar', 'Presets')}</h4>
@@ -634,7 +634,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
                     setActivePresetId(item.id);
                   }}
                   className={`p-2 rounded-xl border text-left transition-colors cursor-pointer ${
-                    activePresetId === item.id ? 'border-amber-500/60 bg-amber-500/10' : 'border-zinc-800 bg-zinc-950/60 hover:border-zinc-700'
+                    activePresetId === item.id ? 'border-amber-500/60 bg-amber-500/10' : 'border-white/[0.07] bg-black/25 hover:border-white/[0.16]'
                   }`}
                 >
                   <span
@@ -710,7 +710,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           </FillSection>
 
           {/* Text colours */}
-          <section className="rounded-2xl bg-zinc-900/50 border border-zinc-800 p-4 space-y-2.5">
+          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-2.5">
             <header className="flex items-center gap-2">
               <TypeIcon className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Metin Renkleri', 'Text colours')}</h4>
@@ -743,7 +743,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           </section>
 
           {/* Borders, glow, effects */}
-          <section className="rounded-2xl bg-zinc-900/50 border border-zinc-800 p-4 space-y-2.5">
+          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-2.5">
             <header className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Kenarlık, Işıma & Efektler', 'Borders, glow & effects')}</h4>
@@ -799,7 +799,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           </section>
 
           {/* Visibility */}
-          <section className="rounded-2xl bg-zinc-900/50 border border-zinc-800 p-4 space-y-2.5">
+          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-2.5">
             <header className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Görünürlük', 'Visibility')}</h4>

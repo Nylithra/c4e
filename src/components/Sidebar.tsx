@@ -141,11 +141,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* ======================================================== */}
       {/* 1. MOBILE TOP HEADER (Screens < md)                      */}
       {/* ======================================================== */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-40 app-rail backdrop-blur-xl border-b border-zinc-800/80 px-4 py-2.5 flex items-center justify-between select-none">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-40 app-rail backdrop-blur-xl border-b border-white/[0.07] px-4 py-2.5 flex items-center justify-between select-none">
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsMobileDrawerOpen(true)}
-            className="p-1.5 -ml-1 text-zinc-400 hover:text-white rounded-xl hover:bg-zinc-800/60 active:bg-zinc-800 transition-colors cursor-pointer"
+            className="p-1.5 -ml-1 text-zinc-400 hover:text-white rounded-xl hover:bg-white/[0.09] active:bg-white/[0.11] transition-colors cursor-pointer"
             aria-label="Open Menu"
           >
             <Menu className="w-5 h-5" />
@@ -164,7 +164,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center gap-0.5">
           <button
             onClick={() => setActiveTab('explore')}
-            className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-zinc-800/60 active:bg-zinc-800 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-white/[0.09] active:bg-white/[0.11] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label={language === 'tr' ? 'Keşfet' : 'Explore'}
             title={language === 'tr' ? 'Keşfet' : 'Explore'}
           >
@@ -173,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <button
             onClick={() => setActiveTab('notifications')}
-            className="relative p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-zinc-800/60 active:bg-zinc-800 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="relative p-2 text-zinc-400 hover:text-white rounded-xl hover:bg-white/[0.09] active:bg-white/[0.11] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label={
               unreadCount > 0
                 ? (language === 'tr' ? `Bildirimler (${unreadCount} okunmamış)` : `Notifications (${unreadCount} unread)`)
@@ -183,7 +183,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 min-w-[16px] rounded-full bg-red-500 px-1 text-center text-[10px] font-bold leading-4 text-white ring-2 ring-[#09090b]">
+              <span className="absolute top-1 right-1 min-w-[16px] rounded-full bg-red-500 px-1 text-center text-[10px] font-bold leading-4 text-white ring-2 ring-[#0a0a14]">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
@@ -209,16 +209,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={() => setIsMobileDrawerOpen(false)}
         >
           <div
-            className="w-72 max-w-[80vw] h-full bg-[#09090b] border-r border-zinc-800/80 p-4 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-left duration-250 shadow-2xl"
+            className="w-72 max-w-[80vw] h-full bg-[#0a0a14] border-r border-white/[0.07] p-4 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-left duration-250 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="space-y-4">
               {/* Drawer Top Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-800/60">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
                 <span className="text-lg font-extrabold text-white tracking-tight">Code4Ever</span>
                 <button
                   onClick={() => setIsMobileDrawerOpen(false)}
-                  className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.09] transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -230,18 +230,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   setActiveTab('profile');
                   setIsMobileDrawerOpen(false);
                 }}
-                className="flex items-center gap-3 p-3 rounded-2xl bg-[#0c0c0e] border border-zinc-800/80 hover:border-zinc-700 cursor-pointer transition-all"
+                className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.07] hover:border-white/[0.16] cursor-pointer transition-all"
               >
                 <UserAvatar
                   src={user.avatar_url}
                   name={user.display_name || user.username}
-                  className="w-10 h-10 ring-2 ring-zinc-700/50 flex-shrink-0"
+                  className="w-10 h-10 ring-2 ring-white/[0.12] flex-shrink-0"
                 />
                 <div className="truncate flex-1">
                   <div className="flex items-center gap-1">
                     <span className="text-xs font-bold text-white truncate">{user.display_name}</span>
                     {hasAdminAccess && (
-                      <span className="px-1 py-0.2 rounded bg-zinc-800 text-[9px] text-zinc-400 font-mono">
+                      <span className="px-1 py-0.2 rounded bg-white/[0.07] text-[9px] text-zinc-400 font-mono">
                         ADMIN
                       </span>
                     )}
@@ -257,7 +257,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     setIsMobileDrawerOpen(false);
                     onOpenInstallPWA();
                   }}
-                  className="w-full flex items-center justify-between p-3 rounded-2xl bg-zinc-900/90 border border-zinc-700/80 hover:bg-zinc-800 active:scale-[0.98] transition-all cursor-pointer shadow-md"
+                  className="w-full flex items-center justify-between p-3 rounded-2xl bg-white/[0.04] border border-white/[0.12] hover:bg-white/[0.09] active:scale-[0.98] transition-all cursor-pointer shadow-md"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="p-1.5 rounded-xl bg-zinc-100 text-zinc-950 font-bold">
@@ -287,8 +287,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onClick={() => handleNavClick(item.id, item.isBetaModal)}
                       className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                         isActive
-                          ? 'text-white nav-active shadow-sm border border-zinc-700/50'
-                          : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60'
+                          ? 'text-white nav-active shadow-sm border border-white/[0.12]'
+                          : 'text-zinc-400 hover:text-zinc-100 hover:bg-white/[0.06]'
                       }`}
                       style={
                         isActive
@@ -310,7 +310,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                       <div className="flex items-center gap-1.5">
                         {(item.isBetaModal || item.isBetaBadge) && (
-                          <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-zinc-800 text-zinc-300 border border-zinc-700 rounded shadow-sm">
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                             BETA
                           </span>
                         )}
@@ -320,7 +320,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           </span>
                         )}
                         {item.isAdminBadge && (
-                          <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-zinc-800 text-zinc-300 border border-zinc-700 rounded shadow-sm">
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                             ADMIN
                           </span>
                         )}
@@ -345,7 +345,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* Bottom Actions inside Drawer */}
-            <div className="pt-4 border-t border-zinc-800/60 space-y-2">
+            <div className="pt-4 border-t border-white/[0.07] space-y-2">
               {onOpenReportError && (
                 <button
                   onClick={() => {
@@ -365,7 +365,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               )}
 
               {onChangeLanguage && (
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-zinc-900/60 border border-zinc-800/60 text-xs text-zinc-400">
+                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-xs text-zinc-400">
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-zinc-400" />
                     <span>{language === 'tr' ? 'Dil' : 'Language'}</span>
@@ -374,7 +374,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <button
                       onClick={() => onChangeLanguage('tr')}
                       className={`px-2 py-1 rounded-lg ${
-                        language === 'tr' ? 'bg-zinc-800 text-white font-bold' : 'text-zinc-500'
+                        language === 'tr' ? 'bg-white/[0.07] text-white font-bold' : 'text-zinc-500'
                       }`}
                     >
                       TR
@@ -382,7 +382,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <button
                       onClick={() => onChangeLanguage('en')}
                       className={`px-2 py-1 rounded-lg ${
-                        language === 'en' ? 'bg-zinc-800 text-white font-bold' : 'text-zinc-500'
+                        language === 'en' ? 'bg-white/[0.07] text-white font-bold' : 'text-zinc-500'
                       }`}
                     >
                       EN
@@ -415,7 +415,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         aria-label={language === 'tr' ? 'Ana gezinme' : 'Primary navigation'}
         className="md:hidden fixed bottom-0 left-0 right-0 z-40 px-3 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2 select-none pointer-events-none"
       >
-        <div className="pointer-events-auto mx-auto flex max-w-md items-center justify-between gap-1 rounded-[26px] border border-zinc-800/80 bg-[#0c0c0e]/95 p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+        <div className="pointer-events-auto mx-auto flex max-w-md items-center justify-between gap-1 rounded-[26px] border border-white/[0.07] bg-white/[0.03]/95 p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.55)] backdrop-blur-xl">
           {bottomNavItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
@@ -429,7 +429,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`relative flex h-11 flex-1 items-center justify-center rounded-[20px] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isActive
                     ? 'nav-active text-white'
-                    : 'text-zinc-500 hover:text-zinc-200 active:bg-zinc-900/70'
+                    : 'text-zinc-500 hover:text-zinc-200 active:bg-white/[0.07]'
                 }`}
               >
                 {item.id === 'profile' ? (
@@ -438,11 +438,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       src={user.avatar_url}
                       name={user.display_name || user.username}
                       className={`h-7 w-7 text-[10px] ring-2 transition-colors ${
-                        isActive ? 'ring-zinc-300' : 'ring-zinc-700/70'
+                        isActive ? 'ring-zinc-300' : 'ring-white/[0.12]'
                       }`}
                     />
                     {/* Online indicator, mirroring the reference design. */}
-                    <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0c0c0e]" />
+                    <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0a0a14]" />
                   </span>
                 ) : (
                   <item.icon
@@ -452,7 +452,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* Unread counters ride on the icon rather than adding a second row. */}
                 {item.badge ? (
-                  <span className="absolute right-[18%] top-1.5 min-w-[17px] rounded-full bg-red-500 px-1 text-center text-[10px] font-bold leading-[17px] text-white ring-2 ring-[#0c0c0e]">
+                  <span className="absolute right-[18%] top-1.5 min-w-[17px] rounded-full bg-red-500 px-1 text-center text-[10px] font-bold leading-[17px] text-white ring-2 ring-[#0a0a14]">
                     {item.badge > 99 ? '99+' : item.badge}
                   </span>
                 ) : null}
@@ -512,7 +512,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                   <div className="flex items-center gap-1.5">
                     {(item.isBetaModal || item.isBetaBadge) && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-zinc-800 text-zinc-300 border border-zinc-700 rounded shadow-sm">
+                      <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                         BETA
                       </span>
                     )}
@@ -522,7 +522,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       </span>
                     )}
                     {item.isAdminBadge && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-zinc-800 text-zinc-300 border border-zinc-700 rounded shadow-sm">
+                      <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                         ADMIN
                       </span>
                     )}
@@ -554,19 +554,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="space-y-2">
           <div
             onClick={() => setActiveTab('profile')}
-            className="flex items-center justify-between p-2.5 rounded-2xl bg-[#0c0c0e] hover:bg-zinc-800/80 border border-zinc-800/80 cursor-pointer transition-all hover:border-zinc-700"
+            className="flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.09] border border-white/[0.07] cursor-pointer transition-all hover:border-white/[0.16]"
           >
             <div className="flex items-center gap-2.5 overflow-hidden">
               <UserAvatar
                 src={user.avatar_url}
                 name={user.display_name || user.username}
-                className="w-9 h-9 ring-2 ring-zinc-700/50 flex-shrink-0 text-[10px]"
+                className="w-9 h-9 ring-2 ring-white/[0.12] flex-shrink-0 text-[10px]"
               />
               <div className="truncate">
                 <div className="flex items-center gap-1 truncate">
                   <span className="text-xs font-bold text-white truncate">{user.display_name}</span>
                   {hasAdminAccess && (
-                    <span className="px-1 py-0.2 rounded bg-zinc-800 text-[9px] text-zinc-400 font-mono">
+                    <span className="px-1 py-0.2 rounded bg-white/[0.07] text-[9px] text-zinc-400 font-mono">
                       ADMIN
                     </span>
                   )}
@@ -581,7 +581,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onLogout();
                 }}
                 title={language === 'tr' ? 'Çıkış Yap' : 'Sign Out'}
-                className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-white/[0.09] transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
               </button>

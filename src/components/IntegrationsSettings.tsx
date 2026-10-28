@@ -134,7 +134,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
   return (
     <div className="space-y-6">
       {/* Header Description */}
-      <div className="p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 space-y-2">
+      <div className="p-4 rounded-2xl bg-black/25 border border-white/[0.07] space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bot className="w-5 h-5 text-blue-400" />
@@ -157,14 +157,14 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
       </div>
 
       {/* Platform Tabs */}
-      <div className="grid grid-cols-3 gap-2 p-1 bg-zinc-950 border border-zinc-800/80 rounded-2xl">
+      <div className="grid grid-cols-3 gap-2 p-1 bg-black/25 border border-white/[0.07] rounded-2xl">
         <button
           type="button"
           onClick={() => setActivePlatform('discord')}
           className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
             activePlatform === 'discord'
               ? 'bg-[#5865F2] text-white shadow-lg'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+              : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
           }`}
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400" style={{ display: settings.discord.enabled ? 'inline-block' : 'none' }} />
@@ -177,7 +177,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
           className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
             activePlatform === 'jubbio'
               ? 'bg-purple-600 text-white shadow-lg'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+              : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
           }`}
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400" style={{ display: settings.jubbio.enabled ? 'inline-block' : 'none' }} />
@@ -190,7 +190,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
           className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
             activePlatform === 'telegram'
               ? 'bg-[#229ED9] text-white shadow-lg'
-              : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+              : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
           }`}
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400" style={{ display: settings.telegram.enabled ? 'inline-block' : 'none' }} />
@@ -199,11 +199,11 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
       </div>
 
       {/* Active Platform Panel */}
-      <div className="bg-[#0c0c0e] border border-zinc-800/80 rounded-2xl p-5 space-y-4">
+      <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
         {/* Discord Config */}
         {activePlatform === 'discord' && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800/60">
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
               <div>
                 <span className="text-sm font-bold text-white block">Discord Webhook Bildirimleri</span>
                 <span className="text-[11px] text-zinc-500 font-mono">
@@ -222,7 +222,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   handleSave(updated);
                 }}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  settings.discord.enabled ? 'bg-[#5865F2]' : 'bg-zinc-800'
+                  settings.discord.enabled ? 'bg-[#5865F2]' : 'bg-white/[0.07]'
                 }`}
               >
                 <span
@@ -248,7 +248,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="https://discord.com/api/webhooks/..."
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#5865F2]"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#5865F2]"
                 />
                 <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
                   {language === 'tr' ? 'Kanal Ayarları > Entegrasyonlar > Webhook Oluştur' : 'Channel Settings > Integrations > Create Webhook'}
@@ -270,7 +270,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="Code4Ever Bot"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-zinc-700"
+                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/[0.12]"
                   />
                 </div>
 
@@ -288,7 +288,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="https://..."
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-zinc-700"
+                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-white/[0.12]"
                   />
                 </div>
               </div>
@@ -299,7 +299,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 type="button"
                 disabled={isTesting || !settings.discord.webhook_url}
                 onClick={() => handleRunTest('discord')}
-                className="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 <span>{language === 'tr' ? 'Test Bildirimi Gönder' : 'Send Test Notification'}</span>
@@ -320,7 +320,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
         {/* Jubbio Config */}
         {activePlatform === 'jubbio' && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800/60">
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-white">Jubbio Bot & Webhook Entegrasyonu</span>
@@ -350,7 +350,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   handleSave(updated);
                 }}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  settings.jubbio.enabled ? 'bg-purple-600' : 'bg-zinc-800'
+                  settings.jubbio.enabled ? 'bg-purple-600' : 'bg-white/[0.07]'
                 }`}
               >
                 <span
@@ -376,7 +376,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="https://jubbio.com/api/v1/webhooks/..."
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
                 />
               </div>
 
@@ -395,7 +395,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="jbb_tok_..."
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
                   />
                 </div>
 
@@ -413,7 +413,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="123456"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
                   />
                 </div>
 
@@ -431,7 +431,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="987654"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
                   />
                 </div>
               </div>
@@ -442,7 +442,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 type="button"
                 disabled={isTesting || (!settings.jubbio.webhook_url && !settings.jubbio.bot_token)}
                 onClick={() => handleRunTest('jubbio')}
-                className="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 <span>{language === 'tr' ? 'Jubbio Test Bildirimi Gönder' : 'Send Jubbio Test'}</span>
@@ -463,7 +463,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
         {/* Telegram Config */}
         {activePlatform === 'telegram' && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-800/60">
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
               <div>
                 <span className="text-sm font-bold text-white block">Telegram Bot Entegrasyonu</span>
                 <span className="text-[11px] text-zinc-500 font-mono">
@@ -482,7 +482,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   handleSave(updated);
                 }}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  settings.telegram.enabled ? 'bg-[#229ED9]' : 'bg-zinc-800'
+                  settings.telegram.enabled ? 'bg-[#229ED9]' : 'bg-white/[0.07]'
                 }`}
               >
                 <span
@@ -508,7 +508,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="123456789:ABCdefGHIjklMNOpqrs"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#229ED9]"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#229ED9]"
                 />
                 <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
                   @BotFather üzerinden alınan token
@@ -529,7 +529,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="@kanalim veya -100123456789"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#229ED9]"
+                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#229ED9]"
                 />
                 <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
                   Mesajın iletileceği kanal veya grup kimliği
@@ -542,7 +542,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 type="button"
                 disabled={isTesting || !settings.telegram.bot_token || !settings.telegram.chat_id}
                 onClick={() => handleRunTest('telegram')}
-                className="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
                 {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 <span>{language === 'tr' ? 'Telegram Test Bildirimi Gönder' : 'Send Telegram Test'}</span>
@@ -616,7 +616,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   <button
                     type="button"
                     onClick={handleOpenCustomReportModal}
-                    className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-sans font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
+                    className="px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-zinc-300 text-xs font-sans font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
                   >
                     <FileText className="w-3.5 h-3.5 text-zinc-400" />
                     <span>{language === 'tr' ? 'Detaylı Bildir' : 'Detailed Report'}</span>
@@ -647,8 +647,8 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
 
 
       {/* Webhook Message Template Editor */}
-      <div className="bg-[#0c0c0e] border border-zinc-800/80 rounded-2xl p-5 space-y-4">
-        <div className="flex items-center justify-between border-b border-zinc-800/60 pb-3">
+      <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
           <div>
             <span className="text-sm font-bold text-white block">
               {language === 'tr' ? 'Özelleştirilebilir Mesaj Şablonu' : 'Custom Message Template'}
@@ -685,7 +685,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 key={v.tag}
                 type="button"
                 onClick={() => insertVariable(v.tag)}
-                className="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/60 text-xs font-mono text-blue-400 hover:text-blue-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                className="px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-xs font-mono text-blue-400 hover:text-blue-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <span>{v.tag}</span>
                 <span className="text-[10px] text-zinc-500">({v.label})</span>
@@ -702,7 +702,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
             onChange={(e) => setSettings({ ...settings, message_template: e.target.value })}
             rows={5}
             placeholder="Mesaj şablonu girin..."
-            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs font-mono text-emerald-400 focus:outline-none focus:border-blue-500 leading-relaxed"
+            className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-3 text-xs font-mono text-emerald-400 focus:outline-none focus:border-blue-500 leading-relaxed"
           />
         </div>
 

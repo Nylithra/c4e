@@ -69,7 +69,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <div
                 key={trend.id}
                 onClick={() => onSelectTrend && onSelectTrend(trend)}
-                className="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/40 hover:border-zinc-700 transition-all cursor-pointer space-y-0.5 group"
+                className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] hover:border-white/[0.16] transition-all cursor-pointer space-y-0.5 group"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-white group-hover:text-zinc-200 font-mono">
@@ -103,7 +103,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             {communities.map((comm) => (
               <div
                 key={comm.id}
-                className="flex items-center justify-between gap-3 p-2 rounded-xl bg-zinc-950/40 hover:bg-zinc-900/60 transition-colors"
+                className="flex items-center justify-between gap-3 p-2 rounded-xl bg-black/25 hover:bg-white/[0.06] transition-colors"
               >
                 <div
                   onClick={() => onSelectCommunity && onSelectCommunity(comm)}
@@ -112,7 +112,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                   <UserAvatar
                     src={comm.avatar_url}
                     name={comm.name}
-                    className="w-8 h-8 rounded-xl ring-1 ring-zinc-800 flex-shrink-0 text-[10px]"
+                    className="w-8 h-8 rounded-xl ring-1 ring-white/[0.08] flex-shrink-0 text-[10px]"
                   />
                   <div className="truncate">
                     <span className="text-xs font-bold text-white truncate block hover:text-zinc-200">
@@ -130,7 +130,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                   onClick={() => handleJoinClick(comm.id)}
                   className={`p-1.5 rounded-lg text-xs font-semibold transition-all flex-shrink-0 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed active:scale-95 ${
                     comm.is_joined
-                      ? 'bg-zinc-800 text-emerald-400 border border-zinc-700/50'
+                      ? 'bg-white/[0.07] text-emerald-400 border border-white/[0.12]'
                       : 'bg-zinc-100 hover:bg-white text-zinc-950 shadow'
                   }`}
                   title={comm.is_joined ? (language === 'tr' ? 'Katılındı' : 'Joined') : (language === 'tr' ? 'Katıl' : 'Join')}
@@ -143,7 +143,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
         )}
       </div>
 
-      <div className="p-3 bg-zinc-950 border border-zinc-800/60 rounded-xl text-center space-y-1.5">
+      <div className="p-3 bg-black/25 border border-white/[0.07] rounded-xl text-center space-y-1.5">
         <span className="text-[11px] font-mono text-zinc-400 flex items-center justify-center gap-1">
           <Sparkles className="w-3 h-3 text-zinc-400" />
           <span>{brandTitle}</span>

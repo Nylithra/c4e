@@ -73,14 +73,14 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#09090b] text-white flex flex-col items-center justify-center p-6 select-none relative overflow-hidden font-sans">
+    <div className="min-h-screen w-full bg-[#0a0a14] text-white flex flex-col items-center justify-center p-6 select-none relative overflow-hidden font-sans">
       {/* Glowing background ambient lights */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-zinc-700/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-zinc-800/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-white/[0.07] rounded-full blur-[120px] pointer-events-none" />
 
       {/* Language switcher top right */}
       {onChangeLanguage && (
-        <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 bg-zinc-900/80 border border-zinc-800 p-1 rounded-2xl backdrop-blur-md">
+        <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 bg-white/[0.04] border border-white/[0.07] p-1 rounded-2xl backdrop-blur-md">
           <button
             onClick={() => onChangeLanguage('tr')}
             className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
@@ -102,7 +102,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
 
       <div className="w-full max-w-lg space-y-8 relative z-10">
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold backdrop-blur-md mb-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-zinc-300 text-xs font-semibold backdrop-blur-md mb-2">
             <Sparkles className="w-3.5 h-3.5 text-zinc-400 animate-pulse" />
             <span>{language === 'tr' ? 'Geliştirici Ekosistemi' : 'Developer Ecosystem'}</span>
           </div>
@@ -120,8 +120,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
 
         {/* Feature badges */}
         <div className="grid grid-cols-2 gap-2.5">
-          <div className="p-3 rounded-2xl bg-[#121215]/80 border border-zinc-800/60 backdrop-blur-md flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-zinc-900 text-zinc-300 border border-zinc-800">
+          <div className="p-3 rounded-2xl bg-white/[0.06]/80 border border-white/[0.07] backdrop-blur-md flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-white/[0.04] text-zinc-300 border border-white/[0.07]">
               <Code2 className="w-4 h-4" />
             </div>
             <div>
@@ -130,8 +130,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
             </div>
           </div>
 
-          <div className="p-3 rounded-2xl bg-[#121215]/80 border border-zinc-800/60 backdrop-blur-md flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-zinc-900 text-zinc-300 border border-zinc-800">
+          <div className="p-3 rounded-2xl bg-white/[0.06]/80 border border-white/[0.07] backdrop-blur-md flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-white/[0.04] text-zinc-300 border border-white/[0.07]">
               <GitFork className="w-4 h-4" />
             </div>
             <div>
@@ -140,8 +140,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
             </div>
           </div>
 
-          <div className="p-3 rounded-2xl bg-[#121215]/80 border border-zinc-800/60 backdrop-blur-md flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-zinc-900 text-zinc-300 border border-zinc-800">
+          <div className="p-3 rounded-2xl bg-white/[0.06]/80 border border-white/[0.07] backdrop-blur-md flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-white/[0.04] text-zinc-300 border border-white/[0.07]">
               <MessageSquare className="w-4 h-4" />
             </div>
             <div>
@@ -150,8 +150,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
             </div>
           </div>
 
-          <div className="p-3 rounded-2xl bg-[#121215]/80 border border-zinc-800/60 backdrop-blur-md flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-zinc-900 text-zinc-300 border border-zinc-800">
+          <div className="p-3 rounded-2xl bg-white/[0.06]/80 border border-white/[0.07] backdrop-blur-md flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-white/[0.04] text-zinc-300 border border-white/[0.07]">
               <Zap className="w-4 h-4" />
             </div>
             <div>
@@ -162,7 +162,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
         </div>
 
         {/* Main Auth Card */}
-        <div className="bg-[#121215]/90 border border-zinc-800 rounded-3xl p-8 shadow-2xl space-y-5 backdrop-blur-2xl relative">
+        <div className="bg-white/[0.06]/90 border border-white/[0.07] rounded-3xl p-8 shadow-2xl space-y-5 backdrop-blur-2xl relative">
           {authError && (
             <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs leading-relaxed font-sans">
               {authError}
@@ -214,7 +214,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
               <button
                 onClick={handleDemoLogin}
                 disabled={loading || demoLoading}
-                className="w-full py-3 px-4 rounded-2xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 font-semibold text-xs flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 px-4 rounded-2xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 font-semibold text-xs flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
                 <span>
@@ -226,7 +226,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onChangeLangua
             )}
           </div>
 
-          <div className="pt-4 border-t border-zinc-800/60 space-y-2 text-center">
+          <div className="pt-4 border-t border-white/[0.07] space-y-2 text-center">
             <div className="flex items-center justify-center gap-2 text-xs text-zinc-400 font-mono">
               <Shield className="w-4 h-4 text-emerald-400" />
               <span>Gelişmiş Koruma Sistemi</span>

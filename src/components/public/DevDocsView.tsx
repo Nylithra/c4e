@@ -26,14 +26,14 @@ const CodeBlock: React.FC<{ code: string; label?: string }> = ({ code, label }) 
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
-      <div className="flex items-center justify-between border-b border-zinc-800/80 px-3 py-1.5">
+    <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-black/25">
+      <div className="flex items-center justify-between border-b border-white/[0.07] px-3 py-1.5">
         <span className="font-mono text-[11px] text-zinc-500">{label || 'example'}</span>
         <button
           type="button"
           onClick={copy}
           aria-label="Kopyala"
-          className="flex h-7 items-center gap-1.5 rounded-lg px-2 text-[11px] text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex h-7 items-center gap-1.5 rounded-lg px-2 text-[11px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
           <span>{copied ? 'Kopyalandı' : 'Kopyala'}</span>
@@ -52,7 +52,7 @@ const Endpoint: React.FC<{
   auth: string;
   children: React.ReactNode;
 }> = ({ method, path, auth, children }) => (
-  <div className="space-y-3 rounded-2xl border border-zinc-800/80 bg-[#0c0c0e] p-4">
+  <div className="space-y-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
     <div className="flex flex-wrap items-center gap-2">
       <span
         className={`rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold ${METHOD_COLORS[method]}`}
@@ -60,7 +60,7 @@ const Endpoint: React.FC<{
         {method}
       </span>
       <code className="user-text font-mono text-[13px] text-white">{path}</code>
-      <span className="ml-auto rounded-full border border-zinc-700/70 bg-zinc-900 px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+      <span className="ml-auto rounded-full border border-white/[0.12] bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] text-zinc-400">
         {auth}
       </span>
     </div>
@@ -69,10 +69,10 @@ const Endpoint: React.FC<{
 );
 
 const Table: React.FC<{ head: string[]; rows: Array<Array<React.ReactNode>> }> = ({ head, rows }) => (
-  <div className="overflow-x-auto rounded-xl border border-zinc-800/80">
+  <div className="overflow-x-auto rounded-xl border border-white/[0.07]">
     <table className="w-full min-w-[420px] border-collapse text-left text-[12px]">
       <thead>
-        <tr className="bg-zinc-900/60">
+        <tr className="bg-white/[0.04]">
           {head.map((h) => (
             <th key={h} className="px-3 py-2 font-semibold text-zinc-300">
               {h}
@@ -82,7 +82,7 @@ const Table: React.FC<{ head: string[]; rows: Array<Array<React.ReactNode>> }> =
       </thead>
       <tbody>
         {rows.map((row, i) => (
-          <tr key={i} className="border-t border-zinc-800/60">
+          <tr key={i} className="border-t border-white/[0.07]">
             {row.map((cell, j) => (
               <td key={j} className="px-3 py-2 align-top text-zinc-400">
                 {cell}
@@ -220,7 +220,7 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
                 : 'The endpoints are live; the closed-beta lock has been removed.'
             }
           ].map((card) => (
-            <div key={card.title} className="rounded-xl border border-zinc-800/80 bg-[#0c0c0e] p-3.5">
+            <div key={card.title} className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3.5">
               <card.icon className="mb-2 h-4 w-4 text-zinc-300" />
               <h3 className="text-[13px] font-bold text-white">{card.title}</h3>
               <p className="mt-1 text-[12px] leading-relaxed text-zinc-500">{card.body}</p>

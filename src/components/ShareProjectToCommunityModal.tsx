@@ -254,7 +254,7 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
                     ) : on ? (
                       <Check className="h-4 w-4 text-indigo-300" />
                     ) : (
-                      <span className="block h-4 w-4 rounded-md border border-zinc-700" />
+                      <span className="block h-4 w-4 rounded-md border border-white/[0.12]" />
                     )}
                   </span>
                 </button>

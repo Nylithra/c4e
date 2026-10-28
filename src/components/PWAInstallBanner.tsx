@@ -51,13 +51,13 @@ export const PWAInstallBanner: React.FC<PWAInstallBannerProps> = ({
   return (
     <aside
       aria-label="PWA Install Banner"
-      className="md:hidden fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-30 bg-[#0e0e11]/95 backdrop-blur-xl border border-zinc-800 rounded-2xl p-3 shadow-2xl flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-300"
+      className="md:hidden fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] left-4 right-4 z-30 bg-white/[0.04]/95 backdrop-blur-xl border border-white/[0.07] rounded-2xl p-3 shadow-2xl flex items-center justify-between gap-3 animate-in slide-in-from-bottom duration-300"
     >
       <div
         onClick={onOpenInstallModal}
         className="flex items-center gap-3 cursor-pointer flex-1 overflow-hidden"
       >
-        <div className="w-9 h-9 rounded-xl bg-zinc-800 border border-zinc-700/80 flex items-center justify-center text-zinc-200 flex-shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-white/[0.07] border border-white/[0.12] flex items-center justify-center text-zinc-200 flex-shrink-0">
           <Smartphone className="w-4 h-4" />
         </div>
         <div className="truncate">
@@ -82,7 +82,7 @@ export const PWAInstallBanner: React.FC<PWAInstallBannerProps> = ({
         <button
           onClick={handleDismiss}
           aria-label={language === 'tr' ? 'Kapat' : 'Dismiss'}
-          className="h-8 w-8 flex items-center justify-center rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="h-8 w-8 flex items-center justify-center rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.09] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           title={language === 'tr' ? 'Kapat' : 'Dismiss'}
         >
           <X className="w-3.5 h-3.5" />

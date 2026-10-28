@@ -27,9 +27,9 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
   const tr = language === 'tr';
 
   return (
-    <div className="min-h-screen w-full bg-[#09090b] text-zinc-200 font-display">
+    <div className="min-h-screen w-full bg-[#0a0a14] text-zinc-200 font-display">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b border-zinc-800/60 bg-[#09090b]/90 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/[0.07] bg-[#0a0a14]/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-3">
           <a
             href="/"
@@ -41,19 +41,19 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
           <nav className="flex items-center gap-1 text-[11px] font-semibold">
             <a
               href="/dev/docs"
-              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
+              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
             >
               {tr ? 'Geliştirici' : 'Developers'}
             </a>
             <a
               href="/tos"
-              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
+              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
             >
               {tr ? 'Kullanım Şartları' : 'Terms'}
             </a>
             <a
               href="/privacy"
-              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
+              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
             >
               {tr ? 'Gizlilik' : 'Privacy'}
             </a>
@@ -62,10 +62,10 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
       </header>
 
       {/* Hero */}
-      <div className="border-b border-zinc-800/60 bg-gradient-to-b from-zinc-900/40 to-transparent">
+      <div className="border-b border-white/[0.07] bg-gradient-to-b from-zinc-900/40 to-transparent">
         <div className="mx-auto max-w-5xl px-5 py-10 sm:py-14">
           {eyebrow && (
-            <span className="mb-3 inline-block rounded-full border border-zinc-700/70 bg-zinc-900/70 px-2.5 py-1 font-mono text-[11px] text-zinc-400">
+            <span className="mb-3 inline-block rounded-full border border-white/[0.12] bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-zinc-400">
               {eyebrow}
             </span>
           )}
@@ -84,7 +84,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="block rounded-lg px-3 py-1.5 text-[12px] text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
+                  className="block rounded-lg px-3 py-1.5 text-[12px] text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
                 >
                   {item.label}
                 </a>
@@ -96,7 +96,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
         <main className="min-w-0 flex-1 space-y-12">{children}</main>
       </div>
 
-      <footer className="border-t border-zinc-800/60">
+      <footer className="border-t border-white/[0.07]">
         <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-[11px] text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
           <span className="font-mono">lanux.online — Code4Ever</span>
           <div className="flex flex-wrap items-center gap-4">

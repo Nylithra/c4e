@@ -29,14 +29,14 @@ export const ClosedBetaScreen: React.FC<ClosedBetaScreenProps> = ({
   const isRejected = user.betaStatus === 'rejected';
 
   return (
-    <div className="min-h-screen w-full bg-[#09090b] text-white flex flex-col items-center justify-center p-4 relative font-sans selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen w-full bg-[#0a0a14] text-white flex flex-col items-center justify-center p-4 relative font-sans selection:bg-blue-500 selection:text-white">
       {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]" />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[350px] h-[350px] bg-emerald-600/10 rounded-full blur-[100px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-lg bg-[#0c0c0e] border border-zinc-800/80 rounded-3xl p-8 shadow-2xl space-y-6 text-center backdrop-blur-xl">
+      <div className="relative z-10 w-full max-w-lg bg-white/[0.03] border border-white/[0.07] rounded-3xl p-8 shadow-2xl space-y-6 text-center backdrop-blur-xl">
         {/* Logo & Header */}
         <div className="space-y-2">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600/20 to-emerald-600/20 border border-blue-500/30 flex items-center justify-center mx-auto text-blue-400 shadow-xl shadow-blue-500/10">
@@ -52,7 +52,7 @@ export const ClosedBetaScreen: React.FC<ClosedBetaScreenProps> = ({
         </div>
 
         {/* Info Card */}
-        <div className="bg-zinc-900/80 border border-zinc-800 p-5 rounded-2xl text-left space-y-3">
+        <div className="bg-white/[0.04] border border-white/[0.07] p-5 rounded-2xl text-left space-y-3">
           <p className="text-xs text-zinc-300 leading-relaxed font-medium">
             Kapalı Betaya Başvurduğunuz İçin Teşekkürler Başvurunuz Onaylandığında Sizlere Ulaşabilmemiz İçin Bir Sosyal Medya Adresi Bırakınız:
           </p>
@@ -73,7 +73,7 @@ export const ClosedBetaScreen: React.FC<ClosedBetaScreenProps> = ({
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 placeholder="ör: insta: nylithra veya @kullanici_adi"
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
                 required
               />
             </div>
@@ -96,12 +96,12 @@ export const ClosedBetaScreen: React.FC<ClosedBetaScreenProps> = ({
         )}
 
         {/* Footer Notice */}
-        <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400">
+        <div className="pt-2 border-t border-white/[0.07] flex items-center justify-between text-xs text-zinc-400">
           <div className="flex items-center gap-2">
             <img
               src={user.avatar_url}
               alt={user.display_name}
-              className="w-6 h-6 rounded-full object-cover ring-1 ring-zinc-700"
+              className="w-6 h-6 rounded-full object-cover ring-1 ring-white/[0.12]"
             />
             <span className="font-mono text-white text-[11px]">@{user.username}</span>
           </div>

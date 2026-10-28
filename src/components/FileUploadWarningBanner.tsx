@@ -105,7 +105,7 @@ export const FileUploadWarningBanner: React.FC<FileUploadWarningBannerProps> = (
 
               <button
                 onClick={() => setWarningData(null)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition-colors flex-shrink-0"
+                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.09] transition-colors flex-shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>

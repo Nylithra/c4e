@@ -74,17 +74,17 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
   }, [jobListings, filterType, searchQuery, currentUser.username]);
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-zinc-800/60 min-h-screen pb-16 bg-[#09090b] text-white">
+    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14] text-white">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#09090b]/90 border-b border-zinc-800/40 px-5 py-3.5 flex items-center justify-between gap-4">
+      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300">
+          <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-300">
             <Briefcase className="w-5 h-5" />
           </div>
           <div>
             <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
               <span>{language === 'tr' ? 'İş & Ekip İlanları' : 'Job & Team Listings'}</span>
-              <span className="px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] text-zinc-400 font-mono">
+              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-[10px] text-zinc-400 font-mono">
                 {jobListings.length}
               </span>
             </h2>
@@ -106,7 +106,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="p-4 border-b border-zinc-800/40 space-y-3 bg-zinc-950/40">
+      <div className="p-4 border-b border-white/[0.07] space-y-3 bg-black/25">
         <div className="relative">
           <Search className="w-4 h-4 absolute left-3.5 top-3 text-zinc-500" />
           <input
@@ -114,7 +114,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={language === 'tr' ? 'İlan başlığı, teknoloji veya açıklamalarda ara...' : 'Search listings, tech, or descriptions...'}
-            className="w-full bg-[#0e0e11] border border-zinc-800 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+            className="w-full bg-white/[0.04] border border-white/[0.07] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
           />
         </div>
 
@@ -125,8 +125,8 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             onClick={() => setFilterType('all')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
               filterType === 'all'
-                ? 'bg-zinc-800 text-white border border-zinc-700'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                ? 'bg-white/[0.07] text-white border border-white/[0.12]'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06]'
             }`}
           >
             {language === 'tr' ? 'Tümü' : 'All'}
@@ -136,8 +136,8 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             onClick={() => setFilterType('job')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
               filterType === 'job'
-                ? 'bg-zinc-800 text-white border border-zinc-700'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                ? 'bg-white/[0.07] text-white border border-white/[0.12]'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06]'
             }`}
           >
             <Briefcase className="w-3.5 h-3.5" />
@@ -148,8 +148,8 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             onClick={() => setFilterType('team')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
               filterType === 'team'
-                ? 'bg-zinc-800 text-white border border-zinc-700'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                ? 'bg-white/[0.07] text-white border border-white/[0.12]'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06]'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -160,8 +160,8 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             onClick={() => setFilterType('mine')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
               filterType === 'mine'
-                ? 'bg-zinc-800 text-white border border-zinc-700'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                ? 'bg-white/[0.07] text-white border border-white/[0.12]'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06]'
             }`}
           >
             {language === 'tr' ? 'Benim İlanlarım' : 'My Listings'}
@@ -172,8 +172,8 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
       {/* Listing Cards List */}
       <div className="p-4 space-y-3.5">
         {filteredListings.length === 0 ? (
-          <div className="p-12 text-center space-y-3 bg-[#0c0c0e] border border-zinc-800/40 rounded-3xl">
-            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500">
+          <div className="p-12 text-center space-y-3 bg-white/[0.03] border border-white/[0.07] rounded-3xl">
+            <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-500">
               <Briefcase className="w-6 h-6 text-zinc-400" />
             </div>
             <h3 className="text-sm font-bold text-white">
@@ -210,7 +210,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             return (
               <div
                 key={job.id}
-                className="p-5 rounded-3xl bg-[#0c0c0e] border border-zinc-800/80 hover:border-zinc-700/80 transition-all space-y-4 shadow-sm"
+                className="p-5 rounded-3xl bg-white/[0.03] border border-white/[0.07] hover:border-white/[0.16] transition-all space-y-4 shadow-sm"
               >
                 {/* Card Header */}
                 <div className="flex items-start justify-between gap-3">
@@ -218,7 +218,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                     <img
                       src={authorAvatar}
                       alt={authorDisplayName}
-                      className="w-10 h-10 rounded-full object-cover ring-1 ring-zinc-800 cursor-pointer"
+                      className="w-10 h-10 rounded-full object-cover ring-1 ring-white/[0.08] cursor-pointer"
                       onClick={() => onSelectUser && onSelectUser(authorUsername)}
                     />
                     <div>
@@ -245,8 +245,8 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                     <span
                       className={`px-3 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${
                         job.type === 'job'
-                          ? 'bg-zinc-900 border-zinc-700 text-zinc-200'
-                          : 'bg-zinc-900 border-zinc-700 text-zinc-200'
+                          ? 'bg-white/[0.04] border-white/[0.12] text-zinc-200'
+                          : 'bg-white/[0.04] border-white/[0.12] text-zinc-200'
                       }`}
                     >
                       {job.type === 'job' ? <Briefcase className="w-3 h-3" /> : <Users className="w-3 h-3" />}
@@ -277,14 +277,14 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                 </div>
 
                 {/* Card Footer Info & Buttons */}
-                <div className="pt-3 border-t border-zinc-800/60 flex items-center justify-between flex-wrap gap-3">
+                <div className="pt-3 border-t border-white/[0.07] flex items-center justify-between flex-wrap gap-3">
                   <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
-                    <div className="flex items-center gap-1.5 bg-zinc-900/80 px-2.5 py-1 rounded-xl border border-zinc-800">
+                    <div className="flex items-center gap-1.5 bg-white/[0.04] px-2.5 py-1 rounded-xl border border-white/[0.07]">
                       <span className="text-[10px] uppercase text-zinc-500">{language === 'tr' ? 'Kontenjan:' : 'Quota:'}</span>
                       <span className="text-white font-bold">{job.quota}</span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 bg-zinc-900/80 px-2.5 py-1 rounded-xl border border-zinc-800">
+                    <div className="flex items-center gap-1.5 bg-white/[0.04] px-2.5 py-1 rounded-xl border border-white/[0.07]">
                       <span className="text-[10px] uppercase text-zinc-500">{language === 'tr' ? 'Başvuru:' : 'Applications:'}</span>
                       <span className="text-white font-bold">{job.applications_count || job.applications?.length || 0}</span>
                     </div>
@@ -299,7 +299,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                           markJobApplicationAsAnsweredOrRead(job.id);
                           setSelectedListingForApplicants(job);
                         }}
-                        className="px-3.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                        className="px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
                       >
                         <Eye className="w-3.5 h-3.5 text-zinc-300" />
                         <span>

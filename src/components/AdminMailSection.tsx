@@ -357,7 +357,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
     if (!html.trim()) {
       return (
-        <pre className="user-text whitespace-pre-wrap break-words rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-[13px] leading-relaxed text-zinc-300">
+        <pre className="user-text whitespace-pre-wrap break-words rounded-xl border border-white/[0.07] bg-black/25 p-4 text-[13px] leading-relaxed text-zinc-300">
           {message.text || (tr ? '(Boş mesaj)' : '(Empty message)')}
         </pre>
       );
@@ -372,7 +372,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                font:14px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
           img{max-width:100%;height:auto}table{max-width:100%}
         </style>${html}`}
-        className="h-[460px] w-full rounded-xl border border-zinc-800 bg-white"
+        className="h-[460px] w-full rounded-xl border border-white/[0.07] bg-white"
       />
     );
   };
@@ -383,7 +383,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
   return (
     <div className="space-y-5 p-6">
       {/* Connection status */}
-      <div className="rounded-2xl border border-zinc-800/80 bg-[#0c0c0e] p-4">
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="flex items-center gap-2 text-sm font-bold text-white">
             <ServerCog className="h-4 w-4 text-blue-400" />
@@ -393,7 +393,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
             type="button"
             onClick={handleVerify}
             disabled={isVerifying || (!smtpReady && !imapReady)}
-            className="flex h-9 items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900 px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isVerifying ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plug className="h-3.5 w-3.5" />}
             <span>{tr ? 'Bağlantıyı test et' : 'Test connection'}</span>
@@ -407,14 +407,14 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
           ].map(({ key, label, cfg }) => {
             const verified = verifyResult?.[key];
             return (
-              <div key={key} className="rounded-xl border border-zinc-800 bg-zinc-950 p-3">
+              <div key={key} className="rounded-xl border border-white/[0.07] bg-black/25 p-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-bold text-zinc-200">{label}</span>
                   <span
                     className={`rounded-full px-2 py-0.5 font-mono text-[10px] ${
                       cfg?.configured
                         ? 'bg-emerald-500/15 text-emerald-400'
-                        : 'bg-zinc-800 text-zinc-400'
+                        : 'bg-white/[0.07] text-zinc-400'
                     }`}
                   >
                     {cfg?.configured ? (tr ? 'tanımlı' : 'configured') : tr ? 'eksik' : 'missing'}
@@ -475,7 +475,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
             className={`flex h-9 items-center gap-2 rounded-xl px-3.5 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               pane === p.id
                 ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                : 'border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white'
+                : 'border border-white/[0.07] bg-white/[0.04] text-zinc-400 hover:text-white'
             }`}
           >
             <p.icon className="h-4 w-4" />
@@ -486,8 +486,8 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
       {/* ---------------- INBOX ---------------- */}
       {pane === 'inbox' && (
-        <div className="rounded-2xl border border-zinc-800/80 bg-[#0c0c0e]">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/60 p-3.5">
+        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03]">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.07] p-3.5">
             <div className="relative min-w-0 flex-1">
               <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
               <input
@@ -496,7 +496,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 onChange={(e) => setFilter(e.target.value)}
                 placeholder={tr ? 'Konu veya gönderen ara...' : 'Search subject or sender...'}
                 aria-label={tr ? 'Mesajlarda ara' : 'Search messages'}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950 py-2 pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-xl border border-white/[0.07] bg-black/25 py-2 pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -505,7 +505,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 onClick={loadInbox}
                 disabled={inboxLoading || syncing || !imapReady}
                 title={tr ? 'Saklanan kopyayı yeniden okur' : 'Re-reads the stored copy'}
-                className="flex h-9 items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900 px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {inboxLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
                 <span>{tr ? 'Yenile' : 'Refresh'}</span>
@@ -541,7 +541,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
           {/* Sync state: what is stored, and when it was last refreshed. */}
           {imapReady && (
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-zinc-800/60 px-3.5 py-2.5 text-[11px] text-zinc-500">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-white/[0.07] px-3.5 py-2.5 text-[11px] text-zinc-500">
               <span className="flex items-center gap-1.5">
                 <Clock className="h-3 w-3" />
                 {lastSyncedAt
@@ -553,7 +553,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   : 'Not synced yet'}
               </span>
               {status?.imap.mode === 'sync' && (
-                <span className="rounded-md bg-zinc-800/70 px-1.5 py-0.5 font-semibold text-zinc-400">
+                <span className="rounded-md bg-white/[0.07] px-1.5 py-0.5 font-semibold text-zinc-400">
                   {tr ? 'isteğe bağlı eşitleme' : 'on-demand sync'}
                 </span>
               )}
@@ -577,7 +577,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
           <div className="grid gap-0 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
             {/* List */}
-            <ul className="max-h-[560px] divide-y divide-zinc-800/50 overflow-y-auto border-b border-zinc-800/60 lg:border-b-0 lg:border-r">
+            <ul className="max-h-[560px] divide-y divide-white/[0.06] overflow-y-auto border-b border-white/[0.07] lg:border-b-0 lg:border-r">
               {inboxLoading && messages.length === 0 ? (
                 <li className="flex items-center justify-center gap-2 p-10 text-xs text-zinc-500">
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -623,7 +623,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                       type="button"
                       onClick={() => openMessage(m.uid)}
                       className={`w-full px-4 py-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
-                        selected?.uid === m.uid ? 'bg-zinc-900/70' : 'hover:bg-zinc-900/40'
+                        selected?.uid === m.uid ? 'bg-white/[0.04]' : 'hover:bg-white/[0.06]'
                       } ${m.seen ? '' : 'bg-blue-500/5'}`}
                     >
                       <div className="flex items-start gap-3">
@@ -690,7 +690,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                         setRawTo(selected.fromAddress);
                         setSubject(selected.subject.startsWith('Re:') ? selected.subject : `Re: ${selected.subject}`);
                       }}
-                      className="flex h-8 items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 text-[11px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="flex h-8 items-center gap-1.5 rounded-lg border border-white/[0.07] bg-white/[0.04] px-2.5 text-[11px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <Send className="h-3.5 w-3.5" />
                       <span>{tr ? 'Yanıtla' : 'Reply'}</span>
@@ -731,7 +731,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
       {/* ---------------- COMPOSE ---------------- */}
       {pane === 'compose' && (
         <div className="grid gap-4 xl:grid-cols-2">
-          <div className="space-y-4 rounded-2xl border border-zinc-800/80 bg-[#0c0c0e] p-4">
+          <div className="space-y-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
             {/* Recipient */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -760,7 +760,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   value={rawTo}
                   onChange={(e) => setRawTo(e.target.value)}
                   placeholder="ornek@alanadi.com"
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               ) : (
                 <div className="flex flex-wrap items-center gap-2">
@@ -781,7 +781,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                         }
                       }}
                       placeholder={tr ? 'kullanici_adi' : 'username'}
-                      className="w-full rounded-xl border border-zinc-800 bg-zinc-950 py-2 pl-7 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="w-full rounded-xl border border-white/[0.07] bg-black/25 py-2 pl-7 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     />
                   </div>
                   <button
@@ -824,7 +824,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 maxLength={180}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -838,7 +838,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 value={heading}
                 onChange={(e) => setHeading(e.target.value)}
                 maxLength={160}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -853,7 +853,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 rows={8}
                 maxLength={20000}
                 placeholder={tr ? 'Paragrafları boş satırla ayırın.' : 'Separate paragraphs with a blank line.'}
-                className="w-full resize-y rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full resize-y rounded-xl border border-white/[0.07] bg-black/25 p-3 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -870,7 +870,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   onChange={(e) => setCtaLabel(e.target.value)}
                   maxLength={60}
                   placeholder={tr ? 'isteğe bağlı' : 'optional'}
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
               <div className="space-y-1">
@@ -884,7 +884,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   onChange={(e) => setCtaUrl(e.target.value)}
                   maxLength={500}
                   placeholder="https://app.lanux.online/..."
-                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
             </div>
@@ -900,16 +900,16 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 onChange={(e) => setFootnote(e.target.value)}
                 maxLength={300}
                 placeholder={tr ? 'Bu e-postayı neden aldığı vb.' : 'Why they received this, etc.'}
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 border-t border-zinc-800/60 pt-3">
+            <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.07] pt-3">
               <button
                 type="button"
                 onClick={handlePreview}
                 disabled={previewLoading || !bodyText.trim()}
-                className="flex h-9 items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900 px-3.5 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] bg-white/[0.04] px-3.5 text-xs font-semibold text-zinc-300 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {previewLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
                 <span>{tr ? 'Önizle' : 'Preview'}</span>
@@ -945,7 +945,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
           </div>
 
           {/* Preview */}
-          <div className="rounded-2xl border border-zinc-800/80 bg-[#0c0c0e] p-4">
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
             <h4 className="mb-3 flex items-center gap-2 text-xs font-bold text-zinc-200">
               <Mail className="h-4 w-4 text-zinc-400" />
               <span>{tr ? 'E-posta Önizlemesi' : 'E-mail Preview'}</span>
@@ -955,10 +955,10 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 title={tr ? 'E-posta önizlemesi' : 'E-mail preview'}
                 sandbox=""
                 srcDoc={previewHtml}
-                className="h-[620px] w-full rounded-xl border border-zinc-800 bg-white"
+                className="h-[620px] w-full rounded-xl border border-white/[0.07] bg-white"
               />
             ) : (
-              <div className="flex h-[620px] flex-col items-center justify-center rounded-xl border border-dashed border-zinc-800 text-center">
+              <div className="flex h-[620px] flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.07] text-center">
                 <Sparkles className="mb-2 h-6 w-6 text-zinc-700" />
                 <p className="max-w-xs px-6 text-xs leading-relaxed text-zinc-500">
                   {tr

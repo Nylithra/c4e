@@ -501,7 +501,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
   return (
     <div className="content-column flex-1 min-w-0 w-full min-h-screen pb-16 relative">
       {toastMessage && (
-        <div className="fixed top-4 right-4 z-50 bg-zinc-900 border border-zinc-700 text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce">
+        <div className="fixed top-4 right-4 z-50 bg-white/[0.04] border border-white/[0.12] text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce">
           <Check className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -560,7 +560,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               {language === 'tr' ? 'Sadece Genel' : 'General only'}
             </button>
 
-            {communities.length > 0 && <span className="w-px h-5 bg-zinc-800 mx-1 flex-shrink-0" />}
+            {communities.length > 0 && <span className="w-px h-5 bg-white/[0.07] mx-1 flex-shrink-0" />}
 
             {[...communities]
               .sort((a, b) => Number(Boolean(b.is_joined)) - Number(Boolean(a.is_joined)))
@@ -570,7 +570,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   key={comm.id}
                   type="button"
                   onClick={() => onSelectCommunity?.(comm)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer bg-zinc-900/80 text-zinc-300 hover:text-white hover:bg-zinc-800 border border-zinc-800/80"
+                  className="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer bg-white/[0.04] text-zinc-300 hover:text-white hover:bg-white/[0.09] border border-white/[0.07]"
                   title={language === 'tr' ? `${comm.name} akışını aç` : `Open the ${comm.name} feed`}
                 >
                   <Users className={`w-3.5 h-3.5 ${comm.is_joined ? 'text-purple-400' : 'text-zinc-500'}`} />
@@ -582,7 +582,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
       )}
 
       {/* Category Pills Filter Bar */}
-      <div className="px-4 py-2.5 bg-[#0a0a0c] border-b border-zinc-800/60 overflow-x-auto no-scrollbar flex items-center gap-1.5">
+      <div className="px-4 py-2.5 bg-[#0a0a0c] border-b border-white/[0.07] overflow-x-auto no-scrollbar flex items-center gap-1.5">
         <button
           type="button"
           onClick={() => setFeedCategoryFilter('all')}
@@ -602,7 +602,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               className={`px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer font-medium ${
                 isActive
                   ? 'bg-zinc-100 text-zinc-950 font-bold shadow-md'
-                  : 'bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800/80'
+                  : 'bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.09] border border-white/[0.07]'
               }`}
             >
               <span>{cat.icon || '🏷️'}</span>
@@ -614,7 +614,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
       {/* Private community + non-member: the timeline itself is locked */}
       {communityScope?.is_private && !isScopeMember && (
-        <div className="p-10 text-center space-y-3 border-b border-zinc-800/60">
+        <div className="p-10 text-center space-y-3 border-b border-white/[0.07]">
           <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center mx-auto text-amber-400">
             <Lock className="w-7 h-7" />
           </div>
@@ -716,7 +716,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
             <UserAvatar
               src={user.avatar_url}
               name={user.display_name || user.username}
-              className="ring-2 ring-zinc-800 flex-shrink-0"
+              className="ring-2 ring-white/[0.08] flex-shrink-0"
               onClick={() => onSelectUser(user.username)}
             />
             <div className="flex-1 min-w-0 space-y-2.5">
@@ -767,15 +767,15 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       value={selectedCommunityId || ''}
                       aria-label={language === 'tr' ? 'Gönderinin paylaşılacağı topluluk' : 'Community to post in'}
                       onChange={(e) => setSelectedCommunityId(e.target.value || null)}
-                      className="bg-zinc-900 border border-zinc-700/80 text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none font-mono cursor-pointer max-w-[130px]"
+                      className="bg-white/[0.04] border border-white/[0.12] text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none font-mono cursor-pointer max-w-[130px]"
                     >
-                      <option value="" className="bg-zinc-900 text-zinc-400">
+                      <option value="" className="bg-white/[0.04] text-zinc-400">
                         {language === 'tr' ? '🌐 Genel Feed' : '🌐 General Feed'}
                       </option>
                       {communities
                         .filter((c) => c.is_joined)
                         .map((comm) => (
-                          <option key={comm.id} value={comm.id} className="bg-zinc-900 text-white">
+                          <option key={comm.id} value={comm.id} className="bg-white/[0.04] text-white">
                             👥 {comm.name}
                           </option>
                         ))}
@@ -816,7 +816,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
               {/* Media Preview */}
               {mediaUrl && (
-                <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-black max-h-56">
+                <div className="relative rounded-2xl overflow-hidden border border-white/[0.07] bg-black max-h-56">
                   {mediaType === 'video' ? (
                     <video src={mediaUrl} controls className="w-full h-full max-h-56 object-cover" />
                   ) : (
@@ -837,19 +837,19 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
               {/* Code Snippet Input Box */}
               {showCodeAttach && (
-                <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2 relative">
+                <div className="p-3 bg-black/25 border border-white/[0.07] rounded-xl space-y-2 relative">
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={codeTitle}
                       onChange={(e) => setCodeTitle(e.target.value)}
                       placeholder={language === 'tr' ? 'Kod Başlığı' : 'Snippet Title'}
-                      className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none font-mono"
+                      className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none font-mono"
                     />
                     <select
                       value={codeLang}
                       onChange={(e) => setCodeLang(e.target.value)}
-                      className="bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none font-mono"
+                      className="bg-white/[0.04] border border-white/[0.07] text-zinc-300 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none font-mono"
                     >
                       <option value="TypeScript">TypeScript</option>
                       <option value="React">React</option>
@@ -868,7 +868,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       onChange={(e) => setCodeSnippet(e.target.value)}
                       placeholder="code snippet goes here..."
                       rows={4}
-                      className="w-full bg-zinc-900/90 border border-zinc-800 rounded-lg p-2.5 text-xs text-emerald-400 font-mono focus:outline-none resize-none pb-7"
+                      className="w-full bg-white/[0.04] border border-white/[0.07] rounded-lg p-2.5 text-xs text-emerald-400 font-mono focus:outline-none resize-none pb-7"
                     />
                     <div className="absolute right-2 bottom-2">
                       <span
@@ -877,7 +877,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                             ? 'bg-red-500/20 text-red-400 border border-red-500/50 font-bold animate-pulse'
                             : codeSnippet.length >= 4000
                             ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 font-semibold'
-                            : 'bg-zinc-900/80 text-zinc-400 border border-zinc-800'
+                            : 'bg-white/[0.04] text-zinc-400 border border-white/[0.07]'
                         }`}
                         title={
                           codeSnippet.length > MAX_CODE_LENGTH
@@ -894,7 +894,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
               {/* Repo Selector Box */}
               {showRepoAttach && (
-                <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                <div className="p-3 bg-black/25 border border-white/[0.07] rounded-xl space-y-2">
                   <span className="text-xs font-bold text-white block">
                     {language === 'tr' ? 'GitHub Depolarımdan Seç' : 'Select From My GitHub Repos'}
                   </span>
@@ -912,7 +912,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                         const repo = userRepos.find((r) => r.id === Number(e.target.value));
                         setSelectedRepo(repo || null);
                       }}
-                      className="w-full bg-zinc-900 border border-zinc-800 text-white rounded-lg p-2 text-xs font-mono focus:outline-none"
+                      className="w-full bg-white/[0.04] border border-white/[0.07] text-white rounded-lg p-2 text-xs font-mono focus:outline-none"
                     >
                       <option value="">{language === 'tr' ? '-- Depo Seçin --' : '-- Select Repository --'}</option>
                       {userRepos.map((r) => (
@@ -924,7 +924,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   )}
 
                   {selectedRepo && (
-                    <div className="p-2.5 bg-zinc-900/80 border border-zinc-700/50 rounded-lg space-y-1 text-xs">
+                    <div className="p-2.5 bg-white/[0.04] border border-white/[0.12] rounded-lg space-y-1 text-xs">
                       <span className="font-bold text-white block">{selectedRepo.name}</span>
                       <p className="text-[11px] text-zinc-400">{selectedRepo.description}</p>
                       <span className="text-[10px] font-mono text-zinc-300 block">{selectedRepo.html_url}</span>
@@ -935,7 +935,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
               {/* Bottom Buttons Bar — wraps on narrow phones so the submit button is
                   never pushed off the screen. */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-zinc-800/40">
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/[0.07]">
                 <div className="flex items-center gap-1.5 flex-wrap min-w-0">
                   <input
                     type="file"
@@ -948,7 +948,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     type="button"
                     onClick={() => mediaInputRef.current?.click()}
                     aria-label={language === 'tr' ? 'Medya ekle' : 'Attach media'}
-                    className="text-xs font-mono flex items-center gap-1.5 px-2.5 h-8 rounded-lg transition-colors text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent hover:border-zinc-800 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="text-xs font-mono flex items-center gap-1.5 px-2.5 h-8 rounded-lg transition-colors text-zinc-400 hover:text-white hover:bg-white/[0.06] border border-transparent hover:border-white/[0.11] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <ImageIcon className="w-3.5 h-3.5 text-zinc-300" />
                     <Video className="w-3.5 h-3.5 text-zinc-300" />
@@ -961,8 +961,8 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     aria-label={language === 'tr' ? 'Kod ekle' : 'Attach code'}
                     className={`text-xs font-mono flex items-center gap-1.5 px-2.5 h-8 rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       showCodeAttach
-                        ? 'bg-zinc-800 text-white border border-zinc-700'
-                        : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                        ? 'bg-white/[0.07] text-white border border-white/[0.12]'
+                        : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
                     }`}
                   >
                     <Code className="w-3.5 h-3.5" />
@@ -975,8 +975,8 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     aria-label={language === 'tr' ? 'Depo ekle' : 'Attach repository'}
                     className={`text-xs font-mono flex items-center gap-1.5 px-2.5 h-8 rounded-lg transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       showRepoAttach
-                        ? 'bg-zinc-800 text-white border border-zinc-700'
-                        : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                        ? 'bg-white/[0.07] text-white border border-white/[0.12]'
+                        : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
                     }`}
                   >
                     <GitBranch className="w-3.5 h-3.5" />
@@ -1072,7 +1072,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
           </div>
         ) : filteredPosts.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-300">
+            <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-300">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <h3 className="text-sm font-bold text-white">
@@ -1162,7 +1162,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     <UserAvatar
                       src={authorProfile.avatar_url}
                       name={authorProfile.display_name || authorProfile.username}
-                      className="ring-1 ring-zinc-800"
+                      className="ring-1 ring-white/[0.08]"
                       onClick={() => onSelectUser(authorProfile.username)}
                       title={`@${authorProfile.username}`}
                     />
@@ -1277,7 +1277,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
                 {/* Media */}
                 {post.media_url && (
-                  <div className="rounded-2xl overflow-hidden border border-zinc-800 bg-black max-h-[480px] flex items-center justify-center">
+                  <div className="rounded-2xl overflow-hidden border border-white/[0.07] bg-black max-h-[480px] flex items-center justify-center">
                     {post.media_type === 'video' || post.media_url.startsWith('data:video') ? (
                       <video
                         src={post.media_url}
@@ -1339,7 +1339,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                 )}
 
                 {/* Post Action Buttons */}
-                <div className="flex items-center justify-between pt-2.5 mt-1 border-t border-zinc-800/40 text-xs text-zinc-400">
+                <div className="flex items-center justify-between pt-2.5 mt-1 border-t border-white/[0.07] text-xs text-zinc-400">
                   <div className="flex items-center gap-1 sm:gap-2">
                     {/* Comment */}
                     <button
@@ -1408,7 +1408,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       className={`p-1.5 rounded-xl transition-all inline-flex items-center justify-center cursor-pointer ${
                         isBookmarked
                           ? 'text-amber-400 bg-amber-500/10'
-                          : 'text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/40'
+                          : 'text-zinc-400 hover:text-amber-400 hover:bg-white/[0.09]'
                       }`}
                       title={
                         isBookmarked
@@ -1432,7 +1432,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       className={`p-1.5 rounded-xl transition-all inline-flex items-center justify-center cursor-pointer ${
                         copiedPostId === post.id
                           ? 'text-emerald-400 bg-emerald-500/10'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-800/40'
+                          : 'text-zinc-400 hover:text-white hover:bg-white/[0.09]'
                       }`}
                       title={
                         copiedPostId === post.id
@@ -1456,7 +1456,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
                 {/* Comment Section Dropdown */}
                 {activeCommentPostId === post.id && (
-                  <div className="pt-3 border-t border-zinc-800/40 space-y-3">
+                  <div className="pt-3 border-t border-white/[0.07] space-y-3">
                     <form
                       onSubmit={(e) => handleCommentSubmit(post.id, e)}
                       className="flex gap-2"
@@ -1470,7 +1470,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                             ? 'Fikrini veya cevabını yaz...'
                             : 'Write your thoughts or reply...'
                         }
-                        className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+                        className="flex-1 bg-black/25 border border-white/[0.07] rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
                       />
                       <Button type="submit" size="sm" disabled={!commentText.trim()}>
                         <Send />
@@ -1488,7 +1488,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                           return (
                             <div
                               key={comment.id}
-                              className="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 text-xs space-y-1"
+                              className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] text-xs space-y-1"
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5 flex-wrap">
@@ -1536,8 +1536,8 @@ export const FeedView: React.FC<FeedViewProps> = ({
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-60 bg-[#121215]/95 backdrop-blur-xl border border-zinc-700/80 rounded-2xl shadow-2xl p-1.5 space-y-1">
-              <div className="px-3 py-2 border-b border-zinc-800/60 flex items-center justify-between">
+            <div className="w-60 bg-white/[0.06]/95 backdrop-blur-xl border border-white/[0.12] rounded-2xl shadow-2xl p-1.5 space-y-1">
+              <div className="px-3 py-2 border-b border-white/[0.07] flex items-center justify-between">
                 <span className="text-xs font-bold text-white flex items-center gap-1.5">
                   {isNylithra ? (
                     <>
@@ -1563,7 +1563,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     setContextMenu({ visible: false, x: 0, y: 0, post: null });
                   }
                 }}
-                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-zinc-200 hover:bg-zinc-800/80 transition-colors flex items-center gap-2.5 cursor-pointer"
+                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-zinc-200 hover:bg-white/[0.09] transition-colors flex items-center gap-2.5 cursor-pointer"
               >
                 <User className="w-3.5 h-3.5 text-blue-400" />
                 <span>{language === 'tr' ? 'Yazar Profilini Aç' : 'View Author Profile'}</span>
@@ -1578,7 +1578,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     setContextMenu({ visible: false, x: 0, y: 0, post: null });
                   }
                 }}
-                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800/80 transition-colors flex items-center gap-2.5 cursor-pointer"
+                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-white/[0.09] transition-colors flex items-center gap-2.5 cursor-pointer"
               >
                 <Copy className="w-3.5 h-3.5 text-zinc-400" />
                 <span>{language === 'tr' ? 'Bağlantıyı Kopyala' : 'Copy Post Link'}</span>
@@ -1595,7 +1595,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     setContextMenu({ visible: false, x: 0, y: 0, post: null });
                   }
                 }}
-                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-zinc-800/80 transition-colors flex items-center gap-2.5 cursor-pointer"
+                className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-zinc-300 hover:bg-white/[0.09] transition-colors flex items-center gap-2.5 cursor-pointer"
               >
                 <Bookmark className="w-3.5 h-3.5 text-amber-400" />
                 <span>
@@ -1636,7 +1636,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       setPostToDelete(target);
                     }
                   }}
-                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-bold text-red-400 hover:bg-red-500/15 transition-colors flex items-center gap-2.5 border-t border-zinc-800/80 mt-1 cursor-pointer"
+                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-bold text-red-400 hover:bg-red-500/15 transition-colors flex items-center gap-2.5 border-t border-white/[0.07] mt-1 cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5 text-red-400" />
                   <span>
@@ -1697,12 +1697,12 @@ export const FeedView: React.FC<FeedViewProps> = ({
           </AlertDialogHeader>
 
           {postToDelete?.content && (
-            <p className="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 text-[11px] text-zinc-400 line-clamp-2 italic font-mono">
+            <p className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] text-[11px] text-zinc-400 line-clamp-2 italic font-mono">
               &quot;{postToDelete.content}&quot;
             </p>
           )}
 
-          <AlertDialogFooter className="border-t border-zinc-800/80 pt-4">
+          <AlertDialogFooter className="border-t border-white/[0.07] pt-4">
             <AlertDialogCancel>{language === 'tr' ? 'Vazgeç' : 'Cancel'}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
