@@ -366,9 +366,37 @@ CREATE TABLE IF NOT EXISTS public.project_follows (
   PRIMARY KEY (project_id, user_id)
 );
 
+-- Bir projenin hangi topluluklarda paylaşıldığı.
+--
+-- NEDEN AYRI TABLO, projects'te bir community_id SÜTUNU DEĞİL: bir proje birden fazla
+-- topluluğa ait olabilir — bir React kütüphanesi hem "React Türkiye"ye hem "Frontend"e
+-- gider. Tek sütun bunu imkânsız kılar ve ilk çoklu paylaşım isteğinde veri taşımak
+-- gerekirdi. Birleşim tablosu beğeni/takip ile de aynı desen.
+--
+-- Birincil anahtar tekilliği sağlıyor: aynı proje bir topluluğa iki kez eklenemez,
+-- dolayısıyla sayaç şişirilemez ve liste tekrar göstermez.
+--
+-- added_by "kim ekledi" sorusunun cevabı ve moderasyon için gerekli: topluluk sahibi
+-- bir girdiyi kaldırırken kimin eklediğini görebilmeli.
+CREATE TABLE IF NOT EXISTS public.community_projects (
+  community_id TEXT NOT NULL,
+  project_id TEXT NOT NULL,
+  added_by TEXT NOT NULL,
+  added_by_username TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (community_id, project_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_community_projects_community ON public.community_projects(community_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_community_projects_project ON public.community_projects(project_id);
+
 -- ================================================================
 -- 2. COLUMN MIGRATIONS (safe to re-run)
 -- ================================================================
+
+-- Topluluktaki proje sayısı TÜRETİLMİŞ veridir; aşağıdaki tetikleyici yazar. İstemciye
+-- bırakılsaydı bir topluluk kendi sayısını şişirip listelerde öne çıkabilirdi.
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS projects_count INTEGER DEFAULT 0;
 
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS website TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS pinned_repos JSONB DEFAULT '[]'::jsonb;
@@ -1036,19 +1064,44 @@ AS $$
 DECLARE
   me TEXT := public.current_username();
   merged public.communities;
+  gercek_proje INTEGER;
 BEGIN
+  /*
+   * PROJE SAYACI HER YOLDA BİRLEŞİM TABLOSUNDAN YENİDEN HESAPLANIR.
+   *
+   * İki ayrı sorunu birden çözüyor:
+   *
+   * 1. Bu tetikleyici sahibi olmayan biri güncelleme yaptığında satırı OLD'a geri
+   *    sarıyor. Sayaç tetikleyicisinin (sync_community_projects_counter) yazdığı
+   *    değer de o sarmada düşüyordu — sonuç: topluluğa proje eklense bile sayaç
+   *    kalıcı olarak 0 kalıyordu. Testte tam olarak bu çıktı.
+   *
+   * 2. Sahip ya da yönetici yükte projects_count = 9999 gönderebilirdi. Değer
+   *    yükten değil tablodan okunduğu için bu da imkânsız.
+   *
+   * Artırma/azaltma yerine yeniden sayma: kaçan tek bir tetikleme sayacı kalıcı
+   * olarak kaydırmaz, bir sonraki değişiklikte kendini düzeltir.
+   */
+  SELECT count(*) INTO gercek_proje
+    FROM public.community_projects cp
+    JOIN public.projects p ON p.id = cp.project_id
+   WHERE cp.community_id = OLD.id AND p.is_deleted = false;
+
   IF auth.role() = 'service_role' OR public.is_platform_admin() THEN
+    NEW.projects_count := gercek_proje;
     RETURN NEW;
   END IF;
 
   IF (OLD.created_by IS NOT NULL AND OLD.created_by::text = auth.uid()::text)
      OR (me IS NOT NULL AND lower(coalesce(OLD.creator_username, '')) = me) THEN
+    NEW.projects_count := gercek_proje;
     RETURN NEW;
   END IF;
 
   -- Non-owners may only move the member counter (join / leave).
   merged := OLD;
   merged.members_count := NEW.members_count;
+  merged.projects_count := gercek_proje;
   merged.updated_at := NOW();
   RETURN merged;
 END;
@@ -1302,6 +1355,37 @@ CREATE TRIGGER trg_sync_project_follows
 AFTER INSERT OR DELETE ON public.project_follows
 FOR EACH ROW EXECUTE FUNCTION public.sync_project_counter('follows');
 
+-- Topluluğun proje sayacı. Beğeni/takip sayaçlarıyla aynı mantık: sayı HER DEĞİŞİKLİKTE
+-- birleşim tablosundan yeniden sayılıyor, artırılıp azaltılmıyor. Artırma/azaltma, kaçan
+-- tek bir tetikleme yüzünden sayacın kalıcı olarak kaymasına yol açar; yeniden sayma
+-- kendini düzeltir.
+CREATE OR REPLACE FUNCTION public.sync_community_projects_counter()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  hedef TEXT := COALESCE(NEW.community_id, OLD.community_id);
+BEGIN
+  UPDATE public.communities
+     SET projects_count = (
+           SELECT count(*)
+             FROM public.community_projects cp
+             JOIN public.projects p ON p.id = cp.project_id
+            WHERE cp.community_id = hedef
+              AND p.is_deleted = false
+         )
+   WHERE id = hedef;
+  RETURN NULL;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_sync_community_projects ON public.community_projects;
+CREATE TRIGGER trg_sync_community_projects
+AFTER INSERT OR DELETE ON public.community_projects
+FOR EACH ROW EXECUTE FUNCTION public.sync_community_projects_counter();
+
 -- ================================================================
 -- 5. ROW LEVEL SECURITY
 -- ================================================================
@@ -1309,6 +1393,7 @@ FOR EACH ROW EXECUTE FUNCTION public.sync_project_counter('follows');
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.communities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.community_projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.job_listings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.job_applications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
@@ -1647,6 +1732,58 @@ CREATE POLICY "project_likes_service_role" ON public.project_likes
 CREATE POLICY "project_follows_service_role" ON public.project_follows
   FOR ALL TO service_role USING (true) WITH CHECK (true);
 
+-- --- Topluluk projeleri --------------------------------------------------------
+--
+-- OKUMA, topluluğun görünürlüğüne bağlı. Açık bir topluluğun proje listesi herkese
+-- açıktır (gönderileri de öyle); GİZLİ bir topluluğunki yalnızca üyelerine. Bunu
+-- yazmazsak gizli bir topluluğun hangi projeleri barındırdığı dışarıdan okunabilirdi
+-- — topluluğun kendisi gizliyken içeriğinin sızması.
+CREATE POLICY "community_projects_select_visible" ON public.community_projects
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM public.communities c
+       WHERE c.id = community_id
+         AND (c.is_private = false OR public.is_community_member(c.id))
+    )
+    OR public.is_platform_admin()
+  );
+
+-- YAZMA yalnızca projenin SAHİBİ tarafından ve yalnızca ÜYESİ OLDUĞU topluluğa.
+--
+-- İki ayrı koruma, ikisi de gerekli:
+--   1. Sahiplik — olmasaydı herhangi bir üye başkasının projesini istediği topluluğa
+--      sokabilirdi; proje sahibinin adı o toplulukta görünürdü.
+--   2. Üyelik — olmasaydı bir üye hiç katılmadığı topluluklara projesini serpiştirip
+--      reklam yapabilirdi.
+CREATE POLICY "community_projects_insert_own" ON public.community_projects
+  FOR INSERT TO authenticated WITH CHECK (
+    public.owns_profile(added_by)
+    AND EXISTS (
+      SELECT 1 FROM public.projects p
+       WHERE p.id = project_id AND public.owns_profile(p.owner_id)
+    )
+    AND public.is_community_member(community_id)
+  );
+
+-- SİLME: projenin sahibi kendi girdisini geri alabilir, topluluğun kurucusu ise
+-- topluluğundaki herhangi bir girdiyi kaldırabilir. İkincisi moderasyon için şart —
+-- yoksa topluluk sahibi, kendi topluluğuna konan alakasız bir projeyi kaldıramazdı.
+CREATE POLICY "community_projects_delete_own_or_mod" ON public.community_projects
+  FOR DELETE TO authenticated USING (
+    EXISTS (
+      SELECT 1 FROM public.projects p
+       WHERE p.id = project_id AND public.owns_profile(p.owner_id)
+    )
+    OR EXISTS (
+      SELECT 1 FROM public.communities c
+       WHERE c.id = community_id AND public.owns_profile(c.created_by)
+    )
+    OR public.is_platform_admin()
+  );
+
+CREATE POLICY "community_projects_service_role" ON public.community_projects
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
 CREATE POLICY "project_follows_select_public" ON public.project_follows FOR SELECT USING (true);
 CREATE POLICY "project_follows_insert_own" ON public.project_follows
   FOR INSERT TO authenticated WITH CHECK (public.owns_profile(user_id));
@@ -1667,7 +1804,8 @@ GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 
 GRANT SELECT ON
   public.posts, public.communities, public.job_listings,
-  public.projects, public.project_likes, public.project_follows
+  public.projects, public.project_likes, public.project_follows,
+  public.community_projects
 TO anon;
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON
@@ -1680,6 +1818,11 @@ TO authenticated;
 -- Beğeni ve takip satırlarında UPDATE'e gerek yok: bir beğeni ya vardır ya yoktur.
 -- Vermemek, "başkasının beğenisini kendi üstüne alma" gibi bir hamleyi baştan imkânsız kılar.
 GRANT SELECT, INSERT, DELETE ON public.project_likes, public.project_follows TO authenticated;
+
+-- Topluluk–proje bağları da aynı şekilde: UPDATE yok. Bir proje bir toplulukta ya
+-- vardır ya yoktur; satırı güncellemek "başkasının girdisini kendi üstüme alma"
+-- hamlesine kapı açardı, eklemek-silmek ise yeterli.
+GRANT SELECT, INSERT, DELETE ON public.community_projects TO authenticated;
 
 -- profiles: everything EXCEPT the e-mail address is world-readable.
 --

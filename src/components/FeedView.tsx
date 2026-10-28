@@ -5,6 +5,7 @@ import { CodeSnippetBlock } from './CodeSnippetBlock';
 import { ReportPostModal } from './ReportPostModal';
 import { CategorySelector } from './CategorySelector';
 import { CommunityFeedHeader } from './CommunityFeedHeader';
+import { CommunityProjectsPanel } from './CommunityProjectsPanel';
 import { filterVisiblePosts } from '../utils/communityVisibility';
 import { Button } from './ui/button';
 import { UserAvatar } from './ui/avatar';
@@ -105,6 +106,8 @@ interface FeedViewProps {
   onExitCommunityScope?: () => void;
   onToggleJoinCommunity?: (communityId: string) => void;
   onOpenCommunitySettings?: (community: Community) => void;
+  /** Topluluk projeleri sekmesindeki "projeni ekle" çağrısı. */
+  onOpenShareProject?: () => void;
 }
 
 export const FeedView: React.FC<FeedViewProps> = ({
@@ -128,7 +131,8 @@ export const FeedView: React.FC<FeedViewProps> = ({
   communityScope = null,
   onExitCommunityScope,
   onToggleJoinCommunity,
-  onOpenCommunitySettings
+  onOpenCommunitySettings,
+  onOpenShareProject
 }) => {
   const [content, setContent] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('genel');
@@ -159,6 +163,14 @@ export const FeedView: React.FC<FeedViewProps> = ({
   // On phones the composer opens compact (avatar + one line) and reveals the category /
   // community selectors once it is in use — the full form used to eat ~70% of the screen.
   const [isComposerFocused, setIsComposerFocused] = useState(false);
+  /*
+   * Topluluk sayfasındaki sekme: gönderiler mi projeler mi.
+   *
+   * Durum TOPLULUĞA GÖRE sıfırlanıyor (aşağıdaki effect): bir topluluğun projeler
+   * sekmesinde kalıp başka bir topluluğa geçildiğinde oradaki gönderileri değil yine
+   * projeleri görmek, kullanıcının beklemediği bir yere düşmek olurdu.
+   */
+  const [communityTab, setCommunityTab] = useState<'posts' | 'projects'>('posts');
   const mediaInputRef = useRef<HTMLInputElement>(null);
 
   const [activeCommentPostId, setActiveCommentPostId] = useState<string | null>(null);
@@ -461,6 +473,10 @@ export const FeedView: React.FC<FeedViewProps> = ({
         isNylithra)
   );
 
+  useEffect(() => {
+    setCommunityTab('posts');
+  }, [communityScope?.id]);
+
   const isPrivateLocked = Boolean(communityScope?.is_private && !isScopeMember);
 
   // Filter posts by community scope, source, category and hashtag
@@ -666,10 +682,45 @@ export const FeedView: React.FC<FeedViewProps> = ({
         </div>
       )}
 
+      {/* Topluluk sekmeleri: gönderiler / projeler.
+          Gizli ve kilitli bir toplulukta sekme göstermiyoruz — iki sekme de boş olurdu
+          ve kullanıcıya tıklayacak bir şey verip hiçbir şey göstermemek olurdu. */}
+      {communityScope && !isPrivateLocked && (
+        <div className="sticky top-0 z-20 flex items-center gap-1 border-b border-zinc-800/60 bg-[#09090b]/95 px-4 py-2 backdrop-blur-xl">
+          {([
+            ['posts', language === 'tr' ? 'Gönderiler' : 'Posts', scopedPosts.length],
+            ['projects', language === 'tr' ? 'Projeler' : 'Projects', communityScope.projects_count ?? null]
+          ] as const).map(([key, label, count]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setCommunityTab(key)}
+              aria-current={communityTab === key}
+              className={`relative flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                communityTab === key
+                  ? 'bg-zinc-100 text-zinc-950 shadow-md'
+                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+              }`}
+            >
+              <span>{label}</span>
+              {count !== null && count !== undefined && (
+                <span
+                  className={`rounded-md px-1.5 py-0.5 font-mono text-[10px] ${
+                    communityTab === key ? 'bg-zinc-900/10 text-zinc-700' : 'bg-zinc-800/80 text-zinc-500'
+                  }`}
+                >
+                  {count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Post Composer */}
       <div
         className={`p-4 border-b border-zinc-800/60 bg-[#0c0c0e] ${
-          communityScope && !isScopeMember ? 'hidden' : ''
+          (communityScope && !isScopeMember) || (communityScope && communityTab === 'projects') ? 'hidden' : ''
         }`}
       >
         <form onSubmit={handlePostSubmit} className="space-y-3">
@@ -991,7 +1042,26 @@ export const FeedView: React.FC<FeedViewProps> = ({
       </div>
 
       {/* Post List (hidden entirely while a private community is locked) */}
-      <div className={`divide-y divide-zinc-800/40 ${isPrivateLocked ? 'hidden' : ''}`}>
+      {/* Projeler paneli gönderi listesinin YERİNE geçiyor. */}
+      {communityScope && communityTab === 'projects' && !isPrivateLocked && (
+        <CommunityProjectsPanel
+          community={communityScope}
+          user={user}
+          language={language}
+          isMember={isScopeMember}
+          onOpenShare={onOpenShareProject}
+          onOpenProject={(slug) => {
+            window.history.pushState(null, '', `/project/${slug}`);
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }}
+        />
+      )}
+
+      <div
+        className={`divide-y divide-zinc-800/40 ${
+          isPrivateLocked || (communityScope && communityTab === 'projects') ? 'hidden' : ''
+        }`}
+      >
         {isLoading && filteredPosts.length === 0 ? (
           /* First sync: show the shape of the content instead of a "nothing here" message. */
           <div className="divide-y divide-zinc-800/40" aria-busy="true" aria-live="polite">
@@ -1090,9 +1160,15 @@ export const FeedView: React.FC<FeedViewProps> = ({
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
                 onTouchCancel={handleTouchEnd}
-                className={`p-4 hover:bg-zinc-900/30 transition-colors space-y-3 relative select-text ${
+                /*
+                  Üzerine gelme geri bildirimi eskiden neredeyse görünmezdi
+                  (zinc-900/30). Satırın "tıklanabilir bir şey" olduğunu anlatan
+                  en ucuz sinyal bu, biraz belirginleştirildi ve sol kenara ince
+                  bir aksan çizgisi eklendi.
+                */
+                className={`group/post c4e-interactive relative select-text space-y-3 p-4 before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:bg-gradient-to-b before:from-blue-500/0 before:via-indigo-500/60 before:to-violet-500/0 before:opacity-0 before:transition-opacity hover:bg-zinc-900/50 hover:before:opacity-100 ${
                   isNylithra ? 'cursor-context-menu' : ''
-                } ${longPressingPostId === post.id ? 'bg-zinc-900/50 scale-[0.995] transition-transform' : ''}`}
+                } ${longPressingPostId === post.id ? 'bg-zinc-900/60 scale-[0.995] transition-transform' : ''}`}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2">
@@ -1291,7 +1367,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                         'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                         activeCommentPostId === post.id
                           ? 'text-blue-400 bg-blue-500/10 font-semibold'
-                          : 'text-zinc-400 hover:text-blue-400 hover:bg-zinc-800/40'
+                          : 'text-zinc-400 hover:text-blue-400 hover:bg-blue-500/10'
                       )}
                       aria-label={language === 'tr' ? 'Yorumlar' : 'Comments'}
                       aria-expanded={activeCommentPostId === post.id}
@@ -1308,7 +1384,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all cursor-pointer ${
                         isReposted
                           ? 'text-emerald-400 bg-emerald-500/10 font-bold'
-                          : 'text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800/40'
+                          : 'text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10'
                       }`}
                       aria-label={language === 'tr' ? 'Yeniden paylaş' : 'Repost'}
                       aria-pressed={isReposted}
@@ -1326,12 +1402,12 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition-all cursor-pointer ${
                         isLiked
                           ? 'text-red-500 bg-red-500/10 font-bold'
-                          : 'text-zinc-400 hover:text-red-400 hover:bg-zinc-800/40'
+                          : 'text-zinc-400 hover:text-red-400 hover:bg-red-500/10'
                       }`}
                       aria-label={language === 'tr' ? 'Beğen' : 'Like'}
                       aria-pressed={isLiked}
                     >
-                      <Heart className={`w-4 h-4 transition-transform ${isLiked ? 'fill-red-500 stroke-red-500 scale-110' : ''}`} />
+                      <Heart className={`w-4 h-4 transition-transform group-hover:scale-105 ${isLiked ? 'fill-red-500 stroke-red-500 scale-110' : ''}`} />
                       <span className="font-mono text-xs">{likesCount}</span>
                     </button>
                     </HintTooltip>

@@ -134,6 +134,67 @@ export async function updateProject(
   return { ok: false, error: CREATE_ERRORS[String(data?.error)] || data?.message || 'Kaydedilemedi.' };
 }
 
+/* ------------------------------------------------------------------ *
+ * Topluluk projeleri
+ * ------------------------------------------------------------------ */
+
+/** Bir topluluğa paylaşılmış proje; listede kimin eklediği de gösteriliyor. */
+export interface CommunityProject extends Project {
+  added_by: string;
+  added_by_username: string | null;
+  added_at: string;
+}
+
+/**
+ * Topluluğun proje listesi. Gizli toplulukta sunucu üyelik arıyor; üye değilsen
+ * "bulunamadı" döner — topluluğun varlığını bile doğrulamıyoruz.
+ */
+export async function fetchCommunityProjects(communityId: string): Promise<CommunityProject[]> {
+  const { ok, data } = await apiFetchJson<{ projects: CommunityProject[] }>(
+    `/api/communities/${encodeURIComponent(communityId)}/projects`,
+    { auth: true }
+  );
+  return ok && data?.projects ? data.projects : [];
+}
+
+/** Bu projenin hangi topluluklarda paylaşıldığı — seçicinin işaretli kutuları. */
+export async function fetchProjectCommunityIds(projectId: string): Promise<string[]> {
+  const { ok, data } = await apiFetchJson<{ community_ids: string[] }>(
+    `/api/projects/${encodeURIComponent(projectId)}/communities`
+  );
+  return ok && data?.community_ids ? data.community_ids : [];
+}
+
+const SHARE_ERRORS: Record<string, string> = {
+  not_project_owner: 'Bir projeyi topluluğa yalnızca sahibi ekleyebilir.',
+  not_a_member: 'Projeni yalnızca üyesi olduğun bir topluluğa ekleyebilirsin.',
+  not_allowed: 'Bu girdiyi yalnızca projenin sahibi ya da topluluğun kurucusu kaldırabilir.',
+  community_not_found: 'Topluluk bulunamadı.',
+  project_not_found: 'Proje bulunamadı.',
+  not_linked: 'Bu proje zaten o toplulukta değil.'
+};
+
+/**
+ * Projeyi topluluğa ekler ya da çıkarır.
+ *
+ * Sayaç sunucudan geri okunuyor, istemcide artırılmıyor: iki sekme açıkken birinde
+ * elle artırılan sayı diğeriyle tutmaz ve hangisinin doğru olduğu belli olmaz.
+ */
+export async function setProjectCommunity(
+  communityId: string,
+  projectId: string,
+  on: boolean
+): Promise<{ ok: boolean; projects_count?: number; error?: string }> {
+  const { ok, data } = await apiFetchJson<{ projects_count: number; error?: string; message?: string }>(
+    on
+      ? `/api/communities/${encodeURIComponent(communityId)}/projects`
+      : `/api/communities/${encodeURIComponent(communityId)}/projects/${encodeURIComponent(projectId)}`,
+    on ? { method: 'POST', json: { project_id: projectId } } : { method: 'DELETE' }
+  );
+  if (ok) return { ok: true, projects_count: data?.projects_count };
+  return { ok: false, error: SHARE_ERRORS[String(data?.error)] || data?.message || 'İşlem tamamlanamadı.' };
+}
+
 export async function deleteProject(projectId: string): Promise<boolean> {
   const { ok } = await apiFetchJson(`/api/projects/${encodeURIComponent(projectId)}`, {
     method: 'DELETE'

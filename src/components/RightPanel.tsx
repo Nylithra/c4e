@@ -41,7 +41,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
   return (
     <aside className="w-80 min-w-[320px] max-w-[320px] flex-shrink-0 hidden xl:block p-4 space-y-4 border-l border-zinc-800/60 app-rail h-screen sticky top-0 overflow-y-auto z-20 select-none">
-      <div className="bg-[#0c0c0e] border border-zinc-800/60 rounded-2xl p-4 space-y-3">
+      <div className="c4e-surface border border-zinc-800/60 rounded-2xl p-4 space-y-3">
         <div className="flex items-center gap-2 border-b border-zinc-800/40 pb-2.5">
           <TrendingUp className="w-4 h-4 text-zinc-300" />
           <h3 className="text-xs font-bold text-white tracking-wider uppercase">
@@ -50,8 +50,18 @@ export const RightPanel: React.FC<RightPanelProps> = ({
         </div>
 
         {trends.length === 0 ? (
-          <div className="py-4 text-center text-zinc-500 text-xs font-mono">
-            {language === 'tr' ? 'Henüz trend konu yok.' : 'No trending topics yet.'}
+          <div className="c4e-empty flex flex-col items-center gap-2 px-4 py-6 text-center">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-zinc-900 text-zinc-600">
+              <TrendingUp className="h-4 w-4" />
+            </span>
+            <p className="text-xs font-semibold text-zinc-400">
+              {language === 'tr' ? 'Henüz trend konu yok' : 'No trending topics yet'}
+            </p>
+            <p className="max-w-[14rem] text-[11px] leading-relaxed text-zinc-600">
+              {language === 'tr'
+                ? 'Etiketli gönderiler çoğaldıkça en çok konuşulanlar burada görünür.'
+                : 'As tagged posts pile up, the most discussed ones show up here.'}
+            </p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -76,7 +86,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
         )}
       </div>
 
-      <div className="bg-[#0c0c0e] border border-zinc-800/60 rounded-2xl p-4 space-y-3">
+      <div className="c4e-surface border border-zinc-800/60 rounded-2xl p-4 space-y-3">
         <div className="flex items-center gap-2 border-b border-zinc-800/40 pb-2.5">
           <Users className="w-4 h-4 text-zinc-300" />
           <h3 className="text-xs font-bold text-white tracking-wider uppercase">

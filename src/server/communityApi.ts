@@ -140,6 +140,8 @@ export interface CommunityRow {
   created_by: string | null;
   creator_username: string | null;
   members_count: number | null;
+  /** Topluluğa paylaşılmış proje sayısı — tetikleyici yazar, istemci yazamaz. */
+  projects_count?: number | null;
 }
 
 /** Resolves a community by its handle, with or without the leading `@`. */
@@ -149,7 +151,7 @@ export async function findCommunityByHandle(handle: string): Promise<CommunityRo
 
   const { ok, rows } = await restRequest(
     `communities?handle=in.(${encodeURIComponent(`"@${clean}","${clean}"`)})` +
-      `&select=id,name,handle,description,is_private,created_by,creator_username,members_count&limit=1`
+      `&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count&limit=1`
   );
   if (!ok || rows.length === 0) return null;
   return rows[0] as CommunityRow;
@@ -159,7 +161,7 @@ export async function findCommunityById(id: string): Promise<CommunityRow | null
   if (!id) return null;
   const { ok, rows } = await restRequest(
     `communities?id=eq.${encodeURIComponent(id)}` +
-      `&select=id,name,handle,description,is_private,created_by,creator_username,members_count&limit=1`
+      `&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count&limit=1`
   );
   if (!ok || rows.length === 0) return null;
   return rows[0] as CommunityRow;
@@ -307,7 +309,7 @@ export async function listCommunityPosts(
 export async function listPublicCommunities(limit: number): Promise<CommunityRow[]> {
   const { ok, rows } = await restRequest(
     `communities?is_private=eq.false&order=members_count.desc&limit=${limit}` +
-      `&select=id,name,handle,description,is_private,created_by,creator_username,members_count`
+      `&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count`
   );
   return ok ? (rows as CommunityRow[]) : [];
 }

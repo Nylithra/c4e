@@ -93,6 +93,8 @@ import { ProjectsView } from './components/ProjectsView';
 import { CommunitiesView } from './components/CommunitiesView';
 import { BookmarksView } from './components/BookmarksView';
 import { ProfileView } from './components/ProfileView';
+import { ShareProjectToCommunityModal } from './components/ShareProjectToCommunityModal';
+import { fetchProjects, type Project } from './services/projectsClient';
 import { SettingsView } from './components/SettingsView';
 import { SubscriptionsView } from './components/SubscriptionsView';
 import { SupportView } from './components/SupportView';
@@ -177,6 +179,25 @@ export default function App() {
   const [language, setLanguage] = useState<'tr' | 'en'>(loadLanguage());
   const [user, setUser] = useState<UserProfile>(loadStoredProfile() || DEFAULT_USER);
   const [viewingUser, setViewingUser] = useState<UserProfile | null>(null);
+
+  /*
+   * "Projeni topluluğa ekle" seçicisi.
+   *
+   * Seçici, üyenin KENDİ projelerinden birini seçmesini ister; bu yüzden açılırken
+   * projeler sunucudan tazeleniyor. Önbellekten okumak, az önce açılmış bir projenin
+   * listede görünmemesi demekti.
+   */
+  const [shareProjectOpen, setShareProjectOpen] = useState(false);
+  const [myProjects, setMyProjects] = useState<Project[]>([]);
+  const [shareProject, setShareProject] = useState<Project | null>(null);
+
+  const openShareProject = async () => {
+    setShareProjectOpen(true);
+    const mine = await fetchProjects('mine');
+    setMyProjects(mine);
+    // Tek projesi olan için seçim sorusu anlamsız: doğrudan o proje açılıyor.
+    setShareProject((prev) => prev || (mine.length === 1 ? mine[0] : null));
+  };
   const [selectedModalUsername, setSelectedModalUsername] = useState<string | null>(null);
   const [posts, setPosts] = useState<Post[]>(loadStoredPosts());
   const [communities, setCommunities] = useState<Community[]>(() => {
@@ -1427,6 +1448,7 @@ export default function App() {
                 onAddComment={handleAddComment}
                 onSelectUser={handleSelectUser}
                 onSelectCommunity={handleSelectCommunity}
+                onOpenShareProject={openShareProject}
               />
             ) : (
               <div className="flex-1 min-w-0 w-full border-r border-zinc-800/60 min-h-screen bg-[#09090b] flex items-center justify-center p-6">
@@ -1514,6 +1536,10 @@ export default function App() {
             <ProjectsView
               user={user}
               language={language}
+              onShareProject={(project) => {
+                setShareProject(project);
+                setShareProjectOpen(true);
+              }}
             />
           )}
 
@@ -1654,6 +1680,22 @@ export default function App() {
           setActiveTab('profile');
         }}
         onStartDirectChat={handleStartDirectChat}
+      />
+
+      {/* Projeni topluluğa ekle. Proje seçimi modalın içinde değil burada: aynı seçici
+          hem topluluk sekmesinden hem proje ekranından açılıyor. */}
+      <ShareProjectToCommunityModal
+        isOpen={shareProjectOpen}
+        project={shareProject}
+        projects={myProjects}
+        onPickProject={setShareProject}
+        communities={displayCommunities}
+        user={user}
+        language={language}
+        onClose={() => {
+          setShareProjectOpen(false);
+          setShareProject(null);
+        }}
       />
 
       <ReportErrorModal

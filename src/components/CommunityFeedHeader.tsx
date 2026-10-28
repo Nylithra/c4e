@@ -27,8 +27,6 @@ interface CommunityFeedHeaderProps {
   onSelectUser?: (username: string) => void;
 }
 
-const FALLBACK_BANNER =
-  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80';
 
 /**
  * Hero header of a single community's feed page: banner, identity, live stats and the
@@ -49,8 +47,20 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
   const [copied, setCopied] = useState(false);
 
   const handle = (community.handle || '').replace(/^@/, '').toLowerCase();
-  const bannerUrl = sanitizeUrl(community.banner_url) || sanitizeUrl(community.avatar_url) || FALLBACK_BANNER;
-  const avatarUrl = sanitizeUrl(community.avatar_url) || FALLBACK_BANNER;
+  /*
+   * Afiş görseli OLMAYAN topluluk, kendi avatarının bulanık bir kopyasını afiş
+   * yapıyordu — çoğu toplulukta avatar da yok, sonuç koca bir boş siyah bloktu.
+   * Görsel gerçekten yoksa artık marka gradyanından bir doku gösteriliyor:
+   * "eksik" değil "sade" görünüyor.
+   */
+  const ownBanner = sanitizeUrl(community.banner_url);
+  /*
+   * Avatarı olmayan topluluk, jenerik bir "kişi" yer tutucusu gösteriyordu —
+   * hem topluluk için yanlış simge hem de yarım kalmış izlenimi. Görsel yoksa
+   * artık adın baş harfi, marka gradyanlı bir karede.
+   */
+  const ownAvatar = sanitizeUrl(community.avatar_url);
+  const initials = (community.name || '?').trim().slice(0, 2).toLocaleUpperCase('tr-TR');
 
   const isOwner =
     (community.created_by && community.created_by === user.id) ||
@@ -75,8 +85,8 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
   return (
     <div className="relative border-b border-zinc-800/60">
       {/* Banner */}
-      <div className="h-32 md:h-40 w-full overflow-hidden bg-zinc-900 relative">
-        <img src={bannerUrl} alt="" className="w-full h-full object-cover opacity-80" />
+      <div className={`h-32 md:h-40 w-full overflow-hidden relative ${ownBanner ? 'bg-zinc-900' : 'c4e-banner-fallback'}`}>
+        {ownBanner && <img src={ownBanner} alt="" className="w-full h-full object-cover opacity-80" />}
         <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/40 to-black/30" />
 
         {onBack && (
@@ -107,11 +117,20 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
       {/* Identity row */}
       <div className="px-5 pb-4 -mt-10 relative">
         <div className="flex items-end justify-between gap-3">
-          <img
-            src={avatarUrl}
-            alt={community.name}
-            className="w-20 h-20 rounded-2xl object-cover ring-4 ring-[#09090b] shadow-2xl bg-zinc-900"
-          />
+          {ownAvatar ? (
+            <img
+              src={ownAvatar}
+              alt={community.name}
+              className="w-20 h-20 rounded-2xl object-cover ring-4 ring-[#09090b] shadow-2xl bg-zinc-900"
+            />
+          ) : (
+            <span
+              aria-label={community.name}
+              className="flex h-20 w-20 select-none items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-2xl font-extrabold text-white ring-4 ring-[#09090b] shadow-2xl"
+            >
+              {initials}
+            </span>
+          )}
 
           <div className="flex items-center gap-2 pb-1">
             <button

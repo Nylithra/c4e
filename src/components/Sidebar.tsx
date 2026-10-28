@@ -468,7 +468,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside className="hidden md:flex w-64 flex-shrink-0 flex-col justify-between h-screen sticky top-0 p-4 border-r border-zinc-800/60 app-rail backdrop-blur-md z-30 select-none">
         <div className="space-y-5">
           <div className="px-2 pt-2 pb-1">
-            <div className="cursor-pointer transition-opacity hover:opacity-90" onClick={() => setActiveTab('feed')}>
+            {/* Marka işareti + kelime. Önceden yalnızca yazıydı; uygulama kenar
+                çubuğunun tepesinde bir işaret olması, ekranın "bir ürün" gibi
+                okunmasını sağlayan en ucuz değişiklik. */}
+            <div
+              className="group flex cursor-pointer items-center gap-2.5 transition-opacity hover:opacity-90"
+              onClick={() => setActiveTab('feed')}
+            >
+              <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[10px] bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 shadow-[0_4px_14px_-2px_rgba(99,102,241,0.6)]">
+                <Code2 className="h-4 w-4 text-white" strokeWidth={2.6} />
+              </span>
               <span className="brand-gradient-text text-xl font-extrabold tracking-tight">Code4Ever</span>
             </div>
           </div>
@@ -487,24 +496,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       setActiveTab(item.id);
                     }
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`relative w-full flex items-center justify-between overflow-hidden px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     isActive
-                      ? 'text-white bg-zinc-800/90 shadow-sm border border-zinc-700/50'
+                      ? 'c4e-nav-active text-white'
                       : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60'
                   }`}
-                  style={
-                    isActive
-                      ? {
-                          borderLeftColor: theme.accentColor,
-                          borderLeftWidth: '3px'
-                        }
-                      : {}
-                  }
                 >
                   <div className="flex items-center gap-3">
                     <Icon
                       className={`w-4 h-4 transition-colors ${
-                        isActive ? 'text-zinc-200' : 'text-zinc-400'
+                        isActive ? 'text-indigo-300' : 'text-zinc-400 group-hover:text-zinc-300'
                       }`}
                     />
                     <span>{item.label}</span>

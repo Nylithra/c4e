@@ -395,6 +395,13 @@ export interface Community {
   banner_url?: string;
   description?: string;
   members_count: number;
+  /**
+   * Topluluğa paylaşılmış proje sayısı.
+   *
+   * TÜRETİLMİŞ veridir: veritabanındaki tetikleyici birleşim tablosundan yeniden
+   * sayar, istemci yazamaz. İsteğe bağlı çünkü eski önbellek kayıtlarında yok.
+   */
+  projects_count?: number;
   is_joined: boolean;
   /**
    * Private ("gizli") community: the community itself stays discoverable, but only members

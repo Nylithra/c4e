@@ -128,6 +128,18 @@ import {
   type ProjectSort,
   type RepoFacts
 } from './src/server/projects';
+import {
+  addProjectToCommunity,
+  canSeeCommunity,
+  communityProjectsConfigured,
+  isCommunityOwner,
+  isMemberOf,
+  linkExists,
+  listCommunityProjectLinks,
+  listProjectCommunityIds,
+  removeAllLinksForProject,
+  removeProjectFromCommunity
+} from './src/server/communityProjects';
 
 const app = express();
 const PORT = Number(env('PORT', '3000'));
@@ -200,7 +212,7 @@ app.use('/api', rateLimit({ scope: 'api', windowMs: 60000, max: 120 }));
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({
     status: 'healthy',
-    platform: 'Code4Ever (C4E)',
+    platform: 'Code4Ever',
     timestamp: new Date().toISOString(),
     auth: supabaseConfigured() ? 'supabase' : 'unconfigured',
     webhooks_supported: true,
@@ -2787,6 +2799,243 @@ for (const relation of ['like', 'follow'] as const) {
 }
 
 // -------------------------------------------------------------
+// TOPLULUK PROJELERİ
+// -------------------------------------------------------------
+
+/**
+ * async bir rota işleyicisini güvene alır.
+ *
+ * NEDEN GEREKLİ: Express 4 async işleyicilerden fırlayan hatayı YAKALAMAZ. Yakalanmayan
+ * söz reddi Node 22'de süreci sonlandırıyor — yani Supabase'e giden tek bir isteğin
+ * takılması, o anda platformu kullanan HERKESİN sunucusunu düşürüyor. Bu sarmalayıcı
+ * hatayı isteğin kendisine hapsediyor: çağıran 502 alıyor, diğer herkes etkilenmiyor.
+ */
+function asyncRoute(
+  handler: (req: Request, res: Response) => Promise<void>
+): (req: Request, res: Response) => void {
+  return (req, res) => {
+    handler(req, res).catch((err) => {
+      console.error('[c4e] rota hatası:', req.method, req.path, err?.message || err);
+      if (!res.headersSent) {
+        res.status(502).json({ success: false, error: 'upstream_failed' });
+      }
+    });
+  };
+}
+
+
+/**
+ * Topluluğu ya kimliğinden ya adresinden çözer.
+ *
+ * İstemci bazı ekranlarda kimliği, bazılarında `@adres`i biliyor. İkisini de kabul
+ * etmek, çağrı yerinde "önce kimliği bul" turu attırmaktan iyi.
+ */
+async function resolveCommunity(raw: string) {
+  const value = asString(raw, 80);
+  if (!value) return null;
+  return value.startsWith('@')
+    ? findCommunityByHandle(value)
+    : (await findCommunityById(value)) || findCommunityByHandle(value);
+}
+
+/** Bir topluluğa paylaşılmış projeler. Gizli toplulukta yalnızca üyeler görür. */
+app.get(
+  '/api/communities/:id/projects',
+  attachOptionalAuth,
+  rateLimit({ scope: 'community-projects-list', windowMs: 60000, max: 60 }),
+  asyncRoute(async (req: Request, res: Response) => {
+    if (!communityProjectsConfigured() || !projectsConfigured()) {
+      res.status(503).json({ success: false, error: 'not_configured' });
+      return;
+    }
+
+    const community = await resolveCommunity(req.params.id);
+    if (!community) {
+      res.status(404).json({ success: false, error: 'community_not_found' });
+      return;
+    }
+
+    if (!(await canSeeCommunity(community, req.auth?.userId, req.auth?.isAdmin))) {
+      // 404, 403 değil: gizli bir topluluğun VARLIĞINI bile doğrulamıyoruz.
+      res.status(404).json({ success: false, error: 'community_not_found' });
+      return;
+    }
+
+    const limit = toPositiveInt(req.query.limit, 40);
+    const links = await listCommunityProjectLinks(community.id, Math.min(limit, 100));
+
+    // Bağlar yalnızca kimlik taşıyor; proje kartı için satırların kendisi gerekiyor.
+    // Silinmiş projeler listeden düşüyor: bağ kalmış olabilir ama proje gösterilmemeli.
+    const projects: any[] = [];
+    for (const link of links) {
+      const project = await findProjectById(link.project_id);
+      if (!project || project.is_deleted) continue;
+      projects.push({
+        ...project,
+        added_by: link.added_by,
+        added_by_username: link.added_by_username,
+        added_at: link.created_at
+      });
+    }
+
+    res.json({
+      success: true,
+      community: { id: community.id, name: community.name, handle: community.handle },
+      projects,
+      count: projects.length
+    });
+  })
+);
+
+/** Bir projenin paylaşıldığı toplulukların kimlikleri — seçicinin mevcut durumu. */
+app.get(
+  '/api/projects/:id/communities',
+  requireAuth,
+  rateLimit({ scope: 'project-communities', windowMs: 60000, max: 60, perUser: true }),
+  asyncRoute(async (req: Request, res: Response) => {
+    if (!communityProjectsConfigured()) {
+      res.status(503).json({ success: false, error: 'not_configured' });
+      return;
+    }
+
+    const project = await findProjectById(asString(req.params.id, 60));
+    if (!project) {
+      res.status(404).json({ success: false, error: 'not_found' });
+      return;
+    }
+
+    res.json({ success: true, community_ids: await listProjectCommunityIds(project.id) });
+  })
+);
+
+/**
+ * Projeyi topluluğa ekle.
+ *
+ * İki kontrol de SUNUCUDA: istemci "ben sahibim" ya da "ben üyeyim" diyemez. Bu uç
+ * servis anahtarıyla yazdığı için RLS devreye girmiyor — kural burada yazılmazsa
+ * hiçbir yerde yazılmamış olur.
+ */
+app.post(
+  '/api/communities/:id/projects',
+  requireAuth,
+  rateLimit({ scope: 'community-projects-add', windowMs: 60000, max: 30, perUser: true }),
+  asyncRoute(async (req: Request, res: Response) => {
+    if (!communityProjectsConfigured() || !projectsConfigured()) {
+      res.status(503).json({ success: false, error: 'not_configured' });
+      return;
+    }
+
+    const community = await resolveCommunity(req.params.id);
+    if (!community) {
+      res.status(404).json({ success: false, error: 'community_not_found' });
+      return;
+    }
+
+    const project = await findProjectById(asString(req.body?.project_id, 60));
+    if (!project || project.is_deleted) {
+      res.status(404).json({ success: false, error: 'project_not_found' });
+      return;
+    }
+
+    const userId = req.auth?.userId || '';
+
+    if (String(project.owner_id) !== userId) {
+      res.status(403).json({
+        success: false,
+        error: 'not_project_owner',
+        message: 'Bir projeyi topluluğa yalnızca sahibi ekleyebilir.'
+      });
+      return;
+    }
+
+    if (!(await isMemberOf(userId, community.id))) {
+      res.status(403).json({
+        success: false,
+        error: 'not_a_member',
+        message: 'Projeni yalnızca üyesi olduğun bir topluluğa ekleyebilirsin.'
+      });
+      return;
+    }
+
+    const added = await addProjectToCommunity(
+      community.id,
+      project.id,
+      userId,
+      req.auth?.username
+    );
+    if (!added) {
+      res.status(502).json({ success: false, error: 'write_failed' });
+      return;
+    }
+
+    // Sayaç tetikleyiciyle güncelleniyor; taze satırı geri okuyoruz ki istemci kendi
+    // kendine +1 yapmak zorunda kalmasın (iki sekme arasında tutarsız sayı demekti).
+    const fresh = await findCommunityById(community.id);
+    res.json({
+      success: true,
+      on: true,
+      projects_count: Number(fresh?.projects_count ?? community.projects_count ?? 0)
+    });
+  })
+);
+
+/**
+ * Projeyi topluluktan kaldır.
+ *
+ * Projenin sahibi kendi girdisini geri alabilir; topluluğun kurucusu ise
+ * topluluğundaki HERHANGİ bir girdiyi kaldırabilir — moderasyon bunsuz olmaz.
+ */
+app.delete(
+  '/api/communities/:id/projects/:projectId',
+  requireAuth,
+  rateLimit({ scope: 'community-projects-remove', windowMs: 60000, max: 30, perUser: true }),
+  asyncRoute(async (req: Request, res: Response) => {
+    if (!communityProjectsConfigured() || !projectsConfigured()) {
+      res.status(503).json({ success: false, error: 'not_configured' });
+      return;
+    }
+
+    const community = await resolveCommunity(req.params.id);
+    if (!community) {
+      res.status(404).json({ success: false, error: 'community_not_found' });
+      return;
+    }
+
+    const projectId = asString(req.params.projectId, 60);
+    if (!(await linkExists(community.id, projectId))) {
+      res.status(404).json({ success: false, error: 'not_linked' });
+      return;
+    }
+
+    const userId = req.auth?.userId || '';
+    const project = await findProjectById(projectId);
+    const isOwnerOfProject = Boolean(project && String(project.owner_id) === userId);
+    const isOwnerOfCommunity = isCommunityOwner(community, userId, req.auth?.username);
+
+    if (!isOwnerOfProject && !isOwnerOfCommunity && !req.auth?.isAdmin) {
+      res.status(403).json({
+        success: false,
+        error: 'not_allowed',
+        message: 'Bu girdiyi yalnızca projenin sahibi ya da topluluğun kurucusu kaldırabilir.'
+      });
+      return;
+    }
+
+    if (!(await removeProjectFromCommunity(community.id, projectId))) {
+      res.status(502).json({ success: false, error: 'write_failed' });
+      return;
+    }
+
+    const fresh = await findCommunityById(community.id);
+    res.json({
+      success: true,
+      on: false,
+      projects_count: Number(fresh?.projects_count ?? 0)
+    });
+  })
+);
+
+// -------------------------------------------------------------
 // ERROR HANDLING & STATIC HOSTING
 // -------------------------------------------------------------
 
@@ -2843,6 +3092,23 @@ async function startServer() {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
+
+  /*
+   * SON SAVUNMA HATTI.
+   *
+   * Sunucudaki rotaların tamamı async ve Express 4 bunlardan fırlayan hatayı
+   * yakalamıyor; Node 22 ise yakalanmamış bir söz reddinde SÜRECİ SONLANDIRIYOR.
+   * Yani Supabase'e giden tek bir isteğin takılması, o an platformu kullanan
+   * herkesin bağlantısını koparıyordu — bu testte birebir yaşandı.
+   *
+   * Topluluk projeleri rotaları `asyncRoute` ile tek tek korunuyor ve doğru yanıtı
+   * (502) veriyor. Bu kanca onların değil, HENÜZ SARILMAMIŞ rotaların güvenliği:
+   * hata hâlâ loglanıyor ama tüm sunucuyu düşürmüyor. Süreci canlı tutmak, tek bir
+   * başarısız isteği herkesin kesintisine çevirmekten kesinlikle daha iyi.
+   */
+  process.on('unhandledRejection', (reason: unknown) => {
+    console.error('[c4e] yakalanmamış söz reddi:', reason);
+  });
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Code4Ever server running on http://0.0.0.0:${PORT}`);

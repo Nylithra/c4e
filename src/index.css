@@ -490,3 +490,142 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     }
   }
 }
+
+/* ===========================================================================
+ * GÖRSEL CİLA KATMANI
+ *
+ * Tamamı `@layer components` içinde: katmansız bir kural, özgüllüğü ne olursa
+ * olsun, katmanlı TÜM Tailwind yardımcılarını ezer — daha önce bu yüzden
+ * dokunma hedefleri bozulmuştu. Burada da aynı kuralı uyguluyoruz ki bileşenler
+ * gerektiğinde `className` ile üstüne yazabilsin.
+ *
+ * Yaklaşım: koyu arayüzlerde algılanan kaliteyi en çok artıran şey renk değil
+ * KENAR IŞIĞI ve katman hiyerarşisidir. Her yüzey aynı tonda düz bir dikdörtgen
+ * olduğunda ekran "yassı" görünüyor; üst kenara 1px'lik çok hafif bir aydınlık,
+ * alta derinlik gölgesi koymak yüzeyleri birbirinden ayırıyor.
+ * ======================================================================== */
+
+@layer components {
+  /* --- yüzeyler ---------------------------------------------------------- */
+
+  /*
+   * Kart yüzeyi: üstte hafif bir iç ışık, altta derinlik.
+   * `.c4e-surface` sınıfı bileşenlere elle ekleniyor; global `div` seçicisi
+   * kullanmak her kutuyu kart yapardı.
+   */
+  .c4e-surface {
+    position: relative;
+    background:
+      linear-gradient(180deg, oklch(1 0 0 / 3.5%) 0%, transparent 60px),
+      oklch(0.155 0.006 260);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 6%),
+      0 1px 2px oklch(0 0 0 / 30%),
+      0 12px 32px -16px oklch(0 0 0 / 60%);
+  }
+
+  /* Üzerine gelince hafifçe aydınlanan etkileşimli kart. */
+  .c4e-interactive {
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
+  }
+  .c4e-interactive:hover {
+    background-color: oklch(0.185 0.007 260);
+    border-color: oklch(0.34 0.009 260);
+  }
+
+  /* --- kenar çubuğu ------------------------------------------------------ */
+
+  /*
+   * Aktif gezinme öğesi. Eskiden yalnızca ince bir çerçeveydi ve hangi sayfada
+   * olduğun bir bakışta anlaşılmıyordu; artık dolu bir zemin ve sol kenarda
+   * vurgu çubuğu var.
+   */
+  .c4e-nav-active {
+    background: linear-gradient(
+      90deg,
+      oklch(0.55 0.19 275 / 18%) 0%,
+      oklch(0.55 0.19 275 / 6%) 55%,
+      transparent 100%
+    );
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 7%);
+  }
+  .c4e-nav-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(180deg, #60a5fa, #a78bfa);
+    box-shadow: 0 0 12px oklch(0.6 0.2 275 / 70%);
+  }
+
+  /* --- boş durumlar ------------------------------------------------------ */
+
+  /*
+   * Boş bir panelde tek satır düz yazı "bozuk" izlenimi veriyor. Kesikli
+   * çerçeve, durumun BOŞ olduğunu ama ekranın çalıştığını anlatıyor.
+   */
+  .c4e-empty {
+    border: 1px dashed oklch(0.3 0.008 260);
+    border-radius: var(--radius);
+    background: oklch(0.15 0.005 260 / 60%);
+  }
+
+  /* --- afiş yedeği ------------------------------------------------------- */
+
+  /*
+   * Görseli olmayan topluluk/profil afişi eskiden koca bir boş siyah bloktu.
+   * Marka gradyanından türeyen bir doku, "eksik" yerine "sade" gösteriyor.
+   */
+  .c4e-banner-fallback {
+    background:
+      radial-gradient(900px 300px at 15% 0%, oklch(0.5 0.17 255 / 45%), transparent 70%),
+      radial-gradient(700px 320px at 85% 100%, oklch(0.5 0.2 300 / 38%), transparent 70%),
+      linear-gradient(120deg, oklch(0.2 0.03 265), oklch(0.16 0.02 280));
+  }
+
+  /* --- aksan metni ------------------------------------------------------- */
+  .c4e-gradient-text {
+    background: linear-gradient(100deg, #93c5fd, #a5b4fc 48%, #c4b5fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@layer base {
+  /* İnce kaydırma çubuğu: kalın gri çubuk koyu arayüzde en göze batan parçaydı. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.32 0.008 260) transparent;
+  }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: oklch(0.3 0.008 260);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+  *::-webkit-scrollbar-thumb:hover { background: oklch(0.4 0.01 260); background-clip: content-box; }
+
+  /* Seçim rengi markadan gelsin. */
+  ::selection {
+    background: oklch(0.55 0.19 275 / 35%);
+    color: #fff;
+  }
+
+  /*
+   * Hareketi azalt tercihine saygı: bu dosyadaki geçişler süs, erişilebilirlik
+   * ayarını ezmeleri için bir sebep yok.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .c4e-interactive { transition: none; }
+  }
+}

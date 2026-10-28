@@ -720,7 +720,7 @@ async function findCommunityByHandle(handle) {
   const clean = handle.replace(/^@/, "").toLowerCase();
   if (!clean) return null;
   const { ok, rows } = await restRequest(
-    `communities?handle=in.(${encodeURIComponent(`"@${clean}","${clean}"`)})&select=id,name,handle,description,is_private,created_by,creator_username,members_count&limit=1`
+    `communities?handle=in.(${encodeURIComponent(`"@${clean}","${clean}"`)})&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count&limit=1`
   );
   if (!ok || rows.length === 0) return null;
   return rows[0];
@@ -728,7 +728,7 @@ async function findCommunityByHandle(handle) {
 async function findCommunityById(id) {
   if (!id) return null;
   const { ok, rows } = await restRequest(
-    `communities?id=eq.${encodeURIComponent(id)}&select=id,name,handle,description,is_private,created_by,creator_username,members_count&limit=1`
+    `communities?id=eq.${encodeURIComponent(id)}&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count&limit=1`
   );
   if (!ok || rows.length === 0) return null;
   return rows[0];
@@ -822,7 +822,7 @@ async function listCommunityPosts(communityHandle, limit) {
 }
 async function listPublicCommunities(limit) {
   const { ok, rows } = await restRequest(
-    `communities?is_private=eq.false&order=members_count.desc&limit=${limit}&select=id,name,handle,description,is_private,created_by,creator_username,members_count`
+    `communities?is_private=eq.false&order=members_count.desc&limit=${limit}&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count`
   );
   return ok ? rows : [];
 }
@@ -2661,6 +2661,107 @@ async function runCommitWatch(options = {}) {
   return result;
 }
 
+// src/server/communityProjects.ts
+init_security();
+var SUPABASE_URL2 = (process.env.SUPABASE_URL || "").replace(/\/+$/, "");
+var SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+function adminHeaders6(extra = {}) {
+  return {
+    apikey: SERVICE_KEY,
+    Authorization: `Bearer ${SERVICE_KEY}`,
+    "Content-Type": "application/json",
+    ...extra
+  };
+}
+async function rest5(pathAndQuery, init = {}) {
+  const response = await safeFetch(`${SUPABASE_URL2}/rest/v1/${pathAndQuery}`, {
+    method: init.method || "GET",
+    headers: adminHeaders6(init.headers),
+    body: init.body,
+    timeoutMs: 15e3,
+    maxResponseBytes: 4 * 1024 * 1024
+  });
+  let rows = [];
+  if (response.text) {
+    try {
+      const parsed = JSON.parse(response.text);
+      rows = Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      rows = [];
+    }
+  }
+  return { ok: response.ok, status: response.status, rows };
+}
+function communityProjectsConfigured() {
+  return Boolean(SUPABASE_URL2 && SERVICE_KEY);
+}
+async function isMemberOf(userId, communityId) {
+  if (!userId || !communityId) return false;
+  const { ok, rows } = await rest5(
+    `profiles?id=eq.${encodeURIComponent(userId)}&select=joined_communities&limit=1`
+  );
+  if (!ok || !rows[0]) return false;
+  const raw = rows[0].joined_communities;
+  const list = Array.isArray(raw) ? raw : [];
+  return list.map(String).includes(communityId);
+}
+function isCommunityOwner(community, userId, username) {
+  if (!userId) return false;
+  if (community.created_by && String(community.created_by) === userId) return true;
+  if (username && community.creator_username) {
+    return String(community.creator_username).toLowerCase() === username.toLowerCase();
+  }
+  return false;
+}
+async function canSeeCommunity(community, userId, isAdmin) {
+  if (!community.is_private) return true;
+  if (isAdmin) return true;
+  if (!userId) return false;
+  return isMemberOf(userId, community.id);
+}
+async function listCommunityProjectLinks(communityId, limit) {
+  const { ok, rows } = await rest5(
+    `community_projects?community_id=eq.${encodeURIComponent(communityId)}&select=project_id,added_by,added_by_username,created_at&order=created_at.desc&limit=${limit}`
+  );
+  return ok ? rows : [];
+}
+async function listProjectCommunityIds(projectId) {
+  const { ok, rows } = await rest5(
+    `community_projects?project_id=eq.${encodeURIComponent(projectId)}&select=community_id`
+  );
+  return ok ? rows.map((r) => String(r.community_id)) : [];
+}
+async function linkExists(communityId, projectId) {
+  const { ok, rows } = await rest5(
+    `community_projects?community_id=eq.${encodeURIComponent(communityId)}&project_id=eq.${encodeURIComponent(projectId)}&select=project_id&limit=1`
+  );
+  return ok && rows.length > 0;
+}
+async function addProjectToCommunity(communityId, projectId, addedBy, addedByUsername) {
+  const { ok } = await rest5("community_projects", {
+    method: "POST",
+    // Aynı bağ ikinci kez gönderildiğinde hata değil sessiz geçiş: kullanıcı iki kez
+    // tıkladığında ekrana hata basmanın bir anlamı yok, sonuç zaten istenen durum.
+    headers: { Prefer: "resolution=ignore-duplicates,return=minimal" },
+    body: JSON.stringify([
+      {
+        community_id: communityId,
+        project_id: projectId,
+        added_by: addedBy,
+        added_by_username: addedByUsername || null
+      }
+    ])
+  });
+  return ok;
+}
+async function removeProjectFromCommunity(communityId, projectId) {
+  const { ok } = await rest5(
+    `community_projects?community_id=eq.${encodeURIComponent(communityId)}&project_id=eq.${encodeURIComponent(projectId)}`,
+    { method: "DELETE", headers: { Prefer: "return=minimal" } }
+  );
+  return ok;
+}
+
 // server.ts
 var app = (0, import_express.default)();
 var PORT = Number(env("PORT", "3000"));
@@ -2711,7 +2812,7 @@ app.use("/api", rateLimit({ scope: "api", windowMs: 6e4, max: 120 }));
 app.get("/api/health", (_req, res) => {
   res.json({
     status: "healthy",
-    platform: "Code4Ever (C4E)",
+    platform: "Code4Ever",
     timestamp: (/* @__PURE__ */ new Date()).toISOString(),
     auth: supabaseConfigured() ? "supabase" : "unconfigured",
     webhooks_supported: true,
@@ -4626,6 +4727,174 @@ for (const relation of ["like", "follow"]) {
     }
   );
 }
+function asyncRoute(handler2) {
+  return (req, res) => {
+    handler2(req, res).catch((err) => {
+      console.error("[c4e] rota hatas\u0131:", req.method, req.path, err?.message || err);
+      if (!res.headersSent) {
+        res.status(502).json({ success: false, error: "upstream_failed" });
+      }
+    });
+  };
+}
+async function resolveCommunity(raw) {
+  const value = asString(raw, 80);
+  if (!value) return null;
+  return value.startsWith("@") ? findCommunityByHandle(value) : await findCommunityById(value) || findCommunityByHandle(value);
+}
+app.get(
+  "/api/communities/:id/projects",
+  attachOptionalAuth,
+  rateLimit({ scope: "community-projects-list", windowMs: 6e4, max: 60 }),
+  asyncRoute(async (req, res) => {
+    if (!communityProjectsConfigured() || !projectsConfigured()) {
+      res.status(503).json({ success: false, error: "not_configured" });
+      return;
+    }
+    const community = await resolveCommunity(req.params.id);
+    if (!community) {
+      res.status(404).json({ success: false, error: "community_not_found" });
+      return;
+    }
+    if (!await canSeeCommunity(community, req.auth?.userId, req.auth?.isAdmin)) {
+      res.status(404).json({ success: false, error: "community_not_found" });
+      return;
+    }
+    const limit = toPositiveInt3(req.query.limit, 40);
+    const links = await listCommunityProjectLinks(community.id, Math.min(limit, 100));
+    const projects = [];
+    for (const link of links) {
+      const project = await findProjectById(link.project_id);
+      if (!project || project.is_deleted) continue;
+      projects.push({
+        ...project,
+        added_by: link.added_by,
+        added_by_username: link.added_by_username,
+        added_at: link.created_at
+      });
+    }
+    res.json({
+      success: true,
+      community: { id: community.id, name: community.name, handle: community.handle },
+      projects,
+      count: projects.length
+    });
+  })
+);
+app.get(
+  "/api/projects/:id/communities",
+  requireAuth,
+  rateLimit({ scope: "project-communities", windowMs: 6e4, max: 60, perUser: true }),
+  asyncRoute(async (req, res) => {
+    if (!communityProjectsConfigured()) {
+      res.status(503).json({ success: false, error: "not_configured" });
+      return;
+    }
+    const project = await findProjectById(asString(req.params.id, 60));
+    if (!project) {
+      res.status(404).json({ success: false, error: "not_found" });
+      return;
+    }
+    res.json({ success: true, community_ids: await listProjectCommunityIds(project.id) });
+  })
+);
+app.post(
+  "/api/communities/:id/projects",
+  requireAuth,
+  rateLimit({ scope: "community-projects-add", windowMs: 6e4, max: 30, perUser: true }),
+  asyncRoute(async (req, res) => {
+    if (!communityProjectsConfigured() || !projectsConfigured()) {
+      res.status(503).json({ success: false, error: "not_configured" });
+      return;
+    }
+    const community = await resolveCommunity(req.params.id);
+    if (!community) {
+      res.status(404).json({ success: false, error: "community_not_found" });
+      return;
+    }
+    const project = await findProjectById(asString(req.body?.project_id, 60));
+    if (!project || project.is_deleted) {
+      res.status(404).json({ success: false, error: "project_not_found" });
+      return;
+    }
+    const userId = req.auth?.userId || "";
+    if (String(project.owner_id) !== userId) {
+      res.status(403).json({
+        success: false,
+        error: "not_project_owner",
+        message: "Bir projeyi toplulu\u011Fa yaln\u0131zca sahibi ekleyebilir."
+      });
+      return;
+    }
+    if (!await isMemberOf(userId, community.id)) {
+      res.status(403).json({
+        success: false,
+        error: "not_a_member",
+        message: "Projeni yaln\u0131zca \xFCyesi oldu\u011Fun bir toplulu\u011Fa ekleyebilirsin."
+      });
+      return;
+    }
+    const added = await addProjectToCommunity(
+      community.id,
+      project.id,
+      userId,
+      req.auth?.username
+    );
+    if (!added) {
+      res.status(502).json({ success: false, error: "write_failed" });
+      return;
+    }
+    const fresh = await findCommunityById(community.id);
+    res.json({
+      success: true,
+      on: true,
+      projects_count: Number(fresh?.projects_count ?? community.projects_count ?? 0)
+    });
+  })
+);
+app.delete(
+  "/api/communities/:id/projects/:projectId",
+  requireAuth,
+  rateLimit({ scope: "community-projects-remove", windowMs: 6e4, max: 30, perUser: true }),
+  asyncRoute(async (req, res) => {
+    if (!communityProjectsConfigured() || !projectsConfigured()) {
+      res.status(503).json({ success: false, error: "not_configured" });
+      return;
+    }
+    const community = await resolveCommunity(req.params.id);
+    if (!community) {
+      res.status(404).json({ success: false, error: "community_not_found" });
+      return;
+    }
+    const projectId = asString(req.params.projectId, 60);
+    if (!await linkExists(community.id, projectId)) {
+      res.status(404).json({ success: false, error: "not_linked" });
+      return;
+    }
+    const userId = req.auth?.userId || "";
+    const project = await findProjectById(projectId);
+    const isOwnerOfProject = Boolean(project && String(project.owner_id) === userId);
+    const isOwnerOfCommunity = isCommunityOwner(community, userId, req.auth?.username);
+    if (!isOwnerOfProject && !isOwnerOfCommunity && !req.auth?.isAdmin) {
+      res.status(403).json({
+        success: false,
+        error: "not_allowed",
+        message: "Bu girdiyi yaln\u0131zca projenin sahibi ya da toplulu\u011Fun kurucusu kald\u0131rabilir."
+      });
+      return;
+    }
+    if (!await removeProjectFromCommunity(community.id, projectId)) {
+      res.status(502).json({ success: false, error: "write_failed" });
+      return;
+    }
+    const fresh = await findCommunityById(community.id);
+    res.json({
+      success: true,
+      on: false,
+      projects_count: Number(fresh?.projects_count ?? 0)
+    });
+  })
+);
 app.use("/api", (_req, res) => {
   res.status(404).json({ success: false, error: "not_found" });
 });
@@ -4668,6 +4937,9 @@ async function startServer() {
       res.sendFile(import_path.default.join(distPath, "index.html"));
     });
   }
+  process.on("unhandledRejection", (reason) => {
+    console.error("[c4e] yakalanmam\u0131\u015F s\xF6z reddi:", reason);
+  });
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Code4Ever server running on http://0.0.0.0:${PORT}`);
     if (!supabaseConfigured()) {

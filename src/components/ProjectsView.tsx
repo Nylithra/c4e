@@ -14,6 +14,7 @@ import {
   Star,
   Trash2,
   Trophy,
+  Users,
   X
 } from 'lucide-react';
 import { UserProfile } from '../types';
@@ -34,6 +35,8 @@ import {
 interface ProjectsViewProps {
   user: UserProfile;
   language: 'tr' | 'en';
+  /** Seçiciyi açar; seçici App'te, çünkü aynı seçiciyi topluluk sekmesi de kullanıyor. */
+  onShareProject?: (project: Project) => void;
 }
 
 /** "3 saat önce" biçiminde göreli zaman; commit tarihleri için. */
@@ -65,7 +68,8 @@ const ProjectCard: React.FC<{
   onFollow: () => void;
   onDelete: () => void;
   onOpen: () => void;
-}> = ({ project, tr, isOwner, busy, onLike, onFollow, onDelete, onOpen }) => {
+  onShare: () => void;
+}> = ({ project, tr, isOwner, busy, onLike, onFollow, onDelete, onOpen, onShare }) => {
   const liked = project.liked_by_me === true;
   const followed = project.followed_by_me === true;
 
@@ -191,6 +195,22 @@ const ProjectCard: React.FC<{
           <span>{followed ? (tr ? 'Takiptesin' : 'Following') : tr ? 'Takip et' : 'Follow'}</span>
           <span className="text-zinc-500">{project.followers_count}</span>
         </button>
+
+        {/* Topluluğa ekleme yalnızca SAHİBİNE gösteriliyor: sunucu da aynı kuralı
+            uyguluyor, dolayısıyla başkasına göstermek tıklayınca hata alacağı bir
+            düğme koymak olurdu. */}
+        {isOwner && (
+          <button
+            type="button"
+            onClick={onShare}
+            title={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
+            aria-label={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
+            className="flex min-h-9 items-center gap-1.5 rounded-xl border border-zinc-800 px-3 text-[11px] font-semibold text-zinc-400 transition-colors hover:border-indigo-500/40 hover:bg-indigo-500/10 hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+          >
+            <Users className="h-3.5 w-3.5" />
+            <span>{tr ? 'Topluluğa ekle' : 'Add to community'}</span>
+          </button>
+        )}
       </div>
     </div>
   );
@@ -514,7 +534,7 @@ const CreateProjectDialog: React.FC<{
 // GÖRÜNÜM
 // -------------------------------------------------------------
 
-export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language }) => {
+export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onShareProject }) => {
   const tr = language === 'tr';
   const [sort, setSort] = useState<ProjectSort>('new');
   const [projects, setProjects] = useState<Project[]>([]);
@@ -688,6 +708,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language }) =>
                 onFollow={() => toggle(project, 'follow')}
                 onDelete={() => remove(project)}
                 onOpen={() => openProject(project)}
+                onShare={() => onShareProject?.(project)}
               />
             ))}
           </div>
