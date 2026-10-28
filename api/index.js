@@ -2763,7 +2763,30 @@ async function removeProjectFromCommunity(communityId, projectId) {
 }
 
 // server.ts
+function guardHandler(fn) {
+  if (typeof fn !== "function" || fn.length >= 4) return fn;
+  return function guarded(req, res, next) {
+    let out;
+    try {
+      out = fn.call(this, req, res, next);
+    } catch (err) {
+      next(err);
+      return;
+    }
+    if (out && typeof out.then === "function") {
+      out.catch(next);
+    }
+    return out;
+  };
+}
+function installAsyncGuard(target) {
+  for (const method of ["get", "post", "put", "patch", "delete", "all", "use"]) {
+    const original = target[method].bind(target);
+    target[method] = (...args) => original(...args.map((a) => guardHandler(a)));
+  }
+}
 var app = (0, import_express.default)();
+installAsyncGuard(app);
 var PORT = Number(env("PORT", "3000"));
 var IS_PRODUCTION = process.env.NODE_ENV === "production";
 app.set("trust proxy", env("TRUST_PROXY", IS_PRODUCTION ? "1" : "loopback"));
@@ -4727,16 +4750,6 @@ for (const relation of ["like", "follow"]) {
     }
   );
 }
-function asyncRoute(handler2) {
-  return (req, res) => {
-    handler2(req, res).catch((err) => {
-      console.error("[c4e] rota hatas\u0131:", req.method, req.path, err?.message || err);
-      if (!res.headersSent) {
-        res.status(502).json({ success: false, error: "upstream_failed" });
-      }
-    });
-  };
-}
 async function resolveCommunity(raw) {
   const value = asString(raw, 80);
   if (!value) return null;
@@ -4746,7 +4759,7 @@ app.get(
   "/api/communities/:id/projects",
   attachOptionalAuth,
   rateLimit({ scope: "community-projects-list", windowMs: 6e4, max: 60 }),
-  asyncRoute(async (req, res) => {
+  async (req, res) => {
     if (!communityProjectsConfigured() || !projectsConfigured()) {
       res.status(503).json({ success: false, error: "not_configured" });
       return;
@@ -4779,13 +4792,13 @@ app.get(
       projects,
       count: projects.length
     });
-  })
+  }
 );
 app.get(
   "/api/projects/:id/communities",
   requireAuth,
   rateLimit({ scope: "project-communities", windowMs: 6e4, max: 60, perUser: true }),
-  asyncRoute(async (req, res) => {
+  async (req, res) => {
     if (!communityProjectsConfigured()) {
       res.status(503).json({ success: false, error: "not_configured" });
       return;
@@ -4796,13 +4809,13 @@ app.get(
       return;
     }
     res.json({ success: true, community_ids: await listProjectCommunityIds(project.id) });
-  })
+  }
 );
 app.post(
   "/api/communities/:id/projects",
   requireAuth,
   rateLimit({ scope: "community-projects-add", windowMs: 6e4, max: 30, perUser: true }),
-  asyncRoute(async (req, res) => {
+  async (req, res) => {
     if (!communityProjectsConfigured() || !projectsConfigured()) {
       res.status(503).json({ success: false, error: "not_configured" });
       return;
@@ -4850,13 +4863,13 @@ app.post(
       on: true,
       projects_count: Number(fresh?.projects_count ?? community.projects_count ?? 0)
     });
-  })
+  }
 );
 app.delete(
   "/api/communities/:id/projects/:projectId",
   requireAuth,
   rateLimit({ scope: "community-projects-remove", windowMs: 6e4, max: 30, perUser: true }),
-  asyncRoute(async (req, res) => {
+  async (req, res) => {
     if (!communityProjectsConfigured() || !projectsConfigured()) {
       res.status(503).json({ success: false, error: "not_configured" });
       return;
@@ -4893,7 +4906,7 @@ app.delete(
       on: false,
       projects_count: Number(fresh?.projects_count ?? 0)
     });
-  })
+  }
 );
 app.use("/api", (_req, res) => {
   res.status(404).json({ success: false, error: "not_found" });

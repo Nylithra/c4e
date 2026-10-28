@@ -141,7 +141,64 @@ import {
   removeProjectFromCommunity
 } from './src/server/communityProjects';
 
+/**
+ * ASYNC İŞLEYİCİ KORUMASI — her rotayı ve her ara katmanı kapsar.
+ *
+ * SORUN: Express 4, async bir işleyiciden fırlayan hatayı YAKALAMAZ. Dönen söz
+ * reddedildiğinde kimse onu ele almıyor; Node 22 ise yakalanmamış bir söz reddinde
+ * SÜRECİ SONLANDIRIYOR. Yani Supabase'e giden tek bir isteğin takılması, o anda
+ * platformu kullanan HERKESİN sunucusunu düşürüyordu — testte birebir yaşandı.
+ *
+ * NEDEN KAYIT NOKTASINDA, HER ROTAYI TEK TEK SARARAK DEĞİL:
+ *
+ *   1. Ara katmanlar da async. `requireAuth` ve `attachOptionalAuth` birer async
+ *      fonksiyon ve tam olarak aynı şekilde reddedebiliyorlar. Rotaları tek tek
+ *      sarmak onları kapsamazdı; asıl kimlik doğrulama yolu korumasız kalırdı.
+ *   2. Unutulamaz. Yarın eklenen bir rota hiçbir şey yapmadan korunmuş oluyor;
+ *      elle sarma düzeninde ise koruma "hatırlamaya" bağlı kalırdı.
+ *   3. Tek nokta. 57 çağrı yerinde tekrarlanan bir sarmalayıcı, 57 ayrı yerde
+ *      yanlış yazılma fırsatı demek.
+ *
+ * Hata `next(err)` ile aşağıdaki `/api` hata ara katmanına gidiyor: zaten var olan
+ * tek hata yolu kullanılıyor, yanıt biçimi değişmiyor ve istemciye yığın izi sızmıyor.
+ *
+ * DÖRT ARGÜMANLI işleyicilere dokunulmuyor: Express bir fonksiyonun hata işleyicisi
+ * olduğunu argüman SAYISINDAN anlıyor, sarmak onu sıradan bir ara katmana çevirirdi.
+ */
+type AnyHandler = (...args: any[]) => any;
+
+function guardHandler(fn: AnyHandler): AnyHandler {
+  if (typeof fn !== 'function' || fn.length >= 4) return fn;
+
+  return function guarded(this: unknown, req: Request, res: Response, next: NextFunction) {
+    let out: unknown;
+    try {
+      out = (fn as AnyHandler).call(this, req, res, next);
+    } catch (err) {
+      next(err);
+      return;
+    }
+    if (out && typeof (out as Promise<unknown>).then === 'function') {
+      (out as Promise<unknown>).catch(next);
+    }
+    return out;
+  };
+}
+
+/** Rota kaydını yapan metotları, verilen işleyicileri koruyacak şekilde değiştirir. */
+function installAsyncGuard(target: any): void {
+  for (const method of ['get', 'post', 'put', 'patch', 'delete', 'all', 'use'] as const) {
+    const original = target[method].bind(target);
+    target[method] = (...args: any[]) => original(...args.map((a) => guardHandler(a)));
+  }
+}
+
 const app = express();
+
+// Rotalardan ÖNCE kurulmalı: koruma yalnızca kurulduktan sonra kaydedilen
+// işleyicileri sarar, bu yüzden app oluşturulur oluşturulmaz çağrılıyor.
+installAsyncGuard(app);
+
 const PORT = Number(env('PORT', '3000'));
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
@@ -2802,26 +2859,6 @@ for (const relation of ['like', 'follow'] as const) {
 // TOPLULUK PROJELERİ
 // -------------------------------------------------------------
 
-/**
- * async bir rota işleyicisini güvene alır.
- *
- * NEDEN GEREKLİ: Express 4 async işleyicilerden fırlayan hatayı YAKALAMAZ. Yakalanmayan
- * söz reddi Node 22'de süreci sonlandırıyor — yani Supabase'e giden tek bir isteğin
- * takılması, o anda platformu kullanan HERKESİN sunucusunu düşürüyor. Bu sarmalayıcı
- * hatayı isteğin kendisine hapsediyor: çağıran 502 alıyor, diğer herkes etkilenmiyor.
- */
-function asyncRoute(
-  handler: (req: Request, res: Response) => Promise<void>
-): (req: Request, res: Response) => void {
-  return (req, res) => {
-    handler(req, res).catch((err) => {
-      console.error('[c4e] rota hatası:', req.method, req.path, err?.message || err);
-      if (!res.headersSent) {
-        res.status(502).json({ success: false, error: 'upstream_failed' });
-      }
-    });
-  };
-}
 
 
 /**
@@ -2843,7 +2880,7 @@ app.get(
   '/api/communities/:id/projects',
   attachOptionalAuth,
   rateLimit({ scope: 'community-projects-list', windowMs: 60000, max: 60 }),
-  asyncRoute(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     if (!communityProjectsConfigured() || !projectsConfigured()) {
       res.status(503).json({ success: false, error: 'not_configured' });
       return;
@@ -2884,7 +2921,7 @@ app.get(
       projects,
       count: projects.length
     });
-  })
+  }
 );
 
 /** Bir projenin paylaşıldığı toplulukların kimlikleri — seçicinin mevcut durumu. */
@@ -2892,7 +2929,7 @@ app.get(
   '/api/projects/:id/communities',
   requireAuth,
   rateLimit({ scope: 'project-communities', windowMs: 60000, max: 60, perUser: true }),
-  asyncRoute(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     if (!communityProjectsConfigured()) {
       res.status(503).json({ success: false, error: 'not_configured' });
       return;
@@ -2905,7 +2942,7 @@ app.get(
     }
 
     res.json({ success: true, community_ids: await listProjectCommunityIds(project.id) });
-  })
+  }
 );
 
 /**
@@ -2919,7 +2956,7 @@ app.post(
   '/api/communities/:id/projects',
   requireAuth,
   rateLimit({ scope: 'community-projects-add', windowMs: 60000, max: 30, perUser: true }),
-  asyncRoute(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     if (!communityProjectsConfigured() || !projectsConfigured()) {
       res.status(503).json({ success: false, error: 'not_configured' });
       return;
@@ -2976,7 +3013,7 @@ app.post(
       on: true,
       projects_count: Number(fresh?.projects_count ?? community.projects_count ?? 0)
     });
-  })
+  }
 );
 
 /**
@@ -2989,7 +3026,7 @@ app.delete(
   '/api/communities/:id/projects/:projectId',
   requireAuth,
   rateLimit({ scope: 'community-projects-remove', windowMs: 60000, max: 30, perUser: true }),
-  asyncRoute(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     if (!communityProjectsConfigured() || !projectsConfigured()) {
       res.status(503).json({ success: false, error: 'not_configured' });
       return;
@@ -3032,7 +3069,7 @@ app.delete(
       on: false,
       projects_count: Number(fresh?.projects_count ?? 0)
     });
-  })
+  }
 );
 
 // -------------------------------------------------------------
@@ -3096,15 +3133,15 @@ async function startServer() {
   /*
    * SON SAVUNMA HATTI.
    *
-   * Sunucudaki rotaların tamamı async ve Express 4 bunlardan fırlayan hatayı
-   * yakalamıyor; Node 22 ise yakalanmamış bir söz reddinde SÜRECİ SONLANDIRIYOR.
-   * Yani Supabase'e giden tek bir isteğin takılması, o an platformu kullanan
-   * herkesin bağlantısını koparıyordu — bu testte birebir yaşandı.
+   * Rotaların ve ara katmanların tamamı yukarıdaki `installAsyncGuard` ile zaten
+   * korunuyor; bir istekte fırlayan hata `/api` hata ara katmanına gidiyor ve
+   * yalnızca o isteği etkiliyor.
    *
-   * Topluluk projeleri rotaları `asyncRoute` ile tek tek korunuyor ve doğru yanıtı
-   * (502) veriyor. Bu kanca onların değil, HENÜZ SARILMAMIŞ rotaların güvenliği:
-   * hata hâlâ loglanıyor ama tüm sunucuyu düşürmüyor. Süreci canlı tutmak, tek bir
-   * başarısız isteği herkesin kesintisine çevirmekten kesinlikle daha iyi.
+   * Bu kanca İSTEK YOLUNUN DIŞINDAKİ reddedilen sözler için: zamanlayıcılar,
+   * `app.listen` geri çağrısı, bir isteğe bağlı olmadan başlatılan arka plan
+   * işleri. Oralarda `next` yok, dolayısıyla korumanın tutamayacağı tek yer orası.
+   * Süreci canlı tutmak, tek bir başarısız arka plan işini herkesin kesintisine
+   * çevirmekten kesinlikle daha iyi.
    */
   process.on('unhandledRejection', (reason: unknown) => {
     console.error('[c4e] yakalanmamış söz reddi:', reason);
