@@ -69,7 +69,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <div
                 key={trend.id}
                 onClick={() => onSelectTrend && onSelectTrend(trend)}
-                className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] hover:border-white/[0.16] transition-all cursor-pointer space-y-0.5 group"
+                className="c4e-well p-2.5 cursor-pointer space-y-0.5 group"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-white group-hover:text-zinc-200 font-mono">
@@ -143,7 +143,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
         )}
       </div>
 
-      <div className="p-3 bg-black/25 border border-white/[0.07] rounded-xl text-center space-y-1.5">
+      <div className="c4e-well p-3 text-center space-y-1.5">
         <span className="text-[11px] font-mono text-zinc-400 flex items-center justify-center gap-1">
           <Sparkles className="w-3 h-3 text-zinc-400" />
           <span>{brandTitle}</span>

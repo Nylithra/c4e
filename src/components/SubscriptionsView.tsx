@@ -130,7 +130,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
 
                 {/* Badge Award Preview */}
                 {plan.badgeLabel && (
-                  <div className="p-3 rounded-2xl bg-white/[0.04] border border-white/[0.07] space-y-1.5">
+                  <div className="c4e-card p-3 space-y-1.5">
                     <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">
                       {language === 'tr' ? 'Kazanılacak Rozet:' : 'Awarded Badge:'}
                     </span>
@@ -179,7 +179,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
                   <button
                     disabled={true}
                     onClick={() => setSelectedPlanInfo(plan)}
-                    className="w-full py-3 px-4 rounded-2xl bg-white/[0.07] text-zinc-400 border border-white/[0.12] text-xs font-bold cursor-not-allowed flex items-center justify-center gap-2 opacity-80"
+                    className="c4e-ghost w-full py-3 px-4 text-zinc-400 text-xs font-bold cursor-not-allowed flex items-center justify-center gap-2 opacity-80"
                   >
                     <Lock className="w-3.5 h-3.5 text-amber-400" />
                     <span>{language === 'tr' ? 'Satın Al (Şu An Kapalı)' : 'Purchase (Disabled)'}</span>
@@ -192,7 +192,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
       </div>
 
       {/* Info Card */}
-      <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/[0.07] space-y-3">
+      <div className="c4e-card p-6 space-y-3">
         <div className="flex items-center gap-2 text-blue-400 font-bold text-sm">
           <HelpCircle className="w-4 h-4" />
           <span>{language === 'tr' ? 'Abonelik ve Rozetler Hakkında' : 'About Subscriptions & Badges'}</span>
@@ -211,7 +211,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
           onClick={() => setSelectedPlanInfo(null)}
         >
           <div
-            className="w-full max-w-md bg-white/[0.03] border border-white/[0.07] rounded-3xl p-6 space-y-4 text-center shadow-2xl relative"
+            className="c4e-sheet w-full max-w-md p-6 space-y-4 text-center relative"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-3 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 w-12 h-12 mx-auto flex items-center justify-center">

@@ -12,15 +12,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'brand-gradient shadow-lg shadow-[oklch(0.62_0.20_282_/_0.28)]',
-        brand: 'brand-gradient shadow-lg shadow-[oklch(0.62_0.20_282_/_0.28)]',
+        // Birincil eylem Aurora'nin tek gradyani. `brand-gradient` ayni rengi tasiyordu
+        // ama kendi golgesi ve gecisiyle; iki ayri tanimin zamanla birbirinden kaymasi
+        // kacinilmazdi.
+        default: 'c4e-btn',
+        brand: 'c4e-btn',
         neutral: 'bg-zinc-100 text-zinc-950 hover:bg-white shadow-md',
         primary: 'bg-blue-600 text-white hover:bg-blue-500 shadow-md shadow-blue-600/20',
         community: 'bg-purple-600 text-white hover:bg-purple-500 shadow-lg shadow-purple-600/20',
         spark:
           'bg-gradient-to-r from-amber-500 to-amber-600 text-zinc-950 hover:from-amber-400 hover:to-amber-500 shadow-lg shadow-amber-500/20',
-        secondary: 'bg-white/[0.07] text-zinc-100 hover:bg-zinc-700 border border-white/[0.12]',
-        outline: 'border border-white/[0.07] bg-white/[0.04] text-zinc-300 hover:bg-white/[0.09] hover:text-white',
+        secondary: 'c4e-ghost',
+        outline: 'c4e-ghost',
         ghost: 'text-zinc-400 hover:text-white hover:bg-white/[0.06]',
         destructive: 'bg-red-600 text-white hover:bg-red-500 shadow-md shadow-red-600/20',
         destructiveGhost: 'text-zinc-400 hover:text-red-400 hover:bg-red-500/10',

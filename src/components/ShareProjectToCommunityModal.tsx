@@ -138,7 +138,7 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
                       key={p.id}
                       type="button"
                       onClick={() => onPickProject?.(p)}
-                      className="flex w-full items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.02] px-3 py-2.5 text-left transition-all hover:border-indigo-400/45 hover:bg-indigo-500/[0.07] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="c4e-ghost flex w-full items-center gap-3 px-3 py-2.5 text-left hover:border-indigo-400/45 hover:bg-indigo-500/[0.07] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-white/[0.07] text-xs font-extrabold text-zinc-200">
                         {p.name.charAt(0).toUpperCase()}

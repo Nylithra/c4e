@@ -945,7 +945,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
   );
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen bg-[#0a0a14] flex flex-col select-none">
+    <div className="c4e-screen content-column flex flex-col select-none">
       {/* Hidden File Input */}
       <input
         type="file"
@@ -956,7 +956,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
       />
 
       {/* Top Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
+      <div className="c4e-topbar z-20 px-5 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
             <Lock className="w-4 h-4" />
@@ -973,7 +973,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
           <button
             type="button"
             onClick={() => setIsNewGroupModalOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-xs font-semibold text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="c4e-ghost px-3 py-1.5 text-xs font-semibold text-zinc-200 flex items-center gap-1.5 cursor-pointer"
           >
             <Users className="w-3.5 h-3.5 text-purple-400" />
             <span className="hidden sm:inline">{language === 'tr' ? 'Grup Oluştur' : 'New Group'}</span>
@@ -1006,7 +1006,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={language === 'tr' ? 'Sohbet veya grup ara...' : 'Search chats & groups...'}
-                className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+                className="c4e-input w-full pl-9 pr-3 py-1.5 text-xs text-white placeholder-zinc-500"
               />
             </div>
 
@@ -1070,7 +1070,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                     .map((invite) => (
                       <div
                         key={invite.id}
-                        className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.07] space-y-2.5 shadow-sm"
+                        className="c4e-card p-3.5 space-y-2.5"
                       >
                         <div className="flex items-center gap-3">
                           <img
@@ -1103,7 +1103,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                           <button
                             type="button"
                             onClick={() => respondToGroupInviteService(invite.id, 'declined', user)}
-                            className="px-3 py-1.5 rounded-xl bg-white/[0.07] hover:bg-zinc-700 text-zinc-300 text-xs font-semibold transition-colors cursor-pointer"
+                            className="c4e-ghost px-3 py-1.5 text-zinc-300 text-xs font-semibold cursor-pointer"
                           >
                             <span>{language === 'tr' ? 'Reddet' : 'Decline'}</span>
                           </button>
@@ -1220,7 +1220,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
 
         {/* RIGHT COLUMN: Active Chat Panel (Cols 5-12) */}
         <div
-          className={`md:col-span-8 flex flex-col bg-[#0a0a14] ${
+          className={`md:col-span-8 flex flex-col ${
             !selectedConversationId
               ? 'hidden md:flex'
               : 'fixed inset-0 z-40 md:static md:z-auto flex h-[100dvh] md:h-[calc(100vh-65px)] overflow-hidden'
@@ -1229,7 +1229,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
           {selectedConversationId ? (
             <>
               {/* Active Chat Header */}
-              <div className="sticky top-0 z-20 flex-shrink-0 p-3.5 border-b border-white/[0.07] bg-white/[0.03]/95 backdrop-blur-md flex items-center justify-between shadow-sm">
+              <div className="c4e-topbar z-20 flex-shrink-0 p-3.5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
@@ -1294,7 +1294,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                       <button
                         type="button"
                         onClick={() => setIsAddMemberModalOpen(true)}
-                        className="px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-xs font-semibold text-zinc-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="c4e-ghost px-2.5 py-1.5 text-xs font-semibold text-zinc-200 flex items-center gap-1.5 cursor-pointer"
                         title={language === 'tr' ? 'Üye Ekle' : 'Add Member'}
                       >
                         <UserPlus className="w-3.5 h-3.5 text-blue-400" />
@@ -1386,7 +1386,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                       </span>
                     </div>
 
-                    <div className="max-h-48 overflow-y-auto divide-y divide-zinc-900 border border-white/[0.07] rounded-xl bg-white/[0.04]">
+                    <div className="c4e-card max-h-48 overflow-y-auto divide-y divide-zinc-900">
                       {(Array.isArray(selectedGroup.members) ? selectedGroup.members : []).map((member) => {
                         if (!member) return null;
                         const isMemberAdmin = member.role === 'admin';
@@ -1455,7 +1455,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                     <button
                       type="button"
                       onClick={() => setGroupToLeave(selectedGroup)}
-                      className="flex-1 py-2 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      className="c4e-ghost flex-1 py-2 px-3 text-zinc-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <LogOut className="w-3.5 h-3.5 text-zinc-400" />
                       <span>{language === 'tr' ? 'Gruptan Ayrıl' : 'Leave Group'}</span>
@@ -1774,7 +1774,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                     value={codeSnippet}
                     onChange={(e) => setCodeSnippet(e.target.value)}
                     placeholder="// Kodunuzu buraya yapıştırın..."
-                    className="w-full bg-[#0d1117] border border-white/[0.07] rounded-xl p-3 font-mono text-xs text-white focus:outline-none focus:border-blue-500"
+                    className="c4e-input w-full bg-[#0d1117] p-3 font-mono text-xs text-white"
                   />
                 </div>
               )}
@@ -1787,7 +1787,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                  className="c4e-ghost p-2.5 text-zinc-400 hover:text-white cursor-pointer"
                   title="Fotoğraf, Video veya Dosya Ekle"
                 >
                   <Paperclip className="w-4 h-4" />
@@ -1796,7 +1796,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAttachCodeOpen(!isAttachCodeOpen)}
-                  className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                  className="c4e-ghost p-2.5 text-zinc-400 hover:text-white cursor-pointer"
                   title="Kod Parçacığı Ekle"
                 >
                   <Code className="w-4 h-4" />
@@ -1817,7 +1817,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                       ? 'mesaj yaz...'
                       : 'Type a message...'
                   }
-                  className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="c4e-input flex-1 px-4 py-2.5 text-xs text-white placeholder-zinc-500"
                 />
 
                 <button
@@ -1834,7 +1834,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-zinc-400 shadow-xl">
+              <div className="c4e-card w-16 h-16 flex items-center justify-center text-zinc-400">
                 <MessageSquare className="w-8 h-8 text-blue-400" />
               </div>
               <div className="space-y-1 max-w-sm">
@@ -1992,7 +1992,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
       {/* NEW CHAT MODAL */}
       {isNewChatModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white/[0.04] border border-white/[0.07] rounded-3xl p-6 w-full max-w-md space-y-4 shadow-2xl">
+          <div className="c4e-sheet p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Plus className="w-4 h-4 text-blue-400" />
@@ -2020,7 +2020,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 placeholder={
                   language === 'tr' ? 'Kullanıcı adı veya isim ara...' : 'Search user or name...'
                 }
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+                className="c4e-input w-full pl-9 pr-3 py-2 text-xs text-white placeholder-zinc-500"
                 autoFocus
               />
             </div>
@@ -2106,7 +2106,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
           <form
             onSubmit={handleCreateGroup}
-            className="bg-white/[0.04] border border-white/[0.07] rounded-3xl p-6 w-full max-w-md space-y-4 shadow-2xl"
+            className="c4e-sheet p-6 w-full max-w-md space-y-4"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -2132,7 +2132,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
             />
 
             {/* Group Avatar Selection Area */}
-            <div className="flex flex-col items-center justify-center p-4 bg-black/25 rounded-2xl border border-white/[0.07] gap-3">
+            <div className="c4e-well flex flex-col items-center justify-center p-4 gap-3">
               <div className="relative group cursor-pointer" onClick={() => groupAvatarInputRef.current?.click()}>
                 <img
                   src={newGroupAvatar}
@@ -2192,7 +2192,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
                   placeholder={language === 'tr' ? 'Örn: React & AI Geliştiricileri' : 'e.g. React & AI Devs'}
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600"
                 />
               </div>
 
@@ -2206,7 +2206,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                   value={newGroupDesc}
                   onChange={(e) => setNewGroupDesc(e.target.value)}
                   placeholder={language === 'tr' ? 'Grubun konusu veya kuralları...' : 'Group topic or rules...'}
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-purple-500 transition-colors"
+                  className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600"
                 />
               </div>
             </div>
@@ -2215,7 +2215,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsNewGroupModalOpen(false)}
-                className="flex-1 py-2 rounded-xl bg-white/[0.07] text-zinc-300 text-xs font-semibold hover:bg-zinc-700 transition-colors cursor-pointer"
+                className="c4e-ghost flex-1 py-2 text-zinc-300 text-xs font-semibold cursor-pointer"
               >
                 {language === 'tr' ? 'İptal' : 'Cancel'}
               </button>
@@ -2234,7 +2234,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
       {/* DELETE GROUP CONFIRMATION MODAL */}
       {groupToDelete && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
-          <div className="bg-white/[0.04] border border-red-500/30 rounded-3xl p-6 w-full max-w-md space-y-4 shadow-2xl text-left">
+          <div className="c4e-sheet border-red-500/30 p-6 w-full max-w-md space-y-4 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 shrink-0">
                 <Trash2 className="w-5 h-5" />
@@ -2258,7 +2258,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 type="button"
                 disabled={isDeletingGroup}
                 onClick={() => setGroupToDelete(null)}
-                className="flex-1 py-2.5 rounded-xl bg-white/[0.07] hover:bg-zinc-700 text-zinc-300 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                className="c4e-ghost flex-1 py-2.5 text-zinc-300 text-xs font-semibold cursor-pointer disabled:opacity-50"
               >
                 {language === 'tr' ? 'Vazgeç' : 'Cancel'}
               </button>
@@ -2285,7 +2285,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
       {/* LEAVE GROUP CONFIRMATION MODAL */}
       {groupToLeave && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
-          <div className="bg-white/[0.04] border border-white/[0.07] rounded-3xl p-6 w-full max-w-md space-y-4 shadow-2xl text-left">
+          <div className="c4e-sheet p-6 w-full max-w-md space-y-4 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
                 <LogOut className="w-5 h-5" />
@@ -2309,7 +2309,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 type="button"
                 disabled={isLeavingGroup}
                 onClick={() => setGroupToLeave(null)}
-                className="flex-1 py-2.5 rounded-xl bg-white/[0.07] hover:bg-zinc-700 text-zinc-300 text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                className="c4e-ghost flex-1 py-2.5 text-zinc-300 text-xs font-semibold cursor-pointer disabled:opacity-50"
               >
                 {language === 'tr' ? 'Vazgeç' : 'Cancel'}
               </button>
@@ -2336,7 +2336,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
       {/* ADD MEMBER MODAL */}
       {isAddMemberModalOpen && selectedGroup && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white/[0.04] border border-white/[0.07] rounded-3xl p-6 w-full max-w-md space-y-4 shadow-2xl">
+          <div className="c4e-sheet p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <UserPlus className="w-4 h-4 text-blue-400" />
@@ -2374,7 +2374,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 value={memberSearchQuery}
                 onChange={(e) => setMemberSearchQuery(e.target.value)}
                 placeholder={language === 'tr' ? 'Kullanıcı adı yaz...' : 'Search username...'}
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl pl-9 pr-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+                className="c4e-input w-full pl-9 pr-3.5 py-2 text-xs text-white placeholder-zinc-500"
               />
             </div>
 

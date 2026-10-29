@@ -116,7 +116,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
 
   if (!isNylithra) {
     return (
-      <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen bg-[#0a0a14] flex flex-col items-center justify-center p-6 text-center select-none">
+      <div className="c4e-screen content-column flex flex-col items-center justify-center p-6 text-center select-none">
         <div className="w-16 h-16 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-4 shadow-xl">
           <Lock className="w-8 h-8" />
         </div>
@@ -143,9 +143,9 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
   ];
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] h-screen flex flex-col bg-[#0a0a14]">
+    <div className="c4e-screen content-column h-screen flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
+      <div className="c4e-topbar z-20 px-5 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
             <Bot className="w-5 h-5" />
@@ -262,7 +262,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
             <div className="w-8 h-8 rounded-xl bg-white/[0.07] border border-white/[0.12] flex items-center justify-center text-blue-400 flex-shrink-0">
               <Sparkles className="w-4 h-4 animate-spin" />
             </div>
-            <div className="p-4 rounded-2xl rounded-tl-none bg-white/[0.06] border border-white/[0.07] text-xs text-zinc-400 flex items-center gap-2">
+            <div className="c4e-card p-4 rounded-tl-none text-xs text-zinc-400 flex items-center gap-2">
               <Zap className="w-3.5 h-3.5 text-blue-400 animate-bounce" />
               <span>Groq Llama 3.3 70B düşünüyor...</span>
             </div>

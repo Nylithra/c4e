@@ -26,7 +26,7 @@ const CodeBlock: React.FC<{ code: string; label?: string }> = ({ code, label }) 
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/[0.07] bg-black/25">
+    <div className="c4e-well overflow-hidden">
       <div className="flex items-center justify-between border-b border-white/[0.07] px-3 py-1.5">
         <span className="font-mono text-[11px] text-zinc-500">{label || 'example'}</span>
         <button
@@ -52,7 +52,7 @@ const Endpoint: React.FC<{
   auth: string;
   children: React.ReactNode;
 }> = ({ method, path, auth, children }) => (
-  <div className="space-y-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
+  <div className="c4e-card space-y-3 p-4">
     <div className="flex flex-wrap items-center gap-2">
       <span
         className={`rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold ${METHOD_COLORS[method]}`}
@@ -282,7 +282,7 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
                 : 'The endpoints are live; the closed-beta lock has been removed.'
             }
           ].map((card) => (
-            <div key={card.title} className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3.5">
+            <div key={card.title} className="c4e-card p-3.5">
               <card.icon className="mb-2 h-4 w-4 text-zinc-300" />
               <h3 className="text-[13px] font-bold text-white">{card.title}</h3>
               <p className="mt-1 text-[12px] leading-relaxed text-zinc-500">{card.body}</p>
@@ -451,7 +451,7 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
           </p>
         </Endpoint>
 
-        <div className="flex items-start gap-2.5 rounded-xl border border-white/[0.07] bg-white/[0.03] p-3.5">
+        <div className="c4e-card flex items-start gap-2.5 p-3.5">
           <ShieldAlert className="mt-0.5 h-4 w-4 flex-none text-indigo-300" />
           <p className="text-[12.5px] leading-relaxed text-zinc-400">
             {tr

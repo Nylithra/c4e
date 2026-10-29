@@ -74,9 +74,9 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
   }, [jobListings, filterType, searchQuery, currentUser.username]);
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14] text-white">
+    <div className="c4e-screen content-column pb-16 text-white">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between gap-4">
+      <div className="c4e-topbar z-20 px-5 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-300">
             <Briefcase className="w-5 h-5" />
@@ -114,7 +114,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={language === 'tr' ? 'İlan başlığı, teknoloji veya açıklamalarda ara...' : 'Search listings, tech, or descriptions...'}
-            className="w-full bg-white/[0.04] border border-white/[0.07] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+            className="c4e-input w-full pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500"
           />
         </div>
 
@@ -172,7 +172,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
       {/* Listing Cards List */}
       <div className="p-4 space-y-3.5">
         {filteredListings.length === 0 ? (
-          <div className="p-12 text-center space-y-3 bg-white/[0.03] border border-white/[0.07] rounded-3xl">
+          <div className="c4e-card p-12 text-center space-y-3">
             <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-500">
               <Briefcase className="w-6 h-6 text-zinc-400" />
             </div>
@@ -210,7 +210,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
             return (
               <div
                 key={job.id}
-                className="p-5 rounded-3xl bg-white/[0.03] border border-white/[0.07] hover:border-white/[0.16] transition-all space-y-4 shadow-sm"
+                className="c4e-card p-5 space-y-4"
               >
                 {/* Card Header */}
                 <div className="flex items-start justify-between gap-3">
@@ -279,12 +279,12 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                 {/* Card Footer Info & Buttons */}
                 <div className="pt-3 border-t border-white/[0.07] flex items-center justify-between flex-wrap gap-3">
                   <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
-                    <div className="flex items-center gap-1.5 bg-white/[0.04] px-2.5 py-1 rounded-xl border border-white/[0.07]">
+                    <div className="c4e-card flex items-center gap-1.5 px-2.5 py-1">
                       <span className="text-[10px] uppercase text-zinc-500">{language === 'tr' ? 'Kontenjan:' : 'Quota:'}</span>
                       <span className="text-white font-bold">{job.quota}</span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 bg-white/[0.04] px-2.5 py-1 rounded-xl border border-white/[0.07]">
+                    <div className="c4e-card flex items-center gap-1.5 px-2.5 py-1">
                       <span className="text-[10px] uppercase text-zinc-500">{language === 'tr' ? 'Başvuru:' : 'Applications:'}</span>
                       <span className="text-white font-bold">{job.applications_count || job.applications?.length || 0}</span>
                     </div>
@@ -299,7 +299,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                           markJobApplicationAsAnsweredOrRead(job.id);
                           setSelectedListingForApplicants(job);
                         }}
-                        className="px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+                        className="c4e-ghost px-3.5 py-1.5 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
                       >
                         <Eye className="w-3.5 h-3.5 text-zinc-300" />
                         <span>

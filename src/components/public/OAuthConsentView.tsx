@@ -261,7 +261,7 @@ export const OAuthConsentView: React.FC<OAuthConsentViewProps> = ({ language, is
           başka bir siteye gidiyor; hangi siteye gittiğini önceden görmesi, sahte bir
           uygulamayı tanımasının en pratik yolu.
         */}
-        <div className="flex items-start gap-2.5 rounded-xl border border-white/[0.07] bg-black/20 px-3.5 py-3">
+        <div className="c4e-well flex items-start gap-2.5 px-3.5 py-3">
           <ShieldCheck className="mt-0.5 h-4 w-4 flex-none text-indigo-300" />
           <p className="text-[11.5px] leading-relaxed text-zinc-400">
             {tr ? (

@@ -60,7 +60,7 @@ export const ConnectedAppsSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lan
   if (list.length === 0) {
     return (
       <div className="c4e-empty px-5 py-10 text-center">
-        <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/[0.04] text-zinc-600">
+        <div className="c4e-card mx-auto mb-3 flex h-11 w-11 items-center justify-center text-zinc-600">
           <Puzzle className="h-5 w-5" />
         </div>
         <p className="text-sm font-bold text-zinc-300">

@@ -380,7 +380,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
   return (
     <div
-      className={`flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14] ${profileTheme ? 'c4e-theme-scope' : ''}`}
+      className={`c4e-screen content-column pb-16 ${profileTheme ? 'c4e-theme-scope' : ''}`}
       style={profileTheme ? themeToStyle(profileTheme) : undefined}
     >
       <div className="relative group">
@@ -416,7 +416,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           {isOwnProfile ? (
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="px-3.5 py-1.5 rounded-xl bg-white/[0.07] hover:bg-zinc-700 text-white text-xs font-semibold border border-white/[0.12] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+              className="c4e-ghost px-3.5 py-1.5 text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
             >
               <Edit3 className="w-3.5 h-3.5" />
               <span>
@@ -463,7 +463,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
         </div>
 
-        <p className="text-xs text-zinc-300 leading-relaxed bg-white/[0.03] p-3 rounded-xl border border-white/[0.07] user-text">
+        <p className="c4e-card text-xs text-zinc-300 leading-relaxed p-3 user-text">
           {view.bio || (language === 'tr' ? 'Code4Ever geliştirici üyesi.' : 'Code4Ever developer member.')}
         </p>
 
@@ -507,7 +507,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
 
         {/* Pinned / Showcased Repositories Section */}
-        <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-3">
+        <div className="c4e-card p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <GitBranch className="w-4 h-4 text-zinc-300" />
@@ -519,7 +519,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsShowcaseModalOpen(true)}
-                className="px-3 py-1 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-200 text-xs font-mono border border-white/[0.12] transition-all flex items-center gap-1.5 cursor-pointer"
+                className="c4e-ghost px-3 py-1 text-zinc-200 text-xs font-mono flex items-center gap-1.5 cursor-pointer"
               >
                 <Sparkles className="w-3 h-3 text-zinc-400" />
                 <span>{language === 'tr' ? 'Vitrini Düzenle' : 'Manage Showcase'}</span>
@@ -551,7 +551,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 {displayedRepos.map((repo) => (
                   <div
                     key={repo.name}
-                    className="p-3.5 bg-black/25 border border-white/[0.07] hover:border-white/[0.16] rounded-xl transition-all flex flex-col justify-between space-y-2 group"
+                    className="c4e-well p-3.5 flex flex-col justify-between space-y-2 group"
                   >
                   <div className="space-y-1">
                     <div className="flex items-center justify-between gap-2">
@@ -644,7 +644,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
         {/* Tab Contents */}
         {profileTab === 'likes' && isLikesHidden ? (
-          <div className="p-12 text-center space-y-3 bg-white/[0.03] rounded-2xl border border-white/[0.07]">
+          <div className="c4e-card p-12 text-center space-y-3">
             <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-400">
               <Lock className="w-6 h-6 text-zinc-400" />
             </div>
@@ -658,7 +658,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </p>
           </div>
         ) : profileTab === 'communities' ? (
-          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-3">
+          <div className="c4e-card p-4 space-y-3">
             <h3 className="text-xs font-bold text-white flex items-center gap-2">
               <Users className="w-4 h-4 text-purple-400" />
               <span>{language === 'tr' ? 'Üye Olduğu Topluluklar' : 'Joined Communities'}</span>
@@ -675,7 +675,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     <div
                       key={comm.id}
                       onClick={() => onSelectCommunity && onSelectCommunity(comm)}
-                      className="p-2.5 bg-black/25 border border-white/[0.07] hover:border-purple-500/50 rounded-xl flex items-center gap-3 transition-all cursor-pointer group"
+                      className="c4e-well p-2.5 hover:border-purple-500/50 flex items-center gap-3 cursor-pointer group"
                     >
                       <UserAvatar src={comm.avatar_url} name={comm.name} className="w-8 h-8 rounded-xl ring-1 ring-white/[0.08] flex-shrink-0 text-[10px]" />
                       <div className="truncate">
@@ -692,7 +692,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         ) : (
           <div className="divide-y divide-white/[0.06]">
             {displayedList.length === 0 ? (
-              <div className="p-12 text-center space-y-3 bg-white/[0.03] rounded-2xl border border-white/[0.07]">
+              <div className="c4e-card p-12 text-center space-y-3">
                 <div className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto text-zinc-500">
                   {profileTab === 'reposts' ? (
                     <Repeat className="w-5 h-5 text-emerald-400" />
@@ -813,7 +813,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     )}
 
                     {post.project_card && (
-                      <div className="p-3 bg-white/[0.03] border border-blue-900/40 rounded-xl space-y-2">
+                      <div className="c4e-card p-3 border-blue-900/40 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-xs text-white flex items-center gap-1.5">
                             <GitBranch className="w-3.5 h-3.5 text-blue-400" />
@@ -940,7 +940,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
                     {/* Comments Drawer */}
                     {activeCommentPostId === post.id && (
-                      <div className="p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl space-y-3 mt-2">
+                      <div className="c4e-well p-3.5 space-y-3 mt-2">
                         <div className="flex items-center justify-between border-b border-white/[0.07] pb-2">
                           <span className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
                             <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
@@ -954,7 +954,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                         {post.comments && post.comments.length > 0 ? (
                           <div className="space-y-2.5 max-h-64 overflow-y-auto pr-1">
                             {post.comments.map((comment) => (
-                              <div key={comment.id} className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] space-y-1">
+                              <div key={comment.id} className="c4e-card p-2.5 space-y-1">
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-2">
                                     <img
@@ -986,7 +986,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                               value={commentText}
                               onChange={(e) => setCommentText(e.target.value)}
                               placeholder={language === 'tr' ? 'Yorum yazın...' : 'Write a comment...'}
-                              className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+                              className="c4e-input flex-1 px-3 py-2 text-xs text-white placeholder-zinc-500"
                             />
                             <button
                               type="submit"
@@ -1008,7 +1008,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         )}
 
         {isEditing ? (
-          <form onSubmit={handleFormSubmit} className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-3 mt-4">
+          <form onSubmit={handleFormSubmit} className="c4e-card p-4 space-y-3 mt-4">
             <h3 className="text-xs font-bold text-white border-b border-white/[0.07] pb-2">
               {language === 'tr' ? 'Profil Bilgilerini Özelleştir' : 'Customize Profile Details'}
             </h3>
@@ -1038,7 +1038,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     type="text"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl pl-7 pr-3 py-1.5 text-white font-mono focus:outline-none focus:border-blue-500"
+                    className="c4e-input w-full pl-7 pr-3 py-1.5 text-white font-mono"
                   />
                 </div>
               </div>
@@ -1051,7 +1051,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   type="text"
                   value={formData.display_name}
                   onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-1.5 text-white focus:outline-none focus:border-blue-500"
+                  className="c4e-input w-full px-3 py-1.5 text-white"
                 />
               </div>
 
@@ -1064,7 +1064,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     type="text"
                     value={formData.avatar_url}
                     onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
-                    className="flex-1 bg-black/25 border border-white/[0.07] rounded-xl px-3 py-1.5 text-white focus:outline-none font-mono"
+                    className="c4e-input flex-1 px-3 py-1.5 text-white font-mono"
                   />
                   <input
                     type="file"
@@ -1076,7 +1076,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   <button
                     type="button"
                     onClick={() => avatarInputRef.current?.click()}
-                    className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-mono text-xs flex items-center gap-1 flex-shrink-0 cursor-pointer"
+                    className="c4e-ghost px-3 py-1.5 text-white font-mono text-xs flex items-center gap-1 flex-shrink-0 cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5 text-blue-400" />
                     <span>{language === 'tr' ? 'Yükle' : 'Upload'}</span>
@@ -1093,7 +1093,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     type="text"
                     value={formData.banner_url}
                     onChange={(e) => setFormData({ ...formData, banner_url: e.target.value })}
-                    className="flex-1 bg-black/25 border border-white/[0.07] rounded-xl px-3 py-1.5 text-white focus:outline-none font-mono"
+                    className="c4e-input flex-1 px-3 py-1.5 text-white font-mono"
                   />
                   <input
                     type="file"
@@ -1105,7 +1105,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   <button
                     type="button"
                     onClick={() => bannerInputRef.current?.click()}
-                    className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-mono text-xs flex items-center gap-1 flex-shrink-0 cursor-pointer"
+                    className="c4e-ghost px-3 py-1.5 text-white font-mono text-xs flex items-center gap-1 flex-shrink-0 cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5 text-blue-400" />
                     <span>{language === 'tr' ? 'Yükle' : 'Upload'}</span>
@@ -1141,7 +1141,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   rows={3}
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-1.5 text-white focus:outline-none resize-none"
+                  className="c4e-input w-full px-3 py-1.5 text-white resize-none"
                 />
               </div>
             </div>
@@ -1199,7 +1199,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {/* Stylish Username Taken Modal */}
       {usernameTakenError && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
-          <div className="bg-white/[0.06] border border-red-500/40 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl relative text-white animate-in fade-in zoom-in-95 duration-150">
+          <div className="c4e-sheet border-red-500/40 w-full max-w-md p-6 space-y-4 relative text-white animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400">
                 <AlertTriangle className="w-6 h-6" />
@@ -1213,7 +1213,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 </p>
               </div>
             </div>
-            <p className="text-xs text-zinc-300 bg-black/25 p-3.5 rounded-xl border border-white/[0.07] leading-relaxed font-mono">
+            <p className="c4e-well text-xs text-zinc-300 p-3.5 leading-relaxed font-mono">
               {usernameTakenError}
             </p>
             <div className="flex justify-end pt-2">
@@ -1236,7 +1236,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           onClick={() => setPostToDelete(null)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl bg-white/[0.06] border border-white/[0.07] shadow-2xl p-5 space-y-4 animate-in zoom-in-95"
+            className="c4e-sheet w-full max-w-sm p-5 space-y-4 animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3">
@@ -1269,7 +1269,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <button
                 type="button"
                 onClick={() => setPostToDelete(null)}
-                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 font-semibold text-xs transition-colors cursor-pointer border border-white/[0.07]"
+                className="c4e-ghost px-4 py-2 text-zinc-300 font-semibold text-xs cursor-pointer"
               >
                 {language === 'tr' ? 'Vazgeç' : 'Cancel'}
               </button>

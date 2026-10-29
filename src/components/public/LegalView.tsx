@@ -26,7 +26,7 @@ const List: React.FC<{ items: React.ReactNode[] }> = ({ items }) => (
 );
 
 const Notice: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="rounded-xl border border-white/[0.07] bg-white/[0.04] p-3.5 text-[12px] leading-relaxed text-zinc-400">
+  <div className="c4e-card p-3.5 text-[12px] leading-relaxed text-zinc-400">
     {children}
   </div>
 );

@@ -77,7 +77,7 @@ export const ReportPostModal: React.FC<ReportPostModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-md bg-white/[0.03] border border-white/[0.07] rounded-3xl overflow-hidden shadow-2xl space-y-0 text-white">
+      <div className="c4e-sheet w-full max-w-md overflow-hidden space-y-0 text-white">
         {/* Header */}
         <div className="p-5 border-b border-white/[0.07] flex items-center justify-between bg-black/25">
           <div className="flex items-center gap-3">
@@ -172,7 +172,7 @@ export const ReportPostModal: React.FC<ReportPostModalProps> = ({
                     ? 'Yöneticilere iletmek istediğiniz ek bir detay varsa yazabilirsiniz...'
                     : 'Provide any additional context for moderators...'
                 }
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-2.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:border-amber-500"
+                className="c4e-input w-full p-2.5 text-xs text-white placeholder:text-zinc-600"
               />
             </div>
 
@@ -182,7 +182,7 @@ export const ReportPostModal: React.FC<ReportPostModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-400 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                className="c4e-ghost px-4 py-2 text-zinc-400 hover:text-white text-xs font-bold cursor-pointer"
               >
                 {language === 'tr' ? 'Vazgeç' : 'Cancel'}
               </button>

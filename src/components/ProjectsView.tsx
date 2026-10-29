@@ -421,7 +421,7 @@ const CreateProjectDialog: React.FC<{
       onClick={onClose}
     >
       <div
-        className="flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-white/[0.07] bg-[#0a0a14] sm:rounded-3xl"
+        className="c4e-sheet flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3">
@@ -454,7 +454,7 @@ const CreateProjectDialog: React.FC<{
               onChange={(e) => setName(e.target.value)}
               maxLength={80}
               placeholder={tr ? 'Projenin adı' : 'Project name'}
-              className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="c4e-input min-h-11 w-full px-3 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
@@ -469,7 +469,7 @@ const CreateProjectDialog: React.FC<{
               maxLength={600}
               rows={3}
               placeholder={tr ? 'Proje ne yapıyor?' : 'What does this project do?'}
-              className="w-full resize-none rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="c4e-input w-full resize-none px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
             />
             <p className="text-right text-[10px] text-zinc-600">{about.length}/600</p>
           </div>
@@ -533,7 +533,7 @@ const CreateProjectDialog: React.FC<{
                     onChange={(e) => setFilter(e.target.value)}
                     placeholder={tr ? 'Depolarında ara' : 'Search your repositories'}
                     aria-label={tr ? 'Depo ara' : 'Search repositories'}
-                    className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="c4e-input min-h-11 w-full pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
                   />
                 </div>
 
@@ -706,7 +706,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
 
   return (
     <div className="content-column min-h-screen w-full min-w-0 flex-1 border-r border-white/[0.07] pb-16">
-      <div className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#0a0a14]/85 px-4 py-3 backdrop-blur-xl">
+      <div className="c4e-topbar z-20 px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h2 className="truncate text-lg font-extrabold tracking-tight text-white">
@@ -822,7 +822,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
           </div>
         ) : visible.length === 0 ? (
           <div className="c4e-empty px-6 py-14 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.04] text-zinc-600">
+            <div className="c4e-card mx-auto mb-3 flex h-12 w-12 items-center justify-center text-zinc-600">
               {query ? <Search className="h-5 w-5" /> : <Github className="h-5 w-5" />}
             </div>
             <p className="text-sm font-bold text-zinc-300">

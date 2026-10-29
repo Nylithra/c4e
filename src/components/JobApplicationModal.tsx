@@ -122,7 +122,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white/[0.04] border border-white/[0.07] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="c4e-sheet w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-white/[0.07] flex items-center justify-between bg-white/[0.04]">
           <div className="flex items-center gap-2.5">
@@ -176,7 +176,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
             )}
 
             {isOwner && (
-              <div className="p-3 rounded-2xl bg-white/[0.07] border border-white/[0.12] text-zinc-300 text-xs flex items-center gap-2">
+              <div className="c4e-card p-3 text-zinc-300 text-xs flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0 text-zinc-400" />
                 <span>
                   {language === 'tr'
@@ -204,7 +204,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
                 onChange={(e) => setName(e.target.value)}
                 placeholder={language === 'tr' ? 'Ad Soyad' : 'Full Name'}
                 maxLength={60}
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-500"
                 required
               />
             </div>
@@ -221,7 +221,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
                 placeholder="24"
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-zinc-500"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white font-mono"
                 required
               />
             </div>
@@ -237,7 +237,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
                 onChange={(e) => setExperience(e.target.value)}
                 placeholder={language === 'tr' ? 'Örn: 3 Yıl Frontend / React & Next.js' : 'e.g. 3 Years Frontend / React'}
                 maxLength={150}
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-500"
                 required
               />
             </div>
@@ -253,7 +253,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
                 onChange={(e) => setLanguages(e.target.value)}
                 placeholder={language === 'tr' ? 'Örn: TypeScript, Go, Python, PostgreSQL' : 'e.g. TypeScript, Go, Python'}
                 maxLength={150}
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-500"
                 required
               />
             </div>
@@ -273,7 +273,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
                 }
                 rows={3}
                 maxLength={2000}
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 resize-none"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-500 resize-none"
                 required
               />
               <div className="text-[10px] text-zinc-500 text-right mt-0.5 font-mono">

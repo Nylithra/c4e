@@ -26,8 +26,8 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
   const bookmarkedPosts = posts.filter((p) => p.is_bookmarked);
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14]">
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
+    <div className="c4e-screen content-column pb-16">
+      <div className="c4e-topbar z-20 px-5 py-3.5 flex items-center justify-between">
         <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
           <Bookmark className="w-5 h-5 text-zinc-300" />
           <span>{language === 'tr' ? 'Yer İşaretleri' : 'Bookmarks'}</span>

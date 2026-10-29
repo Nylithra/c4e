@@ -128,8 +128,8 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
   };
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14]">
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
+    <div className="c4e-screen content-column pb-16">
+      <div className="c4e-topbar z-20 px-5 py-3.5 flex items-center justify-between">
         <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
           <Users className="w-5 h-5 text-zinc-300" />
           <span>{language === 'tr' ? 'Topluluklar' : 'Communities'}</span>
@@ -146,7 +146,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
 
       <div className="p-5 space-y-4">
         {communities.length === 0 ? (
-          <div className="py-12 text-center text-zinc-500 text-xs font-mono bg-white/[0.03] rounded-2xl border border-white/[0.07]">
+          <div className="c4e-card py-12 text-center text-zinc-500 text-xs font-mono">
             {language === 'tr' ? 'Henüz hiçbir topluluk oluşturulmamış.' : 'No communities created yet.'}
           </div>
         ) : (
@@ -156,7 +156,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
               return (
                 <div
                   key={comm.id}
-                  className="overflow-hidden bg-white/[0.03] border border-white/[0.07] rounded-2xl hover:border-white/[0.16] transition-all group shadow-sm flex flex-col"
+                  className="c4e-card overflow-hidden group flex flex-col"
                 >
                   {/* Subtle Community Banner Strip if available */}
                   {comm.banner_url && (
@@ -338,7 +338,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
       {/* Create Community Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl p-6 w-full max-w-md space-y-5 shadow-2xl">
+          <div className="c4e-sheet p-6 w-full max-w-md space-y-5">
             <h3 className="text-base font-bold text-white">
               {language === 'tr' ? 'Yeni Topluluk Oluştur' : 'Create New Community'}
             </h3>
@@ -361,7 +361,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="ör. Rust Developers TR"
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500"
+                  className="c4e-input w-full px-3.5 py-2.5 text-white"
                 />
               </div>
 
@@ -374,7 +374,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={handle}
                   onChange={(e) => setHandle(e.target.value)}
                   placeholder="@rust_tr"
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500 font-mono"
+                  className="c4e-input w-full px-3.5 py-2.5 text-white font-mono"
                 />
               </div>
 
@@ -387,7 +387,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={avatarUrl}
                   onChange={(e) => setAvatarUrl(e.target.value)}
                   placeholder="https://..."
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-zinc-500 font-mono"
+                  className="c4e-input w-full px-3.5 py-2.5 text-white font-mono"
                 />
               </div>
 
@@ -399,7 +399,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-white focus:outline-none resize-none"
+                  className="c4e-input w-full px-3.5 py-2.5 text-white resize-none"
                 />
               </div>
 
@@ -453,7 +453,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-400 hover:text-white font-semibold transition-colors cursor-pointer"
+                  className="c4e-ghost flex-1 py-2.5 text-zinc-400 hover:text-white font-semibold cursor-pointer"
                 >
                   {language === 'tr' ? 'İptal' : 'Cancel'}
                 </button>

@@ -155,9 +155,9 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
     permission === 'default' && !isPromptDismissed && notifications.length > 0;
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen bg-[#0a0a14]">
+    <div className="c4e-screen content-column">
       {/* Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07]">
+      <div className="c4e-topbar z-20">
         <div className="px-5 py-3.5 flex items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2 min-w-0">
             <Bell className="w-5 h-5 text-zinc-300 flex-shrink-0" />
@@ -225,7 +225,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
 
       {/* Browser permission prompt: one quiet line, dismissable, no marketing copy. */}
       {showPermissionPrompt && (
-        <div className="mx-4 mt-4 flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.04] p-3">
+        <div className="c4e-card mx-4 mt-4 flex items-center gap-3 p-3">
           <Bell className="h-4 w-4 flex-shrink-0 text-zinc-400" />
           <p className="flex-1 min-w-0 text-[11px] leading-snug text-zinc-400">
             {tr
@@ -253,7 +253,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
       {/* List */}
       {groups.length === 0 ? (
         <div className="px-6 py-20 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.04] text-zinc-500">
+          <div className="c4e-card mx-auto mb-4 flex h-14 w-14 items-center justify-center text-zinc-500">
             <Inbox className="h-6 w-6" />
           </div>
           <h3 className="text-sm font-bold text-white">

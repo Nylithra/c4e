@@ -109,8 +109,8 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
   });
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14]">
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 space-y-3">
+    <div className="c4e-screen content-column pb-16">
+      <div className="c4e-topbar z-20 px-5 py-3.5 space-y-3">
         <div className="relative">
           <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-3" />
           <input
@@ -122,7 +122,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                 ? 'Konu, etiket, gönderi veya topluluk ara...'
                 : 'Search topic, tag, post or community...'
             }
-            className="w-full bg-white/[0.06] border border-white/[0.07] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+            className="c4e-input w-full pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500"
           />
         </div>
 
@@ -181,7 +181,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
               value={lang}
               onChange={(e) => setLang(e.target.value)}
               aria-label={language === 'tr' ? 'Programlama dili' : 'Programming language'}
-              className="rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-zinc-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="c4e-input px-3 py-1.5 text-xs font-semibold text-zinc-300 focus-visible:ring-2 focus-visible:ring-ring"
             >
               <option value="">{language === 'tr' ? 'Tüm diller' : 'All languages'}</option>
               {LANGUAGES.map((l) => (
@@ -240,7 +240,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
 
       <div className="p-5 space-y-6">
         {!query && (
-          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 space-y-3">
+          <div className="c4e-card p-4 space-y-3">
             <h3 className="text-xs font-bold text-white flex items-center gap-2 border-b border-white/[0.07] pb-2">
               <TrendingUp className="w-4 h-4 text-zinc-300" />
               <span>{language === 'tr' ? 'Popüler Konular' : 'Popular Topics'}</span>
@@ -251,7 +251,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                 <div
                   key={t.id}
                   onClick={() => setQuery(t.tag)}
-                  className="p-3 bg-black/25 border border-white/[0.07] rounded-xl hover:border-white/[0.16] cursor-pointer transition-all flex items-center justify-between"
+                  className="c4e-well p-3 cursor-pointer flex items-center justify-between"
                 >
                   <div>
                     <span className="text-xs font-bold text-white block">{t.tag}</span>
@@ -277,7 +277,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                 <div
                   key={comm.id}
                   onClick={() => onSelectCommunity(comm.id)}
-                  className="p-3 bg-white/[0.03] border border-white/[0.07] rounded-xl flex items-center justify-between hover:border-white/[0.16] cursor-pointer transition-all"
+                  className="c4e-card p-3 flex items-center justify-between cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <UserAvatar src={comm.avatar_url} name={comm.name} className="w-10 h-10 rounded-xl ring-1 ring-white/[0.08] text-[10px]" />
@@ -303,13 +303,13 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
             </h3>
 
             {filteredPosts.length === 0 ? (
-              <div className="p-8 text-center text-xs text-zinc-500 font-mono bg-white/[0.03] border border-white/[0.07] rounded-2xl">
+              <div className="c4e-card p-8 text-center text-xs text-zinc-500 font-mono">
                 {language === 'tr' ? 'Aramanıza uygun gönderi bulunamadı.' : 'No matching posts found.'}
               </div>
             ) : (
               <div className="space-y-3">
                 {filteredPosts.map((post) => (
-                  <div key={post.id} className="p-4 bg-white/[0.03] border border-white/[0.07] rounded-2xl space-y-2">
+                  <div key={post.id} className="c4e-card p-4 space-y-2">
                     <div className="flex items-center gap-2">
                       <UserAvatar
                         src={post.author.avatar_url}

@@ -104,7 +104,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
-      <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl relative text-white">
+      <div className="c4e-sheet w-full max-w-md p-6 space-y-5 relative text-white">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/[0.07] pb-3.5">
           <div className="flex items-center gap-2.5">
@@ -177,7 +177,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
         {/* Controls */}
         <div className="space-y-4 pt-1">
           {/* Zoom Slider */}
-          <div className="space-y-1.5 bg-black/25 p-3 rounded-2xl border border-white/[0.07]">
+          <div className="c4e-well space-y-1.5 p-3">
             <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
               <span className="flex items-center gap-1">
                 <ZoomOut className="w-3.5 h-3.5" />
@@ -192,7 +192,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               step={0.1}
               value={zoom}
               onChange={(e) => setZoom(parseFloat(e.target.value))}
-              className="w-full h-1.5 bg-white/[0.07] rounded-lg appearance-none cursor-pointer accent-zinc-200"
+              className="c4e-input w-full h-1.5 appearance-none cursor-pointer accent-zinc-200"
             />
           </div>
 
@@ -202,7 +202,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleRotate(-90)}
-                className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 hover:text-white border border-white/[0.07] text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="c4e-ghost px-3 py-2 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5"
                 title={language === 'tr' ? 'Sola Döndür (-90°)' : 'Rotate Left'}
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -211,7 +211,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleRotate(90)}
-                className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 hover:text-white border border-white/[0.07] text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="c4e-ghost px-3 py-2 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5"
                 title={language === 'tr' ? 'Sağa Döndür (+90°)' : 'Rotate Right'}
               >
                 <RotateCw className="w-3.5 h-3.5" />
@@ -222,7 +222,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
             <button
               type="button"
               onClick={handleReset}
-              className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-400 hover:text-zinc-200 border border-white/[0.07] text-xs font-mono transition-colors"
+              className="c4e-ghost px-3 py-2 text-zinc-400 hover:text-zinc-200 text-xs font-mono"
             >
               {language === 'tr' ? 'Sıfırla' : 'Reset'}
             </button>
@@ -234,7 +234,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 text-xs font-semibold border border-white/[0.07] transition-colors"
+            className="c4e-ghost px-4 py-2.5 text-zinc-300 text-xs font-semibold"
           >
             {language === 'tr' ? 'İptal' : 'Cancel'}
           </button>

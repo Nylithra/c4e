@@ -70,7 +70,7 @@ const ColorField: React.FC<{
   };
 
   return (
-    <label className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-black/25 border border-white/[0.07]">
+    <label className="c4e-well flex items-center justify-between gap-3 p-2.5">
       <span className="min-w-0">
         <span className="block text-[11px] font-bold text-zinc-200 truncate">{label}</span>
         {hint && <span className="block text-[10px] text-zinc-500 truncate">{hint}</span>}
@@ -104,7 +104,7 @@ const SliderField: React.FC<{
   unit?: string;
   onChange: (value: number) => void;
 }> = ({ label, value, min, max, step = 1, unit = '', onChange }) => (
-  <label className="block p-2.5 rounded-xl bg-black/25 border border-white/[0.07]">
+  <label className="c4e-well block p-2.5">
     <span className="flex items-center justify-between text-[11px] font-bold text-zinc-200 mb-1.5">
       <span>{label}</span>
       <span className="font-mono text-zinc-400">
@@ -133,7 +133,7 @@ const ToggleField: React.FC<{
   <button
     type="button"
     onClick={() => onChange(!checked)}
-    className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-black/25 border border-white/[0.07] hover:border-white/[0.16] transition-colors text-left cursor-pointer"
+    className="c4e-listrow w-full flex items-center justify-between gap-3 p-3 text-left cursor-pointer"
   >
     <span className="min-w-0">
       <span className="block text-[11px] font-bold text-zinc-100">{label}</span>
@@ -300,7 +300,7 @@ const GradientEditor: React.FC<{
         </div>
 
         {gradient.stops.map((stop, index) => (
-          <div key={index} className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] space-y-2">
+          <div key={index} className="c4e-well p-2.5 space-y-2">
             <div className="flex items-center gap-2">
               <input
                 type="color"
@@ -364,7 +364,7 @@ const FillSection: React.FC<{
   onChange: (fill: ThemeFill) => void;
   children?: React.ReactNode;
 }> = ({ language, title, description, icon, fill, onChange, children }) => (
-  <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-3">
+  <section className="c4e-card p-4 space-y-3">
     <header className="flex items-start gap-2.5">
       <span className="w-8 h-8 rounded-xl bg-black/25 border border-white/[0.07] flex items-center justify-center text-amber-400 flex-shrink-0">
         {icon}
@@ -619,7 +619,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-4 items-start">
         <div className="space-y-4 min-w-0">
           {/* Presets */}
-          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-3">
+          <section className="c4e-card p-4 space-y-3">
             <header className="flex items-center gap-2">
               <Wand2 className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Hazır Temalar', 'Presets')}</h4>
@@ -710,7 +710,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           </FillSection>
 
           {/* Text colours */}
-          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-2.5">
+          <section className="c4e-card p-4 space-y-2.5">
             <header className="flex items-center gap-2">
               <TypeIcon className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Metin Renkleri', 'Text colours')}</h4>
@@ -743,7 +743,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           </section>
 
           {/* Borders, glow, effects */}
-          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-2.5">
+          <section className="c4e-card p-4 space-y-2.5">
             <header className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Kenarlık, Işıma & Efektler', 'Borders, glow & effects')}</h4>
@@ -799,7 +799,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           </section>
 
           {/* Visibility */}
-          <section className="rounded-2xl bg-white/[0.04] border border-white/[0.07] p-4 space-y-2.5">
+          <section className="c4e-card p-4 space-y-2.5">
             <header className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Görünürlük', 'Visibility')}</h4>

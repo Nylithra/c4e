@@ -303,7 +303,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="px-6 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:bg-white/[0.09] text-white font-bold text-xs transition-colors"
+              className="c4e-ghost px-6 py-2 text-white font-bold text-xs"
             >
               {language === 'tr' ? 'Kapat' : 'Close'}
             </button>
@@ -326,7 +326,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   <img
                     src={currentComm.avatar_url}
                     alt={currentComm.name}
-                    className="w-20 h-20 rounded-2xl object-cover ring-4 ring-[#141420] shadow-xl bg-white/[0.04]"
+                    className="c4e-card w-20 h-20 object-cover ring-4 ring-[#141420]"
                   />
                   <div className="absolute -bottom-1 -right-1 bg-purple-600 text-white p-1 rounded-lg border-2 border-[#121215]">
                     <Users className="w-3.5 h-3.5" />
@@ -409,7 +409,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 </div>
 
                 {currentComm.description && (
-                  <p className="text-xs text-zinc-300 leading-relaxed font-sans bg-black/25 p-3 rounded-2xl border border-white/[0.07]">
+                  <p className="c4e-well text-xs text-zinc-300 leading-relaxed font-sans p-3">
                     {currentComm.description}
                   </p>
                 )}
@@ -470,7 +470,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                           onStartDirectChat(profileData);
                           onClose();
                         }}
-                        className="px-3.5 py-2 rounded-xl text-xs font-bold bg-white/[0.07] hover:bg-zinc-700 text-zinc-200 border border-white/[0.12] transition-all flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer"
+                        className="c4e-ghost px-3.5 py-2 text-xs font-bold text-zinc-200 flex items-center gap-1.5 active:scale-95 cursor-pointer"
                         title={language === 'tr' ? 'Mesaj Gönder' : 'Send Message'}
                       >
                         <Mail className="w-3.5 h-3.5 text-blue-400" />
@@ -515,7 +515,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 </div>
 
                 {profileData.bio && (
-                  <p className="text-xs text-zinc-300 leading-relaxed font-sans bg-black/25 p-3 rounded-2xl border border-white/[0.07] user-text">
+                  <p className="c4e-well text-xs text-zinc-300 leading-relaxed font-sans p-3 user-text">
                     {profileData.bio}
                   </p>
                 )}
@@ -585,7 +585,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                           href={sanitizeUrl(repo.html_url) || `https://github.com/${profileData.username}/${repo.name}`}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] hover:border-white/[0.16] transition-all group block"
+                          className="c4e-ghost p-2.5 group block"
                         >
                           <div className="flex items-center justify-between text-xs font-semibold text-white group-hover:text-blue-400">
                             <span className="truncate">{repo.name}</span>
@@ -648,7 +648,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                       onNavigateToFullProfile(profileData);
                       onClose();
                     }}
-                    className="w-full py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
+                    className="c4e-ghost w-full py-2.5 text-white font-bold text-xs flex items-center justify-center gap-2"
                   >
                     <Code2 className="w-4 h-4 text-blue-400" />
                     <span>{language === 'tr' ? 'Tüm Profili İncele' : 'View Full Profile'}</span>

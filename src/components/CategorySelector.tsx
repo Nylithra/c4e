@@ -87,7 +87,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
             setTimeout(() => inputRef.current?.focus(), 50);
           }
         }}
-        className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-black/25 hover:bg-white/[0.06] border border-white/[0.07] text-xs cursor-pointer transition-all min-h-[38px]"
+        className="c4e-well flex items-center justify-between gap-2 px-3 py-2 text-xs cursor-pointer min-h-[38px]"
       >
         <div className="flex items-center gap-2 overflow-hidden">
           <Tag className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />

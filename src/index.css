@@ -415,6 +415,25 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .app-shell {
 }
 
 /*
+ * EKRAN SARMALAYICISI. Her ana ekranın en dış kabı.
+ *
+ * NEDEN AYRI BİR SINIF: bu sarmalayıcı on dört ekranda elle yazılıyordu
+ * (`flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14]`)
+ * ve `bg-[#0a0a14]` OPAK olduğu için Aurora panelini tamamen kapatıyordu. Sonuç şuydu:
+ * akış ve projeler cam panelde duruyor, geri kalan on iki ekran düz siyah bir kutuda —
+ * "her yerde aynı tasarım yok" diye görülen şey tam olarak buydu.
+ *
+ * `border-r` de bilerek yok: md ve üstünde panelin kendi kenarlığı var, altında ise
+ * sütun ekranın tamamını kaplıyor ve sağda kenarlık koyacak bir komşu yok.
+ */
+.c4e-screen {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/*
  * Kenar rayları (sol gezinme, sağ panel, mobil başlık). İçlerinde uzun paragraf yok, kısa
  * etiketler var; bu yüzden içerik sütunundan daha saydam olabiliyorlar ve gradyanı asıl
  * bunlar gösteriyor.
@@ -682,6 +701,141 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     place-items: center;
   }
 
+  /* ---------------------------------------------------------- yüzeyler */
+
+  /*
+   * PENCERE YÜZEYİ. Karttan bir adım yukarıda: daha güçlü blur, daha derin gölge, daha
+   * büyük yarıçap. Bir pencere sayfanın ÜSTÜNDE duruyor ve bunu göstermesi gerekiyor;
+   * kartla aynı yüzeyi kullansaydı "açıldı mı" belli olmazdı.
+   */
+  .c4e-sheet {
+    background: rgba(22, 22, 34, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(26px) saturate(150%);
+    -webkit-backdrop-filter: blur(26px) saturate(150%);
+    box-shadow:
+      0 32px 80px -28px rgba(0, 0, 0, 0.95),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /*
+   * ÜST ÇUBUK. Her ekranın başında aynı şey tekrar ediyordu: sticky + blur + yarı saydam
+   * koyu zemin + alt çizgi. Sekiz dosyada sekiz farklı yazımı vardı ve biri ötekinden
+   * biraz farklıydı; aradaki fark göz kaçırıyor ama ekranlar arası geçişte hissediliyor.
+   */
+  .c4e-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(10, 10, 20, 0.82);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border-bottom: 1px solid var(--au-line);
+  }
+
+  /*
+   * KUYU. Panelin İÇİNDE daha koyu bir alan — kod blokları, salt okunur değerler,
+   * iç içe listeler. `c4e-code`un rengi aynı ama o yalnızca kod için; bu genel.
+   */
+  .c4e-well {
+    background: rgba(0, 0, 0, 0.26);
+    border: 1px solid var(--au-line-soft);
+    border-radius: var(--au-r-card);
+  }
+
+  /* ---------------------------------------------------------- kontroller */
+
+  /*
+   * İKİNCİL DÜĞME. Aurora'da gradyan TEK bir yerde (c4e-btn); ikinci bir gradyan düğme
+   * eklemek ikisini de "birincil" olmaktan çıkarır. Bu yüzden ikincil eylem sade bir
+   * cam yüzey.
+   */
+  .c4e-ghost {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--au-line);
+    border-radius: 14px;
+    color: var(--au-text);
+    font-weight: 600;
+    transition: background-color 160ms ease, border-color 160ms ease, transform 150ms ease;
+  }
+  .c4e-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.09); border-color: rgba(255,255,255,.15); }
+  .c4e-ghost:active:not(:disabled) { transform: translateY(1px); }
+  .c4e-ghost:disabled { opacity: .5; }
+
+  /* Kare simge düğmesi. Dokunma ölçüsü sınıfın kendisinde: her çağrı yerinde yeniden
+     yazılması, bir yerde unutulmasının en kısa yoluydu. */
+  .c4e-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 11px;
+    color: var(--au-dim);
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .c4e-icon-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.08); color: var(--au-text); }
+  .c4e-icon-btn:disabled { opacity: .45; }
+
+  /*
+   * TIKLANABİLİR SATIR. Ayarlar listesi, seçim listeleri, "şunu aç" satırları. Kart
+   * değil: kart durur, satır tıklanır — ve üzerine gelince bunu göstermesi gerekiyor.
+   */
+  .c4e-listrow {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--au-line-soft);
+    border-radius: var(--au-r-card);
+    background: var(--au-panel);
+    text-align: left;
+    transition: background-color 170ms ease, border-color 170ms ease, transform 170ms ease;
+  }
+  .c4e-listrow:hover {
+    background: var(--au-panel-hover);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+  .c4e-listrow:active { transform: scale(0.994); }
+
+  /* Küçük etiket / tuş rozeti. */
+  .c4e-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--au-dim);
+    font-size: 10.5px;
+    line-height: 1.5;
+  }
+
+  /* ---------------------------------------------------------- uyarılar */
+
+  /*
+   * BİLGİ / UYARI / HATA / ONAY kutuları. Dört renk, tek iskelet. Her ekranda elle
+   * yazıldığında aynı sarı yedi farklı tonda çıkıyordu.
+   */
+  .c4e-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--au-r-card);
+    border: 1px solid;
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+  .c4e-note-info   { background: rgba(99, 102, 241, .09); border-color: rgba(129, 140, 248, .3);  color: #c7d2fe; }
+  .c4e-note-warn   { background: rgba(245, 158, 11, .09); border-color: rgba(245, 158, 11, .3);   color: #fde68a; }
+  .c4e-note-danger { background: rgba(244, 63, 94, .09);  border-color: rgba(244, 63, 94, .32);   color: #fecdd3; }
+  .c4e-note-ok     { background: rgba(16, 185, 129, .09); border-color: rgba(16, 185, 129, .3);   color: #a7f3d0; }
+
   /* Boş durum: kesikli çerçeve, "bozuk" değil "boş" anlatsın diye. */
   .c4e-empty {
     border: 1px dashed rgba(255, 255, 255, 0.12);
@@ -763,16 +917,20 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
    için rahatsız edici. Düz, opak panellere dönülüyor. */
 @media (prefers-reduced-transparency: reduce) {
   .c4e-glass,
+  .c4e-sheet,
+  .c4e-topbar,
   .content-column,
   .app-rail {
     background: #14141f;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
+  .c4e-topbar { background: #0f0f1a; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .c4e-hover, .c4e-nav, .c4e-btn, .c4e-pill, .c4e-input { transition: none; }
+  .c4e-hover, .c4e-nav, .c4e-btn, .c4e-pill, .c4e-input,
+  .c4e-ghost, .c4e-icon-btn, .c4e-listrow { transition: none; }
   /* Salınım durur ama ışık kalır: kütleyi tamamen kaldırmak ekranı boşaltırdı. */
   .c4e-auth-glow { animation: none; }
 }

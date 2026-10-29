@@ -501,7 +501,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
   return (
     <div className="content-column flex-1 min-w-0 w-full min-h-screen pb-16 relative">
       {toastMessage && (
-        <div className="fixed top-4 right-4 z-50 bg-white/[0.04] border border-white/[0.12] text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce">
+        <div className="c4e-sheet fixed top-4 right-4 z-50 text-white text-xs font-bold px-4 py-2.5 flex items-center gap-2 animate-bounce">
           <Check className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -523,7 +523,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
       ) : (
         <>
           {/* Sticky Header */}
-          <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/70 border-b border-white/[0.07] px-6 py-4 flex items-center justify-between">
+          <div className="c4e-topbar z-20 px-6 py-4 flex items-center justify-between">
             <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
               <span>{language === 'tr' ? 'Akış & Gönderiler' : 'Feed & Posts'}</span>
               <span className="w-2 h-2 rounded-full bg-zinc-400" />
@@ -570,7 +570,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   key={comm.id}
                   type="button"
                   onClick={() => onSelectCommunity?.(comm)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer bg-white/[0.04] text-zinc-300 hover:text-white hover:bg-white/[0.09] border border-white/[0.07]"
+                  className="c4e-ghost px-3 py-1.5 text-xs font-medium whitespace-nowrap flex items-center gap-1.5 cursor-pointer text-zinc-300 hover:text-white"
                   title={language === 'tr' ? `${comm.name} akışını aç` : `Open the ${comm.name} feed`}
                 >
                   <Users className={`w-3.5 h-3.5 ${comm.is_joined ? 'text-purple-400' : 'text-zinc-500'}`} />
@@ -674,7 +674,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
           Gizli ve kilitli bir toplulukta sekme göstermiyoruz — iki sekme de boş olurdu
           ve kullanıcıya tıklayacak bir şey verip hiçbir şey göstermemek olurdu. */}
       {communityScope && !isPrivateLocked && (
-        <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-white/[0.06] bg-[#0a0a14]/70 px-5 py-3 backdrop-blur-xl">
+        <div className="c4e-topbar z-20 flex items-center gap-2 px-5 py-3">
           {([
             ['posts', language === 'tr' ? 'Gönderiler' : 'Posts', scopedPosts.length],
             ['projects', language === 'tr' ? 'Projeler' : 'Projects', communityScope.projects_count ?? null]
@@ -767,7 +767,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       value={selectedCommunityId || ''}
                       aria-label={language === 'tr' ? 'Gönderinin paylaşılacağı topluluk' : 'Community to post in'}
                       onChange={(e) => setSelectedCommunityId(e.target.value || null)}
-                      className="bg-white/[0.04] border border-white/[0.12] text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none font-mono cursor-pointer max-w-[130px]"
+                      className="c4e-input text-zinc-200 text-xs px-2 py-1 font-mono cursor-pointer max-w-[130px]"
                     >
                       <option value="" className="bg-white/[0.04] text-zinc-400">
                         {language === 'tr' ? '🌐 Genel Feed' : '🌐 General Feed'}
@@ -837,19 +837,19 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
               {/* Code Snippet Input Box */}
               {showCodeAttach && (
-                <div className="p-3 bg-black/25 border border-white/[0.07] rounded-xl space-y-2 relative">
+                <div className="c4e-well p-3 space-y-2 relative">
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={codeTitle}
                       onChange={(e) => setCodeTitle(e.target.value)}
                       placeholder={language === 'tr' ? 'Kod Başlığı' : 'Snippet Title'}
-                      className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none font-mono"
+                      className="c4e-input flex-1 px-2.5 py-1.5 text-xs text-white font-mono"
                     />
                     <select
                       value={codeLang}
                       onChange={(e) => setCodeLang(e.target.value)}
-                      className="bg-white/[0.04] border border-white/[0.07] text-zinc-300 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none font-mono"
+                      className="c4e-input text-zinc-300 px-2.5 py-1.5 text-xs font-mono"
                     >
                       <option value="TypeScript">TypeScript</option>
                       <option value="React">React</option>
@@ -868,7 +868,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       onChange={(e) => setCodeSnippet(e.target.value)}
                       placeholder="code snippet goes here..."
                       rows={4}
-                      className="w-full bg-white/[0.04] border border-white/[0.07] rounded-lg p-2.5 text-xs text-emerald-400 font-mono focus:outline-none resize-none pb-7"
+                      className="c4e-input w-full p-2.5 text-xs text-emerald-400 font-mono resize-none pb-7"
                     />
                     <div className="absolute right-2 bottom-2">
                       <span
@@ -894,7 +894,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
               {/* Repo Selector Box */}
               {showRepoAttach && (
-                <div className="p-3 bg-black/25 border border-white/[0.07] rounded-xl space-y-2">
+                <div className="c4e-well p-3 space-y-2">
                   <span className="text-xs font-bold text-white block">
                     {language === 'tr' ? 'GitHub Depolarımdan Seç' : 'Select From My GitHub Repos'}
                   </span>
@@ -924,7 +924,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   )}
 
                   {selectedRepo && (
-                    <div className="p-2.5 bg-white/[0.04] border border-white/[0.12] rounded-lg space-y-1 text-xs">
+                    <div className="c4e-card p-2.5 space-y-1 text-xs">
                       <span className="font-bold text-white block">{selectedRepo.name}</span>
                       <p className="text-[11px] text-zinc-400">{selectedRepo.description}</p>
                       <span className="text-[10px] font-mono text-zinc-300 block">{selectedRepo.html_url}</span>
@@ -1470,7 +1470,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                             ? 'Fikrini veya cevabını yaz...'
                             : 'Write your thoughts or reply...'
                         }
-                        className="flex-1 bg-black/25 border border-white/[0.07] rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+                        className="c4e-input flex-1 px-3 py-1.5 text-xs text-white placeholder-zinc-500"
                       />
                       <Button type="submit" size="sm" disabled={!commentText.trim()}>
                         <Send />
@@ -1488,7 +1488,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                           return (
                             <div
                               key={comment.id}
-                              className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] text-xs space-y-1"
+                              className="c4e-well p-2.5 text-xs space-y-1"
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5 flex-wrap">

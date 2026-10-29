@@ -29,7 +29,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
   return (
     <div className="min-h-screen w-full bg-[#0a0a14] text-zinc-200 font-display">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b border-white/[0.07] bg-[#0a0a14]/90 backdrop-blur-xl">
+      <header className="c4e-topbar z-30">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-2.5">
           <a
             href="/"

@@ -137,7 +137,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 select-none">
-      <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl p-6 w-full max-w-lg space-y-4 shadow-2xl relative">
+      <div className="c4e-sheet p-6 w-full max-w-lg space-y-4 relative">
         <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
           <div className="flex items-center gap-3">
             <img
@@ -173,7 +173,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
             />
 
             {/* Target Community Selection */}
-            <div className="flex items-center justify-between bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs min-h-[38px]">
+            <div className="c4e-well flex items-center justify-between px-3 py-2 text-xs min-h-[38px]">
               <span className="text-zinc-400 font-mono text-[11px] flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-purple-400" />
                 <span>{language === 'tr' ? 'Topluluk:' : 'Community:'}</span>
@@ -181,7 +181,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
               <select
                 value={selectedCommunityId || ''}
                 onChange={(e) => setSelectedCommunityId(e.target.value || null)}
-                className="bg-white/[0.04] border border-white/[0.12] text-zinc-200 text-xs rounded-lg px-2 py-1 focus:outline-none font-mono cursor-pointer max-w-[130px]"
+                className="c4e-input text-zinc-200 text-xs px-2 py-1 font-mono cursor-pointer max-w-[130px]"
               >
                 <option value="">🌐 {language === 'tr' ? 'Genel Feed' : 'Public Feed'}</option>
                 {communities
@@ -205,7 +205,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                   : 'What are you working on? Add #hashtag or @mention...'
               }
               rows={4}
-              className="w-full bg-black/25 border border-white/[0.07] rounded-2xl p-3.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 resize-none pb-7"
+              className="c4e-input w-full p-3.5 text-xs text-white placeholder-zinc-500 resize-none pb-7"
             />
             {/* Character counter */}
             <div className="absolute right-3 bottom-3 flex items-center gap-1.5">
@@ -254,19 +254,19 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
           )}
 
           {showCode && (
-            <div className="p-3 bg-black/25 border border-white/[0.07] rounded-2xl space-y-2">
+            <div className="c4e-well p-3 space-y-2">
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={codeTitle}
                   onChange={(e) => setCodeTitle(e.target.value)}
                   placeholder={language === 'tr' ? 'Kod Başlığı' : 'Snippet Title'}
-                  className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none font-mono"
+                  className="c4e-input flex-1 px-3 py-1.5 text-xs text-white font-mono"
                 />
                 <select
                   value={codeLang}
                   onChange={(e) => setCodeLang(e.target.value)}
-                  className="bg-white/[0.04] border border-white/[0.07] text-zinc-300 rounded-xl px-3 py-1.5 text-xs focus:outline-none font-mono cursor-pointer"
+                  className="c4e-input text-zinc-300 px-3 py-1.5 text-xs font-mono cursor-pointer"
                 >
                   <option value="TypeScript">TypeScript</option>
                   <option value="React">React</option>
@@ -285,7 +285,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                   onChange={(e) => setCodeSnippet(e.target.value)}
                   placeholder="code snippet goes here..."
                   rows={4}
-                  className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl p-3 text-xs text-emerald-400 font-mono focus:outline-none resize-none pb-7"
+                  className="c4e-input w-full p-3 text-xs text-emerald-400 font-mono resize-none pb-7"
                 />
                 {/* Code Snippet Counter */}
                 <div className="absolute right-2.5 bottom-2.5">

@@ -121,7 +121,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
             <img
               src={ownAvatar}
               alt={community.name}
-              className="w-20 h-20 rounded-2xl object-cover ring-4 ring-[#0a0a14] shadow-2xl bg-white/[0.04]"
+              className="c4e-sheet w-20 h-20 object-cover ring-4 ring-[#0a0a14]"
             />
           ) : (
             <span

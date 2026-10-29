@@ -60,7 +60,7 @@ export const CodeSnippetBlock: React.FC<CodeSnippetBlockProps> = ({ snippet, lan
   };
 
   return (
-    <div className="p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl space-y-2.5 font-mono relative overflow-hidden group shadow-inner">
+    <div className="c4e-well p-3.5 space-y-2.5 font-mono relative overflow-hidden group shadow-inner">
       <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/[0.07] pb-2">
         <div className="flex items-center gap-2 truncate">
           <Code2 className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />

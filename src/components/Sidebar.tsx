@@ -209,7 +209,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={() => setIsMobileDrawerOpen(false)}
         >
           <div
-            className="w-72 max-w-[80vw] h-full bg-[#0a0a14] border-r border-white/[0.07] p-4 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-left duration-250 shadow-2xl"
+            className="app-rail w-72 max-w-[80vw] h-full border-r border-white/[0.07] p-4 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-left duration-250 shadow-2xl backdrop-blur-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="space-y-4">
@@ -230,7 +230,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   setActiveTab('profile');
                   setIsMobileDrawerOpen(false);
                 }}
-                className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.07] hover:border-white/[0.16] cursor-pointer transition-all"
+                className="c4e-card flex items-center gap-3 p-3 cursor-pointer"
               >
                 <UserAvatar
                   src={user.avatar_url}
@@ -257,7 +257,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     setIsMobileDrawerOpen(false);
                     onOpenInstallPWA();
                   }}
-                  className="w-full flex items-center justify-between p-3 rounded-2xl bg-white/[0.04] border border-white/[0.12] hover:bg-white/[0.09] active:scale-[0.98] transition-all cursor-pointer shadow-md"
+                  className="c4e-ghost w-full flex items-center justify-between p-3 active:scale-[0.98] cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="p-1.5 rounded-xl bg-zinc-100 text-zinc-950 font-bold">
@@ -365,7 +365,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               )}
 
               {onChangeLanguage && (
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-xs text-zinc-400">
+                <div className="c4e-card flex items-center justify-between px-3 py-2 text-xs text-zinc-400">
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-zinc-400" />
                     <span>{language === 'tr' ? 'Dil' : 'Language'}</span>
@@ -554,7 +554,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="space-y-2">
           <div
             onClick={() => setActiveTab('profile')}
-            className="flex items-center justify-between p-2.5 rounded-2xl bg-white/[0.03] hover:bg-white/[0.09] border border-white/[0.07] cursor-pointer transition-all hover:border-white/[0.16]"
+            className="c4e-card flex items-center justify-between p-2.5 cursor-pointer"
           >
             <div className="flex items-center gap-2.5 overflow-hidden">
               <UserAvatar

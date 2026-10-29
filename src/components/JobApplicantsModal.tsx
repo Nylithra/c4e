@@ -32,7 +32,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white/[0.04] border border-white/[0.07] rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div className="c4e-sheet w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-white/[0.07] flex items-center justify-between bg-white/[0.04]">
           <div className="flex items-center gap-2.5">
@@ -77,7 +77,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
             applications.map((app, index) => (
               <div
                 key={app.id || index}
-                className="p-4 rounded-2xl bg-black/25 border border-white/[0.07] space-y-3"
+                className="c4e-well p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -137,13 +137,13 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
 
                 {/* Details Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07]">
+                  <div className="c4e-card p-2.5">
                     <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                       {language === 'tr' ? 'Deneyim:' : 'Experience:'}
                     </span>
                     <p className="text-zinc-200">{app.experience}</p>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07]">
+                  <div className="c4e-card p-2.5">
                     <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                       {language === 'tr' ? 'Bildiği Diller / Teknolojiler:' : 'Languages & Tech:'}
                     </span>
@@ -152,7 +152,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
                 </div>
 
                 {/* Description */}
-                <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-xs">
+                <div className="c4e-card p-2.5 text-xs">
                   <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                     {language === 'tr' ? 'Açıklama:' : 'Applicant Note:'}
                   </span>

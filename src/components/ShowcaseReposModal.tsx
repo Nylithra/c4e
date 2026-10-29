@@ -123,11 +123,11 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
-      <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl relative text-white">
+      <div className="c4e-sheet w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-6 relative text-white">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/[0.07] pb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-white/[0.04] border border-white/[0.07] text-zinc-200">
+            <div className="c4e-card p-2.5 text-zinc-200">
               <GitBranch className="w-5 h-5" />
             </div>
             <div>
@@ -166,7 +166,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
           </label>
 
           {selectedList.length === 0 ? (
-            <div className="p-6 bg-black/25 border border-dashed border-white/[0.07] rounded-2xl text-center text-xs text-zinc-500 font-mono">
+            <div className="c4e-well p-6 border-dashed text-center text-xs text-zinc-500 font-mono">
               {language === 'tr'
                 ? 'Henüz vitrine eklenmiş bir depo yok. Aşağıdaki listeden seçin veya yeni ekleyin.'
                 : 'No pinned repositories yet. Pick from below or add a custom one.'}
@@ -176,7 +176,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
               {selectedList.map((repo) => (
                 <div
                   key={repo.name}
-                  className="p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl flex items-center justify-between gap-3 group"
+                  className="c4e-well p-3.5 flex items-center justify-between gap-3 group"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
@@ -235,7 +235,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
 
           {/* Custom Repo Addition Form */}
           {showAddCustom && (
-            <form onSubmit={handleAddCustomRepo} className="p-4 bg-black/25 border border-white/[0.07] rounded-2xl space-y-3">
+            <form onSubmit={handleAddCustomRepo} className="c4e-well p-4 space-y-3">
               <h4 className="text-xs font-bold text-white font-mono">
                 {language === 'tr' ? 'Yeni Proje / Depo Bilgisi' : 'New Project / Repo Details'}
               </h4>
@@ -246,7 +246,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   placeholder={language === 'tr' ? 'Depo Adı (ör: my-awesome-app)' : 'Repo Name'}
-                  className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+                  className="c4e-input w-full px-3 py-2 text-xs text-white font-mono placeholder-zinc-600"
                   required
                 />
                 <input
@@ -254,7 +254,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                   value={customLang}
                   onChange={(e) => setCustomLang(e.target.value)}
                   placeholder="Yazılım Dili (ör: TypeScript, Rust)"
-                  className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+                  className="c4e-input w-full px-3 py-2 text-xs text-white font-mono placeholder-zinc-600"
                 />
               </div>
 
@@ -263,7 +263,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                 value={customDesc}
                 onChange={(e) => setCustomDesc(e.target.value)}
                 placeholder={language === 'tr' ? 'Kısa açıklama...' : 'Short description...'}
-                className="w-full bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+                className="c4e-input w-full px-3 py-2 text-xs text-white placeholder-zinc-600"
               />
 
               <div className="grid grid-cols-3 gap-3">
@@ -272,7 +272,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                   value={customUrl}
                   onChange={(e) => setCustomUrl(e.target.value)}
                   placeholder="https://github.com/..."
-                  className="col-span-1 bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+                  className="c4e-input col-span-1 px-3 py-2 text-xs text-white placeholder-zinc-600"
                 />
                 <input
                   type="number"
@@ -280,7 +280,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                   value={customStars}
                   onChange={(e) => setCustomStars(parseInt(e.target.value, 10) || 0)}
                   placeholder="Yıldız Sayısı"
-                  className="bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+                  className="c4e-input px-3 py-2 text-xs text-white font-mono placeholder-zinc-600"
                 />
                 <input
                   type="number"
@@ -288,7 +288,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                   value={customForks}
                   onChange={(e) => setCustomForks(parseInt(e.target.value, 10) || 0)}
                   placeholder="Fork Sayısı"
-                  className="bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+                  className="c4e-input px-3 py-2 text-xs text-white font-mono placeholder-zinc-600"
                 />
               </div>
 
@@ -296,7 +296,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowAddCustom(false)}
-                  className="px-3 py-1.5 rounded-xl bg-white/[0.04] text-zinc-400 hover:text-white text-xs"
+                  className="c4e-ghost px-3 py-1.5 text-zinc-400 hover:text-white text-xs"
                 >
                   {language === 'tr' ? 'Vazgeç' : 'Cancel'}
                 </button>
@@ -356,7 +356,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
               })}
             </div>
           ) : (
-            <div className="p-4 rounded-xl bg-black/25 border border-white/[0.07] text-center text-zinc-500 text-xs font-mono">
+            <div className="c4e-well p-4 text-center text-zinc-500 text-xs font-mono">
               {language === 'tr'
                 ? 'GitHub hesabınızda açık kaynak depo bulunamadı veya yukarıdaki "Özel Depo Ekle" ile projenizi ekleyebilirsiniz.'
                 : 'No public repositories found on your GitHub or use "Add Custom Repo" above.'}
@@ -369,7 +369,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 text-xs font-semibold border border-white/[0.07] transition-colors"
+            className="c4e-ghost px-4 py-2.5 text-zinc-300 text-xs font-semibold"
           >
             {language === 'tr' ? 'Vazgeç' : 'Cancel'}
           </button>

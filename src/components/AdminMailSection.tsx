@@ -357,7 +357,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
     if (!html.trim()) {
       return (
-        <pre className="user-text whitespace-pre-wrap break-words rounded-xl border border-white/[0.07] bg-black/25 p-4 text-[13px] leading-relaxed text-zinc-300">
+        <pre className="c4e-well user-text whitespace-pre-wrap break-words p-4 text-[13px] leading-relaxed text-zinc-300">
           {message.text || (tr ? '(Boş mesaj)' : '(Empty message)')}
         </pre>
       );
@@ -383,7 +383,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
   return (
     <div className="space-y-5 p-6">
       {/* Connection status */}
-      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
+      <div className="c4e-card p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="flex items-center gap-2 text-sm font-bold text-white">
             <ServerCog className="h-4 w-4 text-blue-400" />
@@ -407,7 +407,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
           ].map(({ key, label, cfg }) => {
             const verified = verifyResult?.[key];
             return (
-              <div key={key} className="rounded-xl border border-white/[0.07] bg-black/25 p-3">
+              <div key={key} className="c4e-well p-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-bold text-zinc-200">{label}</span>
                   <span
@@ -486,7 +486,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
       {/* ---------------- INBOX ---------------- */}
       {pane === 'inbox' && (
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03]">
+        <div className="c4e-card">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.07] p-3.5">
             <div className="relative min-w-0 flex-1">
               <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
@@ -496,7 +496,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 onChange={(e) => setFilter(e.target.value)}
                 placeholder={tr ? 'Konu veya gönderen ara...' : 'Search subject or sender...'}
                 aria-label={tr ? 'Mesajlarda ara' : 'Search messages'}
-                className="w-full rounded-xl border border-white/[0.07] bg-black/25 py-2 pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-input w-full py-2 pl-9 pr-3 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -731,7 +731,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
       {/* ---------------- COMPOSE ---------------- */}
       {pane === 'compose' && (
         <div className="grid gap-4 xl:grid-cols-2">
-          <div className="space-y-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
+          <div className="c4e-card space-y-4 p-4">
             {/* Recipient */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -760,7 +760,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   value={rawTo}
                   onChange={(e) => setRawTo(e.target.value)}
                   placeholder="ornek@alanadi.com"
-                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
                 />
               ) : (
                 <div className="flex flex-wrap items-center gap-2">
@@ -781,7 +781,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                         }
                       }}
                       placeholder={tr ? 'kullanici_adi' : 'username'}
-                      className="w-full rounded-xl border border-white/[0.07] bg-black/25 py-2 pl-7 pr-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="c4e-input w-full py-2 pl-7 pr-3 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
                     />
                   </div>
                   <button
@@ -824,7 +824,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 maxLength={180}
-                className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -838,7 +838,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 value={heading}
                 onChange={(e) => setHeading(e.target.value)}
                 maxLength={160}
-                className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -853,7 +853,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 rows={8}
                 maxLength={20000}
                 placeholder={tr ? 'Paragrafları boş satırla ayırın.' : 'Separate paragraphs with a blank line.'}
-                className="w-full resize-y rounded-xl border border-white/[0.07] bg-black/25 p-3 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-input w-full resize-y p-3 text-xs leading-relaxed text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -870,7 +870,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   onChange={(e) => setCtaLabel(e.target.value)}
                   maxLength={60}
                   placeholder={tr ? 'isteğe bağlı' : 'optional'}
-                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
               <div className="space-y-1">
@@ -884,7 +884,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   onChange={(e) => setCtaUrl(e.target.value)}
                   maxLength={500}
                   placeholder="https://app.lanux.online/..."
-                  className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
             </div>
@@ -900,7 +900,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 onChange={(e) => setFootnote(e.target.value)}
                 maxLength={300}
                 placeholder={tr ? 'Bu e-postayı neden aldığı vb.' : 'Why they received this, etc.'}
-                className="w-full rounded-xl border border-white/[0.07] bg-black/25 px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
 
@@ -945,7 +945,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
           </div>
 
           {/* Preview */}
-          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
+          <div className="c4e-card p-4">
             <h4 className="mb-3 flex items-center gap-2 text-xs font-bold text-zinc-200">
               <Mail className="h-4 w-4 text-zinc-400" />
               <span>{tr ? 'E-posta Önizlemesi' : 'E-mail Preview'}</span>

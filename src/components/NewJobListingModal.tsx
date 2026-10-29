@@ -90,7 +90,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white/[0.04] border border-white/[0.07] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="c4e-sheet w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="px-6 py-4 border-b border-white/[0.07] flex items-center justify-between bg-white/[0.04]">
           <div className="flex items-center gap-2.5">
@@ -172,7 +172,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
                   : (language === 'tr' ? 'Örn: Web3 Açık Kaynak Projesi İçin Ekip Arkadaşları' : 'e.g. Open Source Project Team Members')
               }
               maxLength={120}
-              className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
+              className="c4e-input w-full px-3.5 py-2.5 text-xs text-white placeholder-zinc-500"
               required
             />
             <div className="text-[10px] text-zinc-500 text-right mt-1 font-mono">
@@ -195,7 +195,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
               }
               rows={4}
               maxLength={3000}
-              className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 resize-none"
+              className="c4e-input w-full px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 resize-none"
               required
             />
             <div className="text-[10px] text-zinc-500 text-right mt-1 font-mono">
@@ -214,7 +214,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
               max={500}
               value={quota}
               onChange={(e) => setQuota(Math.max(1, parseInt(e.target.value) || 1))}
-              className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-zinc-500"
+              className="c4e-input w-full px-3.5 py-2.5 text-xs text-white font-mono"
               required
             />
             <span className="text-[10px] text-zinc-500 mt-1 block">

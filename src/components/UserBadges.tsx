@@ -385,7 +385,7 @@ export const UserBadges: React.FC<UserBadgesProps> = ({
           }}
         >
           <div
-            className="relative w-full max-w-sm rounded-3xl overflow-hidden border border-white/[0.07] bg-[#0a0a14] shadow-2xl text-center p-6 space-y-4"
+            className="c4e-sheet relative w-full max-w-sm overflow-hidden text-center p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Glow in badge color */}
@@ -438,7 +438,7 @@ export const UserBadges: React.FC<UserBadgesProps> = ({
             {/* Close Action */}
             <button
               onClick={() => setSelectedBadgeForDetail(null)}
-              className="w-full py-2.5 rounded-xl font-bold text-xs text-white bg-white/[0.07] hover:bg-zinc-700 transition-colors border border-white/[0.12] shadow-md"
+              className="c4e-ghost w-full py-2.5 font-bold text-xs text-white"
             >
               Tamam
             </button>

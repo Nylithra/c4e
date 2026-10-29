@@ -441,7 +441,7 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
               <div className="space-y-3">
                 {apps.length === 0 && !creating && (
                   <div className="c4e-empty px-6 py-14 text-center">
-                    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.04] text-zinc-600">
+                    <div className="c4e-card mx-auto mb-3 flex h-12 w-12 items-center justify-center text-zinc-600">
                       <KeyRound className="h-5 w-5" />
                     </div>
                     <p className="text-sm font-bold text-zinc-300">

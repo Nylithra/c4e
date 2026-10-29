@@ -225,7 +225,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
     return (
       <div className="flex min-h-screen items-center justify-center p-5">
         <div className="c4e-glass w-full max-w-sm p-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.05] text-zinc-600">
+          <div className="c4e-card mx-auto mb-4 flex h-14 w-14 items-center justify-center text-zinc-600">
             <Github className="h-6 w-6" />
           </div>
           <p className="text-base font-bold text-white">
@@ -253,7 +253,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
   return (
     <div className="min-h-screen pb-20">
       {/* ÜST ÇUBUK */}
-      <div className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#0a0a14]/90 px-4 py-3 backdrop-blur-xl">
+      <div className="c4e-topbar z-20 px-4 py-3">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
           <button
             type="button"
@@ -687,7 +687,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             type="button"
             onClick={() => setLightbox(null)}
             aria-label={tr ? 'Kapat' : 'Close'}
-            className="absolute right-4 top-4 flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.06] text-white transition-colors hover:bg-white/[0.12] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="c4e-ghost absolute right-4 top-4 flex min-h-11 min-w-11 items-center justify-center text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-5 w-5" />
           </button>

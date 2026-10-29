@@ -211,11 +211,11 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
   return (
     <>
       <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
-        <div className="bg-white/[0.06] border border-white/[0.07] rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl relative text-white">
+        <div className="c4e-sheet w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-6 relative text-white">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-white/[0.07] pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-2xl bg-white/[0.04] border border-white/[0.07] text-zinc-200">
+              <div className="c4e-card p-2.5 text-zinc-200">
                 <Settings className="w-5 h-5" />
               </div>
               <div>
@@ -270,7 +270,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
           {/* Main Edit Form */}
           <form onSubmit={handleSaveGeneral} className="space-y-5">
             {/* Avatar & Photo Management */}
-            <div className="p-4 bg-black/25 border border-white/[0.07] rounded-2xl space-y-4">
+            <div className="c4e-well p-4 space-y-4">
               <label className="text-xs font-bold text-zinc-300 font-mono block">
                 {language === 'tr' ? 'Topluluk Logosu / Fotoğrafı:' : 'Community Avatar / Photo:'}
               </label>
@@ -279,7 +279,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                 <img
                   src={avatarUrl || community.avatar_url}
                   alt="Community Logo"
-                  className="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/[0.12] bg-white/[0.04] shadow-md"
+                  className="c4e-card w-16 h-16 object-cover ring-2 ring-white/[0.12]"
                 />
 
                 <div className="space-y-2 flex-1">
@@ -296,7 +296,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                       type="button"
                       disabled={!isOwner}
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-200 text-xs font-semibold border border-white/[0.12] flex items-center gap-1.5 transition-colors disabled:opacity-40 cursor-pointer"
+                      className="c4e-ghost px-3 py-1.5 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 disabled:opacity-40 cursor-pointer"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       <span>{language === 'tr' ? 'Bilgisayardan Fotoğraf Yükle' : 'Upload from PC'}</span>
@@ -311,7 +311,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                           setCropperType('avatar');
                           setIsCropperOpen(true);
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] text-zinc-300 text-xs font-semibold border border-white/[0.07] flex items-center gap-1.5 transition-colors disabled:opacity-40"
+                        className="c4e-ghost px-3 py-1.5 text-zinc-300 text-xs font-semibold flex items-center gap-1.5 disabled:opacity-40"
                       >
                         <Crop className="w-3.5 h-3.5" />
                         <span>{language === 'tr' ? 'Kırp / Yeniden Düzenle' : 'Crop / Edit'}</span>
@@ -363,7 +363,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                   onChange={(e) => setName(e.target.value)}
                   disabled={!isOwner}
                   placeholder="ör: React Türkiye"
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 disabled:opacity-50"
+                  className="c4e-input w-full px-3.5 py-2.5 text-xs text-white placeholder-zinc-600 disabled:opacity-50"
                   required
                 />
               </div>
@@ -380,7 +380,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                     onChange={(e) => setHandle(e.target.value)}
                     disabled={!isOwner}
                     placeholder="react_tr"
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl pl-8 pr-3.5 py-2.5 text-xs text-white placeholder-zinc-600 font-mono focus:outline-none focus:border-zinc-500 disabled:opacity-50"
+                    className="c4e-input w-full pl-8 pr-3.5 py-2.5 text-xs text-white placeholder-zinc-600 font-mono disabled:opacity-50"
                     required
                   />
                 </div>
@@ -413,12 +413,12 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                     ? 'Topluluk hakkında kısa bilgi...'
                     : 'A short description about this community...'
                 }
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-3 text-xs text-white placeholder-zinc-600 resize-none focus:outline-none focus:border-zinc-500 disabled:opacity-50"
+                className="c4e-input w-full p-3 text-xs text-white placeholder-zinc-600 resize-none disabled:opacity-50"
               />
             </div>
 
             {/* Privacy */}
-            <div className="p-4 bg-black/25 border border-white/[0.07] rounded-2xl space-y-3">
+            <div className="c4e-well p-4 space-y-3">
               <label className="text-xs font-bold text-zinc-300 font-mono block">
                 {language === 'tr' ? 'Gizlilik:' : 'Privacy:'}
               </label>
@@ -491,7 +491,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
               </h4>
 
               {/* Ownership Transfer */}
-              <div className="p-4 bg-black/25 border border-white/[0.07] rounded-2xl space-y-3">
+              <div className="c4e-well p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-zinc-200 text-xs font-bold">
                     <ArrowRightLeft className="w-4 h-4 text-zinc-400" />
@@ -506,14 +506,14 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                       value={transferTargetUsername}
                       onChange={(e) => setTransferTargetUsername(e.target.value)}
                       placeholder={language === 'tr' ? 'Devredilecek @kullanıcı_adı' : 'New owner @username'}
-                      className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white font-mono placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+                      className="c4e-input flex-1 px-3 py-2 text-xs text-white font-mono placeholder-zinc-600"
                     />
                     <button
                       type="button"
                       onClick={() => {
                         if (transferTargetUsername.trim()) setShowTransferConfirm(true);
                       }}
-                      className="px-4 py-2 rounded-xl bg-white/[0.07] hover:bg-zinc-700 text-zinc-200 text-xs font-semibold border border-white/[0.12] transition-colors"
+                      className="c4e-ghost px-4 py-2 text-zinc-200 text-xs font-semibold"
                     >
                       {language === 'tr' ? 'Aktar...' : 'Transfer...'}
                     </button>
@@ -529,7 +529,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowTransferConfirm(false)}
-                        className="px-3 py-1.5 rounded-lg bg-white/[0.04] text-zinc-300 text-xs hover:bg-white/[0.09]"
+                        className="c4e-ghost px-3 py-1.5 text-zinc-300 text-xs"
                       >
                         {language === 'tr' ? 'Vazgeç' : 'Cancel'}
                       </button>
@@ -584,7 +584,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                           setShowDeleteConfirm(false);
                           setDeleteConfirmationText('');
                         }}
-                        className="px-3 py-1.5 rounded-lg bg-white/[0.04] text-zinc-300 text-xs hover:bg-white/[0.09]"
+                        className="c4e-ghost px-3 py-1.5 text-zinc-300 text-xs"
                       >
                         {language === 'tr' ? 'Vazgeç' : 'Cancel'}
                       </button>

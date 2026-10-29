@@ -268,7 +268,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                 type="button"
                 onClick={handleDemoLogin}
                 disabled={anyLoading}
-                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 text-xs font-semibold text-zinc-300 transition-all hover:bg-white/[0.07] hover:text-white active:translate-y-px disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-ghost flex min-h-11 w-full items-center justify-center gap-2 px-4 text-xs font-semibold text-zinc-300 hover:text-white active:translate-y-px disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Sparkles className="h-3.5 w-3.5 text-zinc-400" />
                 <span>

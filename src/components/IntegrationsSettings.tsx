@@ -134,7 +134,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
   return (
     <div className="space-y-6">
       {/* Header Description */}
-      <div className="p-4 rounded-2xl bg-black/25 border border-white/[0.07] space-y-2">
+      <div className="c4e-well p-4 space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bot className="w-5 h-5 text-blue-400" />
@@ -199,7 +199,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
       </div>
 
       {/* Active Platform Panel */}
-      <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+      <div className="c4e-card p-5 space-y-4">
         {/* Discord Config */}
         {activePlatform === 'discord' && (
           <div className="space-y-4">
@@ -248,7 +248,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="https://discord.com/api/webhooks/..."
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#5865F2]"
+                  className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                 />
                 <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
                   {language === 'tr' ? 'Kanal Ayarları > Entegrasyonlar > Webhook Oluştur' : 'Channel Settings > Integrations > Create Webhook'}
@@ -270,7 +270,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="Code4Ever Bot"
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white/[0.12]"
+                    className="c4e-input w-full px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -288,7 +288,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="https://..."
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-white/[0.12]"
+                    className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                   />
                 </div>
               </div>
@@ -299,7 +299,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 type="button"
                 disabled={isTesting || !settings.discord.webhook_url}
                 onClick={() => handleRunTest('discord')}
-                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="c4e-ghost px-4 py-2 text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 <span>{language === 'tr' ? 'Test Bildirimi Gönder' : 'Send Test Notification'}</span>
@@ -376,7 +376,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="https://jubbio.com/api/v1/webhooks/..."
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                  className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                 />
               </div>
 
@@ -395,7 +395,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="jbb_tok_..."
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                    className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                   />
                 </div>
 
@@ -413,7 +413,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="123456"
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                    className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                   />
                 </div>
 
@@ -431,7 +431,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                       })
                     }
                     placeholder="987654"
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-500"
+                    className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                   />
                 </div>
               </div>
@@ -442,7 +442,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 type="button"
                 disabled={isTesting || (!settings.jubbio.webhook_url && !settings.jubbio.bot_token)}
                 onClick={() => handleRunTest('jubbio')}
-                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="c4e-ghost px-4 py-2 text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 <span>{language === 'tr' ? 'Jubbio Test Bildirimi Gönder' : 'Send Jubbio Test'}</span>
@@ -508,7 +508,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="123456789:ABCdefGHIjklMNOpqrs"
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#229ED9]"
+                  className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                 />
                 <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
                   @BotFather üzerinden alınan token
@@ -529,7 +529,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     })
                   }
                   placeholder="@kanalim veya -100123456789"
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#229ED9]"
+                  className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                 />
                 <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
                   Mesajın iletileceği kanal veya grup kimliği
@@ -542,7 +542,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 type="button"
                 disabled={isTesting || !settings.telegram.bot_token || !settings.telegram.chat_id}
                 onClick={() => handleRunTest('telegram')}
-                className="px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="c4e-ghost px-4 py-2 text-white font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isTesting ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 <span>{language === 'tr' ? 'Telegram Test Bildirimi Gönder' : 'Send Telegram Test'}</span>
@@ -616,7 +616,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   <button
                     type="button"
                     onClick={handleOpenCustomReportModal}
-                    className="px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-zinc-300 text-xs font-sans font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
+                    className="c4e-ghost px-3 py-1.5 text-zinc-300 text-xs font-sans font-bold flex items-center gap-1.5 cursor-pointer"
                   >
                     <FileText className="w-3.5 h-3.5 text-zinc-400" />
                     <span>{language === 'tr' ? 'Detaylı Bildir' : 'Detailed Report'}</span>
@@ -647,7 +647,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
 
 
       {/* Webhook Message Template Editor */}
-      <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+      <div className="c4e-card p-5 space-y-4">
         <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
           <div>
             <span className="text-sm font-bold text-white block">
@@ -685,7 +685,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 key={v.tag}
                 type="button"
                 onClick={() => insertVariable(v.tag)}
-                className="px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-xs font-mono text-blue-400 hover:text-blue-300 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+                className="c4e-ghost px-2.5 py-1.5 text-xs font-mono text-blue-400 hover:text-blue-300 flex items-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <span>{v.tag}</span>
                 <span className="text-[10px] text-zinc-500">({v.label})</span>
@@ -702,7 +702,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
             onChange={(e) => setSettings({ ...settings, message_template: e.target.value })}
             rows={5}
             placeholder="Mesaj şablonu girin..."
-            className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-3 text-xs font-mono text-emerald-400 focus:outline-none focus:border-blue-500 leading-relaxed"
+            className="c4e-input w-full p-3 text-xs font-mono text-emerald-400 leading-relaxed"
           />
         </div>
 

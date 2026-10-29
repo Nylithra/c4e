@@ -88,7 +88,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white/[0.04] border border-white/[0.07] rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 text-white"
+        className="c4e-sheet w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200 text-white"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
@@ -158,7 +158,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
         {/* Guide Content */}
         <div className="p-6 space-y-5">
           {attemptMessage && (
-            <div className="p-3 bg-white/[0.04] border border-white/[0.12] rounded-xl text-xs text-zinc-300 flex items-center gap-2">
+            <div className="c4e-card p-3 text-xs text-zinc-300 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0" />
               <span>{attemptMessage}</span>
             </div>
@@ -167,7 +167,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
           {/* Android Steps */}
           {deviceTab === 'android' && (
             <div className="space-y-3.5">
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   1
                 </div>
@@ -186,7 +186,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   2
                 </div>
@@ -202,7 +202,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   3
                 </div>
@@ -223,7 +223,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
           {/* iOS / iPhone Steps */}
           {deviceTab === 'ios' && (
             <div className="space-y-3.5">
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   1
                 </div>
@@ -242,7 +242,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   2
                 </div>
@@ -261,7 +261,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   3
                 </div>
@@ -282,7 +282,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
           {/* Desktop Steps */}
           {deviceTab === 'desktop' && (
             <div className="space-y-3.5">
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   1
                 </div>
@@ -301,7 +301,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-start gap-3.5 p-3.5 bg-black/25 border border-white/[0.07] rounded-2xl">
+              <div className="c4e-well flex items-start gap-3.5 p-3.5">
                 <div className="w-7 h-7 rounded-xl bg-white/[0.07] border border-white/[0.12] text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0">
                   2
                 </div>

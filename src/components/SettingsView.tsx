@@ -219,9 +219,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   };
 
   return (
-    <div className="flex-1 min-w-0 w-full border-r border-white/[0.07] min-h-screen pb-16 bg-[#0a0a14]">
+    <div className="c4e-screen content-column pb-16">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#0a0a14]/90 border-b border-white/[0.07] px-5 py-3.5 flex items-center justify-between">
+      <div className="c4e-topbar z-20 px-5 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           {activeSection !== 'overview' && (
             <button
@@ -265,7 +265,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveSection('profile')}
-                className="px-3.5 py-1.5 rounded-xl bg-white/[0.07] hover:bg-zinc-700 border border-white/[0.12] text-xs font-bold text-white transition-all cursor-pointer"
+                className="c4e-ghost px-3.5 py-1.5 text-xs font-bold text-white cursor-pointer"
               >
                 {language === 'tr' ? 'Profili Düzenle' : 'Edit Profile'}
               </button>
@@ -277,7 +277,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveSection('integrations')}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] transition-all text-left group cursor-pointer"
+                className="c4e-listrow w-full flex items-center justify-between p-4 text-left group cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="p-2.5 rounded-xl bg-blue-950/60 text-blue-400 border border-blue-900/40 group-hover:scale-105 transition-transform">
@@ -301,7 +301,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveSection('notifications')}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] transition-all text-left group cursor-pointer"
+                className="c4e-listrow w-full flex items-center justify-between p-4 text-left group cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="p-2.5 rounded-xl bg-amber-950/60 text-amber-400 border border-amber-900/40 group-hover:scale-105 transition-transform">
@@ -325,7 +325,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveSection('accounts')}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] transition-all text-left group cursor-pointer"
+                className="c4e-listrow w-full flex items-center justify-between p-4 text-left group cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="p-2.5 rounded-xl bg-indigo-950/60 text-indigo-400 border border-indigo-900/40 group-hover:scale-105 transition-transform">
@@ -349,7 +349,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveSection('privacy')}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] transition-all text-left group cursor-pointer"
+                className="c4e-listrow w-full flex items-center justify-between p-4 text-left group cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="p-2.5 rounded-xl bg-purple-950/60 text-purple-400 border border-purple-900/40 group-hover:scale-105 transition-transform">
@@ -371,7 +371,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveSection('theme')}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] transition-all text-left group cursor-pointer"
+                className="c4e-listrow w-full flex items-center justify-between p-4 text-left group cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="p-2.5 rounded-xl bg-amber-950/60 text-amber-400 border border-amber-900/40 group-hover:scale-105 transition-transform">
@@ -398,7 +398,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveSection('preferences')}
-                className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] transition-all text-left group cursor-pointer"
+                className="c4e-listrow w-full flex items-center justify-between p-4 text-left group cursor-pointer"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="p-2.5 rounded-xl bg-cyan-950/60 text-cyan-400 border border-cyan-900/40 group-hover:scale-105 transition-transform">
@@ -432,7 +432,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Profile Edit Section */}
         {activeSection === 'profile' && (
-          <form onSubmit={handleSubmit} className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+          <form onSubmit={handleSubmit} className="c4e-card p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <User className="w-4 h-4 text-blue-400" />
@@ -463,7 +463,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         username: e.target.value.toLowerCase().replace(/\s+/g, '_')
                       })
                     }
-                    className="w-full bg-black/25 border border-white/[0.07] rounded-xl pl-7 pr-3 py-2 text-white font-mono focus:outline-none focus:border-blue-500"
+                    className="c4e-input w-full pl-7 pr-3 py-2 text-white font-mono"
                   />
                 </div>
               </div>
@@ -476,7 +476,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   type="text"
                   value={formData.display_name}
                   onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                  className="c4e-input w-full px-3 py-2 text-white"
                 />
               </div>
 
@@ -495,7 +495,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     value={formData.avatar_url}
                     onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
                     placeholder="https://..."
-                    className="flex-1 bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-white focus:outline-none font-mono text-xs"
+                    className="c4e-input flex-1 px-3 py-2 text-white font-mono text-xs"
                   />
                   <input
                     type="file"
@@ -507,7 +507,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <button
                     type="button"
                     onClick={() => avatarInputRef.current?.click()}
-                    className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-mono text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                    className="c4e-ghost px-3 py-2 text-white font-mono text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5 text-blue-400" />
                     <span>{language === 'tr' ? 'Yükle' : 'Upload'}</span>
@@ -530,7 +530,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     value={formData.banner_url}
                     onChange={(e) => setFormData({ ...formData, banner_url: e.target.value })}
                     placeholder="https://..."
-                    className="flex-1 bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-white focus:outline-none font-mono text-xs"
+                    className="c4e-input flex-1 px-3 py-2 text-white font-mono text-xs"
                   />
                   <input
                     type="file"
@@ -542,7 +542,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <button
                     type="button"
                     onClick={() => bannerInputRef.current?.click()}
-                    className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.12] text-white font-mono text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                    className="c4e-ghost px-3 py-2 text-white font-mono text-xs flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
                   >
                     <Upload className="w-3.5 h-3.5 text-blue-400" />
                     <span>{language === 'tr' ? 'Yükle' : 'Upload'}</span>
@@ -558,7 +558,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   rows={3}
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-white focus:outline-none resize-none"
+                  className="c4e-input w-full px-3 py-2 text-white resize-none"
                 />
               </div>
 
@@ -575,7 +575,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       custom_fields: { ...formData.custom_fields, location: e.target.value }
                     })
                   }
-                  className="w-full bg-black/25 border border-white/[0.07] rounded-xl px-3 py-2 text-white focus:outline-none"
+                  className="c4e-input w-full px-3 py-2 text-white"
                 />
               </div>
 
@@ -617,7 +617,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Notifications & Sound Section */}
         {activeSection === 'notifications' && (
-          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+          <div className="c4e-card p-5 space-y-4">
             <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <BellRing className="w-4 h-4 text-amber-400" />
@@ -665,7 +665,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Connected Accounts Section */}
         {activeSection === 'accounts' && (
-          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+          <div className="c4e-card p-5 space-y-4">
             <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/[0.07] pb-3">
               <KeyRound className="w-4 h-4 text-indigo-400" />
               <span>{language === 'tr' ? 'Bağlı Hesaplar' : 'Connected Accounts'}</span>
@@ -706,7 +706,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Privacy & Group Invites Section */}
         {activeSection === 'privacy' && (
-          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+          <div className="c4e-card p-5 space-y-4">
             <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/[0.07] pb-3">
               <Users className="w-4 h-4 text-purple-400" />
               <span>{language === 'tr' ? 'Grup Davetleri & Gizlilik' : 'Group Invites & Privacy'}</span>
@@ -718,7 +718,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 : 'Control whether other developers can invite or add you to chat groups.'}
             </p>
 
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/25 border border-white/[0.07]">
+            <div className="c4e-well flex items-center justify-between p-3.5">
               <div className="space-y-0.5">
                 <p className="text-xs font-bold text-white">
                   {language === 'tr' ? 'Grup Davetlerine İzin Ver' : 'Allow Group Invites'}
@@ -755,7 +755,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
 
             {/* Liked Posts Visibility Toggle */}
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/25 border border-white/[0.07]">
+            <div className="c4e-well flex items-center justify-between p-3.5">
               <div className="space-y-0.5">
                 <p className="text-xs font-bold text-white">
                   {language === 'tr' ? 'Beğenilen Paylaşımların Görünürlüğü' : 'Liked Posts Visibility'}
@@ -805,7 +805,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Language & Preferences Section */}
         {activeSection === 'preferences' && (
-          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-5 space-y-4">
+          <div className="c4e-card p-5 space-y-4">
             <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/[0.07] pb-3">
               <Globe className="w-4 h-4 text-cyan-400" />
               <span>{language === 'tr' ? 'Dil Tercihi' : 'Language Preference'}</span>
