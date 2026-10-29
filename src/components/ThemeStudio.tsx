@@ -624,33 +624,90 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
               <Wand2 className="w-4 h-4 text-amber-400" />
               <h4 className="text-xs font-extrabold text-white">{t(language, 'Hazır Temalar', 'Presets')}</h4>
             </header>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {THEME_PRESETS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    setDraft(sanitizeProfileTheme({ ...item.theme, enabled: true, shareWithVisitors: draft.shareWithVisitors, paintWholeApp: draft.paintWholeApp }));
-                    setActivePresetId(item.id);
-                  }}
-                  className={`p-2 rounded-xl border text-left transition-colors cursor-pointer ${
-                    activePresetId === item.id ? 'border-amber-500/60 bg-amber-500/10' : 'border-white/[0.07] bg-black/25 hover:border-white/[0.16]'
-                  }`}
-                >
-                  <span
-                    className="block h-10 rounded-lg mb-1.5 border border-black/30"
-                    style={{
-                      backgroundImage:
-                        item.theme.background.kind === 'gradient'
-                          ? gradientToCss(item.theme.background.gradient)
-                          : gradientToCss(item.theme.accent.gradient),
-                      backgroundColor: item.theme.background.color
+            {/*
+              Önizleme ZEMİNİ DEĞİL, TEMAYI gösteriyor.
+
+              Önce yalnızca arka plan gradyanı basılıyordu ve altı tema arasında bu
+              yetiyordu; on dört temada ise "iki koyu lacivert" birbirinden ayırt
+              edilemez oluyor. Şimdi her karo üç şeyi birden taşıyor: zemin, üstünde bir
+              yüzey (kartların rengi) ve bir vurgu şeridi — yani temayı seçtiren üç karar.
+            */}
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              {THEME_PRESETS.map((item) => {
+                const secili = activePresetId === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setDraft(sanitizeProfileTheme({ ...item.theme, enabled: true, shareWithVisitors: draft.shareWithVisitors, paintWholeApp: draft.paintWholeApp }));
+                      setActivePresetId(item.id);
                     }}
-                  />
-                  <span className="block text-[11px] font-bold text-zinc-100 truncate">{item.name}</span>
-                  <span className="block text-[9px] text-zinc-500 truncate">{item.description}</span>
-                </button>
-              ))}
+                    aria-pressed={secili}
+                    className={`c4e-press group overflow-hidden rounded-xl border p-0 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      secili
+                        ? 'border-amber-400/70 ring-1 ring-amber-400/40'
+                        : 'border-white/[0.08] hover:border-white/[0.2]'
+                    }`}
+                  >
+                    <span
+                      className="relative block h-16 w-full"
+                      style={{
+                        backgroundImage:
+                          item.theme.background.kind === 'gradient'
+                            ? gradientToCss(item.theme.background.gradient)
+                            : 'none',
+                        backgroundColor: item.theme.background.color
+                      }}
+                    >
+                      {/* Kart yüzeyi: temanın okunacağı asıl zemin. */}
+                      <span
+                        className="absolute left-2 top-2 block h-7 w-[58%] rounded-md border border-white/[0.08]"
+                        style={{
+                          backgroundImage:
+                            item.theme.surface.kind === 'gradient'
+                              ? gradientToCss(item.theme.surface.gradient)
+                              : 'none',
+                          backgroundColor: item.theme.surface.color
+                        }}
+                      >
+                        {/* Yüzeyin üstündeki metnin rengi — kontrastı burada görünüyor. */}
+                        <span
+                          className="absolute left-1.5 top-1.5 block h-1 w-8 rounded-full"
+                          style={{ backgroundColor: item.theme.text.primary, opacity: 0.9 }}
+                        />
+                        <span
+                          className="absolute left-1.5 top-4 block h-1 w-5 rounded-full"
+                          style={{ backgroundColor: item.theme.text.muted, opacity: 0.8 }}
+                        />
+                      </span>
+
+                      {/* Vurgu: düğmelerin ve bağlantıların rengi. */}
+                      <span
+                        className="absolute bottom-2 left-2 right-2 block h-3 rounded-full"
+                        style={{
+                          backgroundImage:
+                            item.theme.accent.kind === 'gradient'
+                              ? gradientToCss(item.theme.accent.gradient)
+                              : 'none',
+                          backgroundColor: item.theme.accent.color
+                        }}
+                      />
+
+                      {secili && (
+                        <span className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-zinc-950">
+                          <Check className="h-3 w-3" />
+                        </span>
+                      )}
+                    </span>
+
+                    <span className="block bg-black/40 px-2 py-1.5">
+                      <span className="block truncate text-[11px] font-bold text-zinc-100">{item.name}</span>
+                      <span className="block truncate text-[9.5px] text-zinc-500">{item.description}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </section>
 

@@ -507,6 +507,367 @@ export const THEME_PRESETS: ThemePreset[] = [
     border: { color: '#25305c', radius: 22, width: 1 },
     glow: { color: '#38bdf8', intensity: 30 },
     effects: { blur: 3, grid: true }
+  }),
+
+  // ----------------------------------------------------------------
+  // GENİŞLETİLMİŞ TAKIM
+  // ----------------------------------------------------------------
+  //
+  // İlk altı tema birer "renk" seçiyordu; bunlar birer ORTAM seçiyor. Ortak kural:
+  // zeminin en koyu noktası neredeyse nötr, renk kütlesi ise kenarlarda. Rengi metnin
+  // ALTINA koymak, uzun bir paragrafın kontrastını satır satır değiştirir ve okumayı
+  // yorar — gradyanın güzel görünüp kullanılamaz olmasının en yaygın sebebi budur.
+  //
+  // Her temanın metin/yüzey kontrastı ölçülüyor (scratchpad/tema_kontrast.mjs):
+  // gövde metni en az 4.5:1, ikincil metin en az 3:1.
+
+  preset('midnight_ink', 'Gece Mürekkebi', 'Sakin lacivert, uzun okuma için', {
+    background: {
+      kind: 'gradient',
+      color: '#07080f',
+      gradient: gradient('radial', 0, [
+        ['#141a33', 0],
+        ['#07080f', 100]
+      ], { centerX: 50, centerY: 0, shape: 'ellipse' })
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#0d1020',
+      gradient: gradient('linear', 180, [
+        ['#10142a', 0],
+        ['#0b0e1c', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#6366f1',
+      gradient: gradient('linear', 100, [
+        ['#818cf8', 0],
+        ['#6366f1', 100]
+      ])
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#4f46e5',
+      gradient: gradient('linear', 115, [
+        ['#1e1b4b', 0],
+        ['#4f46e5', 70],
+        ['#312e81', 100]
+      ]),
+      overlayOpacity: 48,
+      useProfileImage: true
+    },
+    text: { primary: '#eef0fb', muted: '#9ba4c8', onAccent: '#ffffff', code: '#a5b4fc', link: '#93c5fd' },
+    border: { color: '#242a44', radius: 18, width: 1 },
+    glow: { color: '#6366f1', intensity: 20 },
+    effects: { blur: 0, grid: true }
+  }),
+
+  preset('ember', 'Köz', 'Alttan yükselen ateş', {
+    background: {
+      kind: 'gradient',
+      color: '#0c0806',
+      // Kütle ALTTA: közün yönü yukarı. Üstte bırakılsaydı başlıkların arkasında
+      // turuncu bir sis olur ve okunurluğu bozardı.
+      gradient: gradient('radial', 0, [
+        ['#3b1206', 0],
+        ['#0c0806', 100]
+      ], { centerX: 50, centerY: 100, shape: 'ellipse' })
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#15100d',
+      gradient: gradient('linear', 190, [
+        ['#1a1310', 0],
+        ['#110c0a', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#f97316',
+      gradient: gradient('linear', 95, [
+        ['#fb923c', 0],
+        ['#ef4444', 100]
+      ])
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#f97316',
+      gradient: gradient('linear', 130, [
+        ['#450a0a', 0],
+        ['#c2410c', 55],
+        ['#fb923c', 100]
+      ]),
+      overlayOpacity: 44,
+      useProfileImage: true
+    },
+    text: { primary: '#fdf1e7', muted: '#c8a894', onAccent: '#1a0d05', code: '#fdba74', link: '#fb923c' },
+    border: { color: '#422116', radius: 16, width: 1 },
+    glow: { color: '#f97316', intensity: 26 },
+    effects: { blur: 0, grid: false }
+  }),
+
+  preset('mint_terminal', 'Nane Terminal', 'Keskin, soğuk, okunaklı', {
+    background: {
+      kind: 'gradient',
+      color: '#05100d',
+      gradient: gradient('linear', 170, [
+        ['#05100d', 0],
+        ['#07201a', 100]
+      ])
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#07140f',
+      gradient: gradient('linear', 180, [
+        ['#091913', 0],
+        ['#06110c', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#2dd4bf',
+      gradient: gradient('linear', 100, [
+        ['#5eead4', 0],
+        ['#14b8a6', 100]
+      ])
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#2dd4bf',
+      gradient: gradient('linear', 110, [
+        ['#042f2e', 0],
+        ['#0d9488', 60],
+        ['#5eead4', 100]
+      ]),
+      overlayOpacity: 40,
+      useProfileImage: true
+    },
+    text: { primary: '#ecfdf5', muted: '#8fb8ab', onAccent: '#032420', code: '#5eead4', link: '#67e8f9' },
+    border: { color: '#17392f', radius: 12, width: 1 },
+    glow: { color: '#2dd4bf', intensity: 22 },
+    effects: { blur: 0, grid: true }
+  }),
+
+  preset('rose_quartz', 'Pembe Kuvars', 'Koyu erik üstünde gül', {
+    background: {
+      kind: 'gradient',
+      color: '#0d070c',
+      gradient: gradient('radial', 0, [
+        ['#2d1024', 0],
+        ['#0d070c', 100]
+      ], { centerX: 80, centerY: 10, shape: 'ellipse' })
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#140c14',
+      gradient: gradient('linear', 175, [
+        ['#1a0f1a', 0],
+        ['#110a11', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#f472b6',
+      gradient: gradient('linear', 105, [
+        ['#fda4af', 0],
+        ['#f472b6', 55],
+        ['#c084fc', 100]
+      ])
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#f472b6',
+      gradient: gradient('linear', 125, [
+        ['#4c0519', 0],
+        ['#be185d', 60],
+        ['#f9a8d4', 100]
+      ]),
+      overlayOpacity: 42,
+      useProfileImage: true
+    },
+    text: { primary: '#fdf2f8', muted: '#c9a3bd', onAccent: '#2b0415', code: '#f9a8d4', link: '#f0abfc' },
+    border: { color: '#3d2038', radius: 20, width: 1 },
+    glow: { color: '#f472b6', intensity: 24 },
+    effects: { blur: 2, grid: false }
+  }),
+
+  preset('cobalt_glass', 'Kobalt Cam', 'Derin mavi cam, parlak camgöbeği', {
+    background: {
+      kind: 'gradient',
+      color: '#04080f',
+      gradient: gradient('linear', 155, [
+        ['#04080f', 0],
+        ['#0a1b33', 55],
+        ['#061427', 100]
+      ])
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#08142a',
+      gradient: gradient('linear', 180, [
+        ['#0a1932', 0],
+        ['#071124', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#22d3ee',
+      gradient: gradient('linear', 100, [
+        ['#67e8f9', 0],
+        ['#0ea5e9', 100]
+      ])
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#0ea5e9',
+      gradient: gradient('linear', 115, [
+        ['#082f49', 0],
+        ['#0284c7', 55],
+        ['#67e8f9', 100]
+      ]),
+      overlayOpacity: 46,
+      useProfileImage: true
+    },
+    text: { primary: '#e8f4ff', muted: '#8fadcf', onAccent: '#021a26', code: '#7dd3fc', link: '#38bdf8' },
+    border: { color: '#15304f', radius: 18, width: 1 },
+    glow: { color: '#0ea5e9', intensity: 28 },
+    effects: { blur: 4, grid: true }
+  }),
+
+  preset('sandstorm', 'Kum Fırtınası', 'Sıcak toprak, altın değil', {
+    background: {
+      kind: 'gradient',
+      color: '#0b0a07',
+      gradient: gradient('linear', 160, [
+        ['#0b0a07', 0],
+        ['#1f1a10', 70],
+        ['#2a2214', 100]
+      ])
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#15120c',
+      gradient: gradient('linear', 185, [
+        ['#1a160e', 0],
+        ['#120f0a', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#d6b26a',
+      gradient: gradient('linear', 95, [
+        ['#e8cf94', 0],
+        ['#c08a4a', 100]
+      ])
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#d6b26a',
+      gradient: gradient('linear', 120, [
+        ['#3b2f15', 0],
+        ['#9a7334', 55],
+        ['#e8cf94', 100]
+      ]),
+      overlayOpacity: 40,
+      useProfileImage: true
+    },
+    text: { primary: '#f6f0e2', muted: '#bbab8d', onAccent: '#1b1407', code: '#e8cf94', link: '#d6b26a' },
+    border: { color: '#3a3121', radius: 14, width: 1 },
+    glow: { color: '#d6b26a', intensity: 18 },
+    effects: { blur: 0, grid: true }
+  }),
+
+  preset('nebula', 'Bulutsu', 'Dönen çok renkli kütle', {
+    background: {
+      kind: 'gradient',
+      color: '#07061a',
+      // Konik + animasyon: Spark temalarının "gösterişli" olanı. Zemin yine en koyu
+      // noktasında nötr, renk kenarlarda dönüyor.
+      gradient: gradient('conic', 0, [
+        ['#1e1b4b', 0],
+        ['#4c1d95', 25],
+        ['#831843', 50],
+        ['#0c4a6e', 75],
+        ['#07061a', 100]
+      ], { centerX: 25, centerY: 15, animate: true })
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#0d0b22',
+      gradient: gradient('linear', 170, [
+        ['#110e2b', 0],
+        ['#0a0819', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#a78bfa',
+      gradient: gradient('linear', 110, [
+        ['#f0abfc', 0],
+        ['#a78bfa', 45],
+        ['#38bdf8', 100]
+      ], { animate: true })
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#a78bfa',
+      gradient: gradient('conic', 30, [
+        ['#f0abfc', 0],
+        ['#818cf8', 40],
+        ['#22d3ee', 75],
+        ['#f0abfc', 100]
+      ], { centerX: 50, centerY: 50 }),
+      overlayOpacity: 46,
+      useProfileImage: true
+    },
+    text: { primary: '#f3f0ff', muted: '#aba3cf', onAccent: '#140a2e', code: '#d8b4fe', link: '#c4b5fd' },
+    border: { color: '#2d2554', radius: 22, width: 1 },
+    glow: { color: '#a78bfa', intensity: 32 },
+    effects: { blur: 5, grid: false }
+  }),
+
+  preset('monochrome', 'Tek Renk', 'Renk yok, yalnızca kontrast', {
+    // Renkli tema istemeyen için. "Varsayılana dön" değil: zemini, yüzeyi ve
+    // kenarlığı özenle ayarlanmış, kasten renksiz bir tema.
+    background: {
+      kind: 'gradient',
+      color: '#070707',
+      gradient: gradient('linear', 180, [
+        ['#0c0c0c', 0],
+        ['#050505', 100]
+      ])
+    },
+    surface: {
+      kind: 'gradient',
+      color: '#0f0f0f',
+      gradient: gradient('linear', 180, [
+        ['#131313', 0],
+        ['#0d0d0d', 100]
+      ])
+    },
+    accent: {
+      kind: 'gradient',
+      color: '#fafafa',
+      gradient: gradient('linear', 90, [
+        ['#ffffff', 0],
+        ['#d4d4d8', 100]
+      ])
+    },
+    banner: {
+      kind: 'gradient',
+      color: '#52525b',
+      gradient: gradient('linear', 120, [
+        ['#18181b', 0],
+        ['#52525b', 100]
+      ]),
+      overlayOpacity: 50,
+      useProfileImage: true
+    },
+    text: { primary: '#fafafa', muted: '#a1a1aa', onAccent: '#09090b', code: '#e4e4e7', link: '#ffffff' },
+    border: { color: '#272727', radius: 10, width: 1 },
+    glow: { color: '#ffffff', intensity: 10 },
+    effects: { blur: 0, grid: true }
   })
 ];
 
