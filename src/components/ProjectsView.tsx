@@ -90,16 +90,26 @@ const ProjectCard: React.FC<{
           >
             {project.name}
           </a>
-          <a
-            href={project.repo_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="user-text inline-flex items-center gap-1.5 text-[11px] text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-          >
-            <Github className="h-3 w-3 flex-shrink-0" />
-            <span>{project.repo_full_name}</span>
-            <ExternalLink className="h-2.5 w-2.5 flex-shrink-0" />
-          </a>
+          {/* Depo İSTEĞE BAĞLI. Yokken bu satır iki boş simgeye dönüşüyordu:
+              GitHub işareti ve dış bağlantı oku, aralarında hiçbir metin yok.
+              Bağlantı gibi görünen ama hiçbir yere gitmeyen bir şey. */}
+          {project.repo_full_name ? (
+            <a
+              href={project.repo_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="user-text inline-flex min-h-7 items-center gap-1.5 rounded text-[11px] text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Github className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">{project.repo_full_name}</span>
+              <ExternalLink className="h-2.5 w-2.5 flex-shrink-0" />
+            </a>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-zinc-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-600" />
+              {tr ? 'Depo bağlı değil' : 'No repository linked'}
+            </span>
+          )}
         </div>
 
         {isOwner && (
@@ -245,7 +255,8 @@ const HighlightCard: React.FC<{
       {project.name}
     </a>
     <p className="user-text text-[11px] text-zinc-400">
-      @{project.owner_username} · {project.repo_full_name}
+      @{project.owner_username}
+      {project.repo_full_name ? ` · ${project.repo_full_name}` : ''}
     </p>
     <p className="text-[11px] font-semibold text-zinc-300">{subtitle}</p>
   </div>

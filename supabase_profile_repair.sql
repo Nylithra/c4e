@@ -188,3 +188,68 @@ COMMIT;
 -- dönmeli. Dönen satır kalırsa, o değer gerçekten o üyeye ait olabilir (örneğin iki
 -- yönetici aynı siteyi paylaşıyor) — elle bakılmalı.
 -- =====================================================================================
+
+-- =====================================================================================
+-- 4. BÖLÜM — GENİŞLETİLMİŞ TARAMA (yönetici olmayan kaynaklardan da sızmış olabilir)
+-- =====================================================================================
+--
+-- 1. bölüm yalnızca YÖNETİCİ satırlarıyla birebir eşleşenleri buluyor. Ama hatanın
+-- yazdığı değer, o anda oturumu açık olan HERHANGİ bir üyenin vitrini olabilirdi —
+-- yöneticiler yalnızca en sık tetikleyen hesaplardı (başkasının satırını en çok onlar
+-- güncelliyor).
+--
+-- Bu tarama daha geniş: iki FARKLI üyenin vitrini birebir aynıysa, ikisinden biri
+-- kopyadır. Hangisi olduğunu "vitrindeki depoların sahibi kim" sorusu söylüyor:
+-- github.com/nylithra/... depoları @ayse profilinde duruyorsa, @ayse'ninki kopya.
+--
+-- ÖNCE OKUYUN, SONRA KARAR VERİN: bu bir rapor, otomatik silme değil. Bir üyenin
+-- başkasının deposunu kasten vitrine koyması mümkün (katkı verdiği bir proje), bu
+-- yüzden son söz sizde.
+
+SELECT
+  a.username                                   AS supheli_profil,
+  b.username                                   AS ayni_vitrine_sahip_diger,
+  jsonb_array_length(a.pinned_repos)           AS depo_sayisi,
+  -- Vitrindeki depoların GitHub sahibi, profilin kendi adıyla eşleşiyor mu?
+  -- Hiçbiri eşleşmiyorsa kopya olma ihtimali yüksek.
+  (
+    SELECT count(*)
+      FROM jsonb_array_elements(a.pinned_repos) r
+     WHERE lower(coalesce(r ->> 'html_url', '')) LIKE '%github.com/' || lower(a.username) || '/%'
+  )                                            AS kendi_deposu_sayisi,
+  a.updated_at                                 AS son_guncelleme
+FROM public.profiles a
+JOIN public.profiles b
+  ON b.id <> a.id
+ AND b.pinned_repos = a.pinned_repos
+WHERE jsonb_typeof(a.pinned_repos) = 'array'
+  AND jsonb_array_length(a.pinned_repos) > 0
+ORDER BY kendi_deposu_sayisi ASC, a.username;
+
+
+-- Yukarıdaki raporda `kendi_deposu_sayisi = 0` olan satırlar en güçlü adaylar:
+-- vitrindeki depoların HİÇBİRİ o üyenin kendi adı altında değil ve aynı vitrin
+-- başka bir üyede de duruyor. Onaylarsanız aşağıdaki blok yalnızca onları temizler.
+--
+-- BEGIN;
+-- ALTER TABLE public.profiles DISABLE TRIGGER trg_protect_profile_privileges;
+-- WITH kopya AS (
+--   SELECT DISTINCT a.id
+--     FROM public.profiles a
+--     JOIN public.profiles b ON b.id <> a.id AND b.pinned_repos = a.pinned_repos
+--    WHERE jsonb_typeof(a.pinned_repos) = 'array'
+--      AND jsonb_array_length(a.pinned_repos) > 0
+--      AND NOT EXISTS (
+--            SELECT 1 FROM jsonb_array_elements(a.pinned_repos) r
+--             WHERE lower(coalesce(r ->> 'html_url', ''))
+--                   LIKE '%github.com/' || lower(a.username) || '/%'
+--          )
+-- )
+-- UPDATE public.profiles p
+--    SET pinned_repos = '[]'::jsonb,
+--        custom_fields = jsonb_set(COALESCE(p.custom_fields, '{}'::jsonb), '{pinned_repos}', '[]'::jsonb),
+--        updated_at = now()
+--   FROM kopya k
+--  WHERE p.id = k.id;
+-- ALTER TABLE public.profiles ENABLE TRIGGER trg_protect_profile_privileges;
+-- COMMIT;

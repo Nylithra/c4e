@@ -2592,8 +2592,46 @@ export function saveStoredProfile(profile: UserProfile): void {
   localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
 }
 
+/*
+ * ÜYE ÖNBELLEĞİNİN SÜRÜMÜ.
+ *
+ * Eski bir hata, bir üyenin vitrinini BAŞKA üyelerin satırlarına yazıyordu
+ * (bkz. SECURITY.md 2.7). Hata sunucu ve istemci tarafında kapatıldı, ama
+ * tarayıcıda duran önbellek o bozuk satırları taşımaya devam ediyor: temiz bir
+ * veritabanıyla bile ekranda yanlış vitrin görünüyor.
+ *
+ * Sürüm numarasını artırmak önbelleği bir kez geçersiz kılıyor; uygulama
+ * listeyi sunucudan tazeliyor. Anahtarın KENDİSİ değişmiyor — değişseydi eski
+ * kayıt tarayıcıda sonsuza kadar çöp olarak kalırdı.
+ */
+const ALL_USERS_CACHE_VERSION = '2';
+const ALL_USERS_VERSION_KEY = 'c4e_all_users_cache_v';
+
+function allUsersCacheIsStale(): boolean {
+  try {
+    return localStorage.getItem(ALL_USERS_VERSION_KEY) !== ALL_USERS_CACHE_VERSION;
+  } catch {
+    return false;
+  }
+}
+
+function markAllUsersCacheFresh(): void {
+  try {
+    localStorage.setItem(ALL_USERS_VERSION_KEY, ALL_USERS_CACHE_VERSION);
+  } catch {}
+}
+
 export function loadStoredAllUsers(): UserProfile[] {
   try {
+    // Sürümü eski olan önbellek bir kez atılıyor: içinde eski hatadan kalma
+    // çapraz yazılmış satırlar olabilir.
+    if (allUsersCacheIsStale()) {
+      localStorage.removeItem('c4e_all_users_cache');
+      markAllUsersCacheFresh();
+      const self = loadStoredProfile();
+      return self ? [normalizeProfile(self)] : [];
+    }
+
     const raw = localStorage.getItem('c4e_all_users_cache');
     if (raw) {
       const parsed = JSON.parse(raw);
