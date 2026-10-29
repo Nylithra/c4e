@@ -473,6 +473,25 @@ CREATE TABLE IF NOT EXISTS public.oauth_grants (
   PRIMARY KEY (app_id, user_id)
 );
 
+-- ----------------------------------------------------------------
+-- SPARK ÖZEL PROJE SAYFALARI
+-- ----------------------------------------------------------------
+--
+-- Spark destekçisi, projesinin sayfasına KENDİ HTML/CSS/JS kodunu koyabiliyor.
+--
+-- BU SÜTUNLAR GÜVENİLMEYEN KOD TAŞIYOR ve bunun böyle olduğu burada yazılı duruyor.
+-- İçerik hiçbir zaman Code4Ever sayfasının içine basılmıyor; yalnızca KÖKENSİZ
+-- (sandbox'lı, allow-same-origin VERİLMEMİŞ) bir iframe'in `srcdoc`una konuyor. Orada
+-- ayrı bir kökende çalışıyor: oturumu okuyamıyor, üst pencereye erişemiyor, üst düzey
+-- yönlendirme yapamıyor.
+--
+-- Boyut sınırı sunucuda zorlanıyor (HTML 100 KB, CSS ve JS 50'şer KB).
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS custom_page_enabled BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS custom_html TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS custom_css TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS custom_js TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS custom_page_updated_at TIMESTAMPTZ;
+
 CREATE INDEX IF NOT EXISTS idx_oauth_apps_owner ON public.oauth_apps(owner_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_oauth_codes_expires ON public.oauth_codes(expires_at);
 CREATE INDEX IF NOT EXISTS idx_oauth_tokens_user ON public.oauth_tokens(user_id, revoked_at);
@@ -482,6 +501,342 @@ CREATE INDEX IF NOT EXISTS idx_oauth_grants_user ON public.oauth_grants(user_id,
 -- ================================================================
 -- 2. COLUMN MIGRATIONS (safe to re-run)
 -- ================================================================
+
+-- ----------------------------------------------------------------
+-- TAM SÜTUN UYUMLAMASI  (üretilmiş blok — elle düzenlemeyin)
+-- ----------------------------------------------------------------
+--
+-- NEDEN BU BLOK VAR
+--
+-- `CREATE TABLE IF NOT EXISTS` VAR OLAN BİR TABLOYU DEĞİŞTİRMEZ. Yani tablo tanımına
+-- sonradan eklenen her sütun, temiz bir kurulumda oluşuyor ama mevcut bir veritabanında
+-- hiç oluşmuyor. Betiğin ilerleyen yerlerinde o sütuna dokunan ilk ifade
+-- "column ... does not exist" ile duruyor ve geri kalan HER ŞEY çalışmamış oluyor.
+--
+-- Bu blok her CREATE TABLE sütunu için bir `ADD COLUMN IF NOT EXISTS` taşıyor, böylece
+-- tanım tek yerde kalıyor ve göç ondan türüyor. Üç şey bilerek TAŞINMIYOR: PRIMARY KEY
+-- (var olan bir tabloya ikinci birincil anahtar eklenemez), UNIQUE / REFERENCES (mevcut
+-- veride tekrar eden ya da karşılığı olmayan değer varsa betiği durdurur) ve varsayılanı
+-- olmayan NOT NULL (dolu bir tabloya eklenemez). Bu kısıtlar temiz kurulumda
+-- CREATE TABLE'dan geliyor.
+--
+-- Yeniden üretmek için:
+--   python3 scratchpad/sema/sutun_gocu.py supabase_schema.sql
+
+-- profiles
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS username TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS display_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS banner_url TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'Geliştirici';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS verified BOOLEAN DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS website TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS theme_color TEXT DEFAULT '#09090b';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS accent_color TEXT DEFAULT '#3b82f6';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS joined_communities JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS custom_fields JSONB DEFAULT '{"github": "github.com", "location": "Türkiye"}'::jsonb;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS pinned_repos JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS badges JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS integrations JSONB;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS supporter_tier TEXT DEFAULT 'none';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS profile_theme JSONB;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS saved_post_ids JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS allow_group_invites BOOLEAN DEFAULT true;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS show_liked_posts BOOLEAN DEFAULT true;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_online BOOLEAN DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+-- posts
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS author JSONB;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS author_id TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'general';
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS category_name TEXT DEFAULT 'Genel & Sohbet';
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS code_snippet TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS code_language TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS media_url TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS media_type TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS project_card JSONB;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS community_id TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS community_name TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS community_handle TEXT;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS likes_count INTEGER DEFAULT 0;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS liked_by JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS comments_count INTEGER DEFAULT 0;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS comments JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS reposts_count INTEGER DEFAULT 0;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS reposted_by JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS bookmarked_by JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false;
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- communities
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS name VARCHAR(60);
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS handle VARCHAR(40);
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS banner_url TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS description VARCHAR(500);
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS members_count INTEGER DEFAULT 0;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS is_private BOOLEAN DEFAULT false;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS created_by TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS creator_username TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+-- community_api_keys
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS community_id TEXT;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS community_handle TEXT;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS name VARCHAR(60) NOT NULL DEFAULT 'default';
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS key_prefix VARCHAR(24);
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS key_hash TEXT;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS scopes TEXT[] NOT NULL DEFAULT ARRAY['posts:write'];
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS created_by TEXT;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS created_by_username TEXT;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS last_used_at TIMESTAMPTZ;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS request_count BIGINT NOT NULL DEFAULT 0;
+ALTER TABLE public.community_api_keys ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMPTZ;
+
+-- admin_mail_cache
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS mailbox VARCHAR(80) NOT NULL DEFAULT 'INBOX';
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS uid BIGINT;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS subject VARCHAR(250);
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS from_name VARCHAR(120);
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS from_address VARCHAR(254);
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS to_address VARCHAR(254);
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS sent_at TIMESTAMPTZ;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS seen BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS flagged BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS has_attachments BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS preview VARCHAR(400);
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS body_text TEXT;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS body_html TEXT;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS images_blocked BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS attachments JSONB NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS body_synced_at TIMESTAMPTZ;
+ALTER TABLE public.admin_mail_cache ADD COLUMN IF NOT EXISTS synced_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+
+-- admin_mail_sync_state
+ALTER TABLE public.admin_mail_sync_state ADD COLUMN IF NOT EXISTS mailbox VARCHAR(80);
+ALTER TABLE public.admin_mail_sync_state ADD COLUMN IF NOT EXISTS last_synced_at TIMESTAMPTZ;
+ALTER TABLE public.admin_mail_sync_state ADD COLUMN IF NOT EXISTS message_count INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE public.admin_mail_sync_state ADD COLUMN IF NOT EXISTS bodies_cached INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE public.admin_mail_sync_state ADD COLUMN IF NOT EXISTS truncated BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- job_listings
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS type VARCHAR(10) CHECK (type IN ('job', 'team'));
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS title VARCHAR(120);
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS description VARCHAR(4000);
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS quota INTEGER NOT NULL DEFAULT 1 CHECK (quota >= 1 AND quota <= 500);
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS author JSONB;
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS author_id TEXT;
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'closed'));
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS applications JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS applied_by JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS applications_count INTEGER DEFAULT 0;
+ALTER TABLE public.job_listings ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- job_applications
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS job_id TEXT;
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS job_title TEXT;
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS applicant_id TEXT;
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS applicant_username TEXT;
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS applicant_avatar TEXT;
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS applicant_display_name TEXT;
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS name VARCHAR(60);
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS age INTEGER CHECK (age >= 13 AND age <= 100);
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS experience VARCHAR(250);
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS languages VARCHAR(250);
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS description VARCHAR(3000);
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected'));
+ALTER TABLE public.job_applications ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- notifications
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS recipient_id TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS type VARCHAR(30);
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS actor JSONB;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS is_read BOOLEAN DEFAULT false;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS target_id TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- groups
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS name VARCHAR(60);
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS description VARCHAR(500);
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS creator_id TEXT;
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS creator_username TEXT;
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS admins JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS members JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS last_message JSONB;
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.groups ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+-- messages
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS conversation_id TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS is_group BOOLEAN DEFAULT false;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS sender_id TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS sender_username TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS sender_display_name TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS sender_avatar TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS media_url TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS media_type VARCHAR(20);
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS media_name TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'delivered';
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS is_edited BOOLEAN DEFAULT false;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS encryption_duration_ms NUMERIC DEFAULT 0;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS reply_to JSONB;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ;
+
+-- group_invites
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS group_id TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS group_name VARCHAR(60);
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS group_avatar TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS group_description VARCHAR(500);
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS invited_by_username TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS invited_by_name TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS invited_by_avatar TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS target_username TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS target_user_id TEXT;
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'declined'));
+ALTER TABLE public.group_invites ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- system_error_reports
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS error_type TEXT NOT NULL DEFAULT 'general_issue';
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS location TEXT;
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS logs TEXT;
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS reporter_username TEXT;
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS reporter_display_name TEXT;
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS reporter_avatar TEXT;
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
+ALTER TABLE public.system_error_reports ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- post_reports
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS post_id TEXT;
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS post_author_username TEXT;
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS post_content TEXT;
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS reporter_username TEXT;
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS reporter_display_name TEXT;
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS reason TEXT NOT NULL DEFAULT 'other';
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS reason_label TEXT DEFAULT 'İhlal / Şikayet';
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS details TEXT;
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
+ALTER TABLE public.post_reports ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- projects
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS owner_id TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS owner_username TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS name VARCHAR(80);
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS about VARCHAR(600);
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS slug VARCHAR(90);
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS cover_url TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS gallery JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS repo_full_name TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS repo_url TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS repo_default_branch TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS language TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS likes_count INTEGER DEFAULT 0;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS followers_count INTEGER DEFAULT 0;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS last_commit_sha TEXT;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS last_commit_at TIMESTAMPTZ;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS last_checked_at TIMESTAMPTZ;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS check_failures INTEGER DEFAULT 0;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false;
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+-- project_likes
+ALTER TABLE public.project_likes ADD COLUMN IF NOT EXISTS project_id TEXT;
+ALTER TABLE public.project_likes ADD COLUMN IF NOT EXISTS user_id TEXT;
+ALTER TABLE public.project_likes ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- project_follows
+ALTER TABLE public.project_follows ADD COLUMN IF NOT EXISTS project_id TEXT;
+ALTER TABLE public.project_follows ADD COLUMN IF NOT EXISTS user_id TEXT;
+ALTER TABLE public.project_follows ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- community_projects
+ALTER TABLE public.community_projects ADD COLUMN IF NOT EXISTS community_id TEXT;
+ALTER TABLE public.community_projects ADD COLUMN IF NOT EXISTS project_id TEXT;
+ALTER TABLE public.community_projects ADD COLUMN IF NOT EXISTS added_by TEXT;
+ALTER TABLE public.community_projects ADD COLUMN IF NOT EXISTS added_by_username TEXT;
+ALTER TABLE public.community_projects ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- oauth_apps
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS client_id TEXT;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS client_secret_hash TEXT;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS client_secret_prefix VARCHAR(24);
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS name VARCHAR(60);
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS description VARCHAR(300);
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS website_url TEXT;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS logo_url TEXT;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS redirect_uris TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[];
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'];
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS owner_id TEXT;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS owner_username TEXT;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS last_used_at TIMESTAMPTZ;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS request_count BIGINT NOT NULL DEFAULT 0;
+ALTER TABLE public.oauth_apps ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMPTZ;
+
+-- oauth_codes
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS code_hash TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS app_id TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS user_id TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'];
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS redirect_uri TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS code_challenge TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS code_challenge_method VARCHAR(10);
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+-- oauth_tokens
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS access_token_hash TEXT;
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS refresh_token_hash TEXT;
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS app_id TEXT;
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS user_id TEXT;
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'];
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS last_used_at TIMESTAMPTZ;
+ALTER TABLE public.oauth_tokens ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMPTZ;
+
+-- oauth_grants
+ALTER TABLE public.oauth_grants ADD COLUMN IF NOT EXISTS app_id TEXT;
+ALTER TABLE public.oauth_grants ADD COLUMN IF NOT EXISTS user_id TEXT;
+ALTER TABLE public.oauth_grants ADD COLUMN IF NOT EXISTS scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'];
+ALTER TABLE public.oauth_grants ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.oauth_grants ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+-- ----------------------------------------------------------------
+-- ELLE YAZILMIŞ GÖÇLER
+-- ----------------------------------------------------------------
 
 -- Topluluktaki proje sayısı TÜRETİLMİŞ veridir; aşağıdaki tetikleyici yazar. İstemciye
 -- bırakılsaydı bir topluluk kendi sayısını şişirip listelerde öne çıkabilirdi.
@@ -612,8 +967,21 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS email_prefs JSONB;
 -- Proje deposu artık isteğe bağlı. İlk sürümde NOT NULL idi ve bu, proje paylaşmayı
 -- GitHub bağlamaya mecbur bırakıyordu. Mevcut kurulumlarda kısıtı düşürmek gerekiyor;
 -- CREATE TABLE IF NOT EXISTS var olan bir tabloyu değiştirmez.
-ALTER TABLE public.projects ALTER COLUMN repo_full_name DROP NOT NULL;
-ALTER TABLE public.projects ALTER COLUMN repo_url DROP NOT NULL;
+--
+-- KORUMALI: sütun yoksa bu satır hatayla DURUR ve betiğin geri kalanı hiç çalışmaz.
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = 'public' AND table_name = 'projects'
+                AND column_name = 'repo_full_name') THEN
+    ALTER TABLE public.projects ALTER COLUMN repo_full_name DROP NOT NULL;
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = 'public' AND table_name = 'projects'
+                AND column_name = 'repo_url') THEN
+    ALTER TABLE public.projects ALTER COLUMN repo_url DROP NOT NULL;
+  END IF;
+END $$;
 
 -- Proje sayfası: adres, uzun anlatım ve görseller.
 ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS slug VARCHAR(90);
@@ -665,7 +1033,7 @@ BEGIN
   UPDATE public.projects p
   SET slug = CASE
         WHEN n.sira = 1 THEN left(n.taban, 90)
-        ELSE left(n.taban, 82) || '-' || right(replace(p.id, '-', ''), 6)
+        ELSE left(n.taban, 82) || '-' || right(replace(p.id::text, '-', ''), 6)
       END
   FROM numarali n
   WHERE p.id = n.id;
@@ -868,6 +1236,29 @@ AS $$
   SELECT auth.uid() IS NOT NULL AND profile_id::text = auth.uid()::text;
 $$;
 
+/*
+ * AYNI İŞLEVİN UUID SÜRÜMÜ.
+ *
+ * NEDEN GEREKLİ: bu betikteki tablolar kimlik sütunlarını TEXT olarak tanımlıyor, ama
+ * `CREATE TABLE IF NOT EXISTS` zaten var olan bir tabloyu DEĞİŞTİRMEZ. Supabase'in kendi
+ * şablonuyla kurulmuş bir veritabanında `profiles.id` ve ona bağlı sütunlar UUID'dir;
+ * orada `owns_profile(owner_id)` çağrısı
+ *   ERROR: function public.owns_profile(uuid::text) does not exist
+ * ile düşer ve betiğin TAMAMI yarıda kalır — politikalar, tetikleyiciler, indeksler.
+ *
+ * PostgreSQL uuid'den text'e ÖRTÜK dönüşüm yapmaz, bu yüzden tek çözüm ya her çağrı
+ * yerine `::text` koymak ya da ikinci bir imza vermek. İkisi de yapıldı: çağrı yerleri
+ * açıkça dönüştürüyor (okunurluk), bu aşırı yükleme ise betiğin dışında kalan — elle
+ * yazılmış ya da eski sürümden kalmış — politikaları da ayakta tutuyor.
+ */
+CREATE OR REPLACE FUNCTION public.owns_profile(profile_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+AS $$
+  SELECT auth.uid() IS NOT NULL AND profile_id::text = auth.uid()::text;
+$$;
+
 -- Membership in a community is stored on the member's own profile
 -- (profiles.joined_communities is a JSONB array of community ids).
 CREATE OR REPLACE FUNCTION public.is_community_member(community_id TEXT)
@@ -883,7 +1274,7 @@ AS $$
         (CASE WHEN jsonb_typeof(p.joined_communities) = 'array' THEN p.joined_communities ELSE '[]'::jsonb END) ? community_id
         OR EXISTS (
           SELECT 1 FROM public.communities c
-          WHERE c.id = community_id
+          WHERE c.id::text = community_id
             AND (c.created_by::text = p.id::text OR lower(coalesce(c.creator_username, '')) = lower(p.username))
         )
       FROM public.profiles p
@@ -905,9 +1296,9 @@ AS $$
   SELECT CASE
     WHEN community_id IS NULL THEN false
     WHEN NOT EXISTS (
-      SELECT 1 FROM public.communities c WHERE c.id = community_id AND c.is_private = true
+      SELECT 1 FROM public.communities c WHERE c.id::text = community_id AND c.is_private = true
     ) THEN false
-    ELSE NOT public.is_community_member(community_id)
+    ELSE NOT public.is_community_member(community_id::text)
   END;
 $$;
 
@@ -957,7 +1348,7 @@ BEGIN
   RETURN EXISTS (
     SELECT 1
     FROM public.groups g
-    WHERE g.id = conversation
+    WHERE g.id::text = conversation
       AND (
         lower(g.creator_username) = me
         OR g.admins ? me
@@ -970,6 +1361,18 @@ BEGIN
       )
   );
 END;
+$$;
+
+/* `owns_profile` ile aynı gerekçe: politikalar bu işlevi `groups.id` ile çağırıyor ve o
+   sütun eski bir kurulumda UUID olabilir. */
+CREATE OR REPLACE FUNCTION public.is_conversation_participant(conversation UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT public.is_conversation_participant(conversation::text);
 $$;
 
 -- ================================================================
@@ -1201,8 +1604,8 @@ BEGIN
    */
   SELECT count(*) INTO gercek_proje
     FROM public.community_projects cp
-    JOIN public.projects p ON p.id = cp.project_id
-   WHERE cp.community_id = OLD.id AND p.is_deleted = false;
+    JOIN public.projects p ON p.id::text = cp.project_id
+   WHERE cp.community_id = OLD.id::text AND p.is_deleted = false;
 
   IF auth.role() = 'service_role' OR public.is_platform_admin() THEN
     NEW.projects_count := gercek_proje;
@@ -1423,6 +1826,19 @@ BEGIN
   NEW.last_checked_at := OLD.last_checked_at;
   NEW.check_failures := OLD.check_failures;
 
+  -- SPARK ÖZEL SAYFASI İSTEMCİDEN YAZILAMAZ.
+  --
+  -- Bu sütunlar çalıştırılabilir kod taşıyor ve yalnızca Spark destekçilerine açık.
+  -- Kontrolü sunucu yapıyor ama BURASI ŞART: RLS, üyenin kendi proje satırını
+  -- güncellemesine izin veriyor, dolayısıyla sunucuyu hiç kullanmadan anon anahtarıyla
+  -- doğrudan PATCH atan herhangi bir üye — Spark olmasa bile — kendi sayfasına kod
+  -- koyabilirdi. Servis rolü yukarıda muaf; yazan tek yol sunucunun kendisi.
+  NEW.custom_page_enabled := OLD.custom_page_enabled;
+  NEW.custom_html := OLD.custom_html;
+  NEW.custom_css := OLD.custom_css;
+  NEW.custom_js := OLD.custom_js;
+  NEW.custom_page_updated_at := OLD.custom_page_updated_at;
+
   NEW.updated_at := NOW();
   RETURN NEW;
 END;
@@ -1489,7 +1905,7 @@ BEGIN
      SET projects_count = (
            SELECT count(*)
              FROM public.community_projects cp
-             JOIN public.projects p ON p.id = cp.project_id
+             JOIN public.projects p ON p.id::text = cp.project_id
             WHERE cp.community_id = hedef
               AND p.is_deleted = false
          )
@@ -1643,7 +2059,7 @@ CREATE POLICY "job_applications_select_involved" ON public.job_applications
     OR lower(applicant_username) = public.current_username()
     OR EXISTS (
       SELECT 1 FROM public.job_listings j
-      WHERE j.id = job_id
+      WHERE j.id::text = job_id
         AND (j.author_id::text = auth.uid()::text OR lower(j.author->>'username') = public.current_username())
     )
   );
@@ -1657,7 +2073,7 @@ CREATE POLICY "job_applications_update_involved" ON public.job_applications
     OR lower(applicant_username) = public.current_username()
     OR EXISTS (
       SELECT 1 FROM public.job_listings j
-      WHERE j.id = job_id
+      WHERE j.id::text = job_id
         AND (j.author_id::text = auth.uid()::text OR lower(j.author->>'username') = public.current_username())
     )
   );
@@ -1667,7 +2083,7 @@ CREATE POLICY "job_applications_delete_involved" ON public.job_applications
     OR lower(applicant_username) = public.current_username()
     OR EXISTS (
       SELECT 1 FROM public.job_listings j
-      WHERE j.id = job_id
+      WHERE j.id::text = job_id
         AND (j.author_id::text = auth.uid()::text OR lower(j.author->>'username') = public.current_username())
     )
   );
@@ -1707,7 +2123,7 @@ CREATE POLICY "groups_select_members" ON public.groups
     OR public.is_conversation_participant(id)
     OR EXISTS (
       SELECT 1 FROM public.group_invites gi
-      WHERE gi.group_id = groups.id AND lower(gi.target_username) = public.current_username()
+      WHERE gi.group_id::text = groups.id::text AND lower(gi.target_username) = public.current_username()
     )
   );
 CREATE POLICY "groups_insert_own" ON public.groups
@@ -1835,18 +2251,18 @@ CREATE POLICY "projects_select_public" ON public.projects
 -- Üye yalnızca KENDİ adına proje açabilir. owner_id başkasının olsaydı, üye başkasının
 -- hesabına proje ekleyip onun profilinde gösterebilirdi.
 CREATE POLICY "projects_insert_own" ON public.projects
-  FOR INSERT TO authenticated WITH CHECK (public.owns_profile(owner_id));
+  FOR INSERT TO authenticated WITH CHECK (public.owns_profile(owner_id::text));
 
 -- Düzenleme ve silme sahibinin (veya yöneticinin). Hangi SÜTUNLARIN değişebileceğini
 -- yukarıdaki 4.7 tetikleyicisi sınırlıyor; RLS yalnızca HANGİ SATIR sorusunu yanıtlar.
 CREATE POLICY "projects_update_own" ON public.projects
   FOR UPDATE TO authenticated
-  USING (public.owns_profile(owner_id) OR public.is_platform_admin())
-  WITH CHECK (public.owns_profile(owner_id) OR public.is_platform_admin());
+  USING (public.owns_profile(owner_id::text) OR public.is_platform_admin())
+  WITH CHECK (public.owns_profile(owner_id::text) OR public.is_platform_admin());
 
 CREATE POLICY "projects_delete_own" ON public.projects
   FOR DELETE TO authenticated
-  USING (public.owns_profile(owner_id) OR public.is_platform_admin());
+  USING (public.owns_profile(owner_id::text) OR public.is_platform_admin());
 
 -- Beğeni ve takip satırları herkese açık okunur (GitHub'da yıldız ve izleyici listesi de
 -- öyledir), ama üye YALNIZCA KENDİ satırını ekleyip silebilir. Bu, sayaç tetikleyicisiyle
@@ -1855,9 +2271,9 @@ CREATE POLICY "projects_delete_own" ON public.projects
 -- doğrudan yazmak mümkün değil.
 CREATE POLICY "project_likes_select_public" ON public.project_likes FOR SELECT USING (true);
 CREATE POLICY "project_likes_insert_own" ON public.project_likes
-  FOR INSERT TO authenticated WITH CHECK (public.owns_profile(user_id));
+  FOR INSERT TO authenticated WITH CHECK (public.owns_profile(user_id::text));
 CREATE POLICY "project_likes_delete_own" ON public.project_likes
-  FOR DELETE TO authenticated USING (public.owns_profile(user_id));
+  FOR DELETE TO authenticated USING (public.owns_profile(user_id::text));
 
 -- Commit tarayıcısı projeleri servis rolüyle güncelliyor (last_commit_sha, last_checked_at).
 -- Supabase'in service_role'ü normalde BYPASSRLS'tir, ama 5.12'deki gerekçenin aynısı burada
@@ -1881,8 +2297,8 @@ CREATE POLICY "community_projects_select_visible" ON public.community_projects
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM public.communities c
-       WHERE c.id = community_id
-         AND (c.is_private = false OR public.is_community_member(c.id))
+       WHERE c.id::text = community_id
+         AND (c.is_private = false OR public.is_community_member(c.id::text))
     )
     OR public.is_platform_admin()
   );
@@ -1896,12 +2312,12 @@ CREATE POLICY "community_projects_select_visible" ON public.community_projects
 --      reklam yapabilirdi.
 CREATE POLICY "community_projects_insert_own" ON public.community_projects
   FOR INSERT TO authenticated WITH CHECK (
-    public.owns_profile(added_by)
+    public.owns_profile(added_by::text)
     AND EXISTS (
       SELECT 1 FROM public.projects p
-       WHERE p.id = project_id AND public.owns_profile(p.owner_id)
+       WHERE p.id::text = project_id AND public.owns_profile(p.owner_id::text)
     )
-    AND public.is_community_member(community_id)
+    AND public.is_community_member(community_id::text)
   );
 
 -- SİLME: projenin sahibi kendi girdisini geri alabilir, topluluğun kurucusu ise
@@ -1911,11 +2327,11 @@ CREATE POLICY "community_projects_delete_own_or_mod" ON public.community_project
   FOR DELETE TO authenticated USING (
     EXISTS (
       SELECT 1 FROM public.projects p
-       WHERE p.id = project_id AND public.owns_profile(p.owner_id)
+       WHERE p.id::text = project_id AND public.owns_profile(p.owner_id::text)
     )
     OR EXISTS (
       SELECT 1 FROM public.communities c
-       WHERE c.id = community_id AND public.owns_profile(c.created_by)
+       WHERE c.id::text = community_id AND public.owns_profile(c.created_by::text)
     )
     OR public.is_platform_admin()
   );
@@ -1925,9 +2341,9 @@ CREATE POLICY "community_projects_service_role" ON public.community_projects
 
 CREATE POLICY "project_follows_select_public" ON public.project_follows FOR SELECT USING (true);
 CREATE POLICY "project_follows_insert_own" ON public.project_follows
-  FOR INSERT TO authenticated WITH CHECK (public.owns_profile(user_id));
+  FOR INSERT TO authenticated WITH CHECK (public.owns_profile(user_id::text));
 CREATE POLICY "project_follows_delete_own" ON public.project_follows
-  FOR DELETE TO authenticated USING (public.owns_profile(user_id));
+  FOR DELETE TO authenticated USING (public.owns_profile(user_id::text));
 
 -- ================================================================
 -- 6. GRANTS
@@ -2010,7 +2426,9 @@ GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
 GRANT EXECUTE ON FUNCTION public.current_username() TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.is_platform_admin() TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.owns_profile(TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.owns_profile(UUID) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.is_conversation_participant(TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.is_conversation_participant(UUID) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.is_community_member(TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.is_hidden_community_post(TEXT) TO anon, authenticated;
 
