@@ -18,7 +18,7 @@ import {
   X
 } from 'lucide-react';
 import { UserProfile } from '../types';
-import { fetchLanuxStatus, reconcileGithubLink } from '../services/lanuxClient';
+import { fetchAccountLinks, reconcileGithubLink } from '../services/accountLinks';
 import {
   createProject,
   deleteProject,
@@ -300,8 +300,8 @@ const CreateProjectDialog: React.FC<{
     setWantRepo(true);
     setLoadingRepos(true);
 
-    const status = await fetchLanuxStatus();
-    let username = status?.github?.linked ? status.github.username || null : null;
+    const links = await fetchAccountLinks();
+    let username = links?.github?.linked ? links.github.username || null : null;
     if (!username) username = await reconcileGithubLink({ force: true });
 
     setGithubUsername(username);

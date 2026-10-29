@@ -82,7 +82,7 @@ import {
 } from './utils/securityHelper';
 import { Sidebar } from './components/Sidebar';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { claimPendingLanuxSession, reconcileGithubLink } from './services/lanuxClient';
+import { reconcileGithubLink } from './services/accountLinks';
 import { RightPanel } from './components/RightPanel';
 import { FeedView } from './components/FeedView';
 import { ExploreView } from './components/ExploreView';
@@ -361,14 +361,6 @@ export default function App() {
   useEffect(() => {
     parseHashParams();
     checkUrlRoute();
-
-    /*
-     * Lanux'tan dönüş. Sunucu oturumu adres çubuğuna koymuyor — geçmişe, günlüklere ve
-     * Referer başlığına sızmasın diye kısa ömürlü bir çerezde bırakıyor. Burada bir kez
-     * talep edip gerçek Supabase oturumuna çeviriyoruz; bekleyen bir oturum yoksa (normal
-     * açılışların ezici çoğunluğu) hiçbir ağ isteği yapılmıyor.
-     */
-    void claimPendingLanuxSession();
 
     const handlePopState = () => checkUrlRoute();
     window.addEventListener('popstate', handlePopState);

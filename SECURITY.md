@@ -132,10 +132,10 @@ yer imleri, profil). Topluluğun kendisi keşfedilebilir kalır; herkes katılab
    anahtarı dahil değilse de, sızmış olabilecek servis anahtarları, bot tokenları, topluluk
    API anahtarları) iptal edip yeniden oluşturun.
 4. **Firestore kullanılıyorsa** `firestore.rules` dosyasını dağıtın.
-5. **Lanux girişini açmak istiyorsanız** Lanux Developer Console'da bir uygulama oluşturup
-   `LANUX_ISSUER`, `LANUX_CLIENT_ID`, `LANUX_CLIENT_SECRET`, `LANUX_REDIRECT_URI` ve
-   `LANUX_STATE_SECRET` değerlerini ayarlayın (ayrıntı: bölüm 2.4). Bu adım atlanırsa Lanux
-   girişi kapalı kalır; GitHub girişi ve uygulamanın geri kalanı etkilenmez.
+5. **Jubbio hesabı bağlamayı açmak istiyorsanız** Jubbio Developer Portal'da bir uygulama
+   oluşturup `JUBBIO_CLIENT_ID` ve `JUBBIO_REDIRECT_URI` değerlerini ayarlayın (ayrıntı:
+   bölüm 2.4). Bu adım atlanırsa Jubbio bağlama kapalı kalır; GitHub girişi ve uygulamanın
+   geri kalanı etkilenmez.
 6. **Proje commit bildirimleri için** `MAIL_NOTIFY_CRON_SECRET` tanımlı olmalı (tarama onu
    kullanıyor) ve tercihen `GITHUB_TOKEN` verilmeli — kimliksiz GitHub isteği saatte 60 ile
    sınırlı ve bu birkaç projede tükenir. Ayrıntı: bölüm 2.5.
@@ -437,52 +437,34 @@ okuyabiliyor.
 
 ---
 
-## 2.4 Lanux ile giriş (OIDC)
+## 2.4 Bağlı hesaplar (GitHub, Jubbio)
 
-Lanux, Code4Ever'e ikinci bir giriş yolu ve mevcut hesaplara bağlanabilen bir kimlik.
-Bu akışın tek işi şu soruyu yanıtlamak: **"bu kişi gerçekten bu hesabın sahibi mi?"**
-Aşağıdakilerin her biri o sorunun yanlış yanıtlanabileceği somut bir yolu kapatıyor.
+Bir üyenin profilinde "şu GitHub hesabı benim" ya da "şu Jubbio hesabı benim" yazıyorsa, bu
+bir İDDİA değil kanıt olmak zorunda. Bu bölümün tek konusu şu soru: **"bu kişi gerçekten bu
+hesabın sahibi mi?"** Aşağıdakilerin her biri, o sorunun yanlış yanıtlanabileceği somut bir
+yolu kapatıyor.
 
-### Akışın kendisi
+> **Lanux ile giriş kaldırıldı.** Platformun ikinci giriş yolu olan Lanux OIDC akışı
+> uygulamadan çıkarıldı; tek giriş yolu GitHub (artı misafir gezintisi). `lanux_*` sütunları
+> şemada BİLEREK duruyor: `DROP COLUMN` geri alınamaz ve halihazırda bağlanmış hesapların
+> kaydını siler. Sütunlar koruma tetikleyicilerinde sabitlenmeye devam ediyor, yani elde
+> kalan kayıtlar istemciden kurcalanamıyor; hiçbir kod artık onları okumuyor ya da yazmıyor.
 
-- **PKCE (S256) zorunlu.** Yetkilendirme kodu ağda veya kayıtlarda görülse bile, doğrulayıcıyı
-  bilmeyen biri onu jetona çeviremez.
-- **`state` ve `nonce` birlikte.** `state` CSRF'i, `nonce` yeniden oynatmayı kapatır; ikisi de
-  akış paketinde taşınır ve dönüşte karşılaştırılır.
-- **Akış paketi HMAC ile mühürlü ve 10 dakika ömürlü.** Sunucusuz ortamda iki çağrı arasında
-  paylaşılan bellek yok; durumu sunucuda tutmak yerine imzalı bir paket olarak taşımak, kurcalamayı
-  imkânsız bırakırken çağrılar arası durum ihtiyacını tamamen ortadan kaldırıyor.
-- **`id_token` JWKS ile doğrulanır** (`jose`): imza, `iss`, `aud`, süre ve `nonce`. Doğrulanmamış
-  hiçbir alan kullanılmaz.
+### Ortak kurallar
 
-### Hesap eşleme
+İki bağ da aynı üç kuralı taşıyor, çünkü ikisi de aynı sınıf hatayı davet ediyor:
 
-- **`lanux_user_id` kısmi UNIQUE indeksle korunur.** Bir Lanux hesabı en fazla bir Code4Ever
-  hesabına bağlanabilir; ikinci bağlama veritabanı seviyesinde reddedilir.
-- **Otomatik eşleme yalnızca `email_verified === true` ise yapılır.** Alan hiç gelmezse
-  DOĞRULANMAMIŞ sayılır. `true` varsayılsaydı, sağlayıcıda doğrulanmamış bir adresi olan biri
-  aynı adrese sahip bir Code4Ever hesabını devralabilirdi.
-- **Kimlik sütunları profil tetikleyicilerinde sabitlenir**, yani üye kendi satırını güncelleyerek
-  `lanux_user_id` veya `github_username` yazamaz; bu alanları yalnızca sunucu servis rolüyle
-  değiştirir.
-- **`lanux_refresh_token` sütun seviyesinde kapalıdır** — 2.3'teki e-posta sızıntısıyla aynı sınıf
-  bir açık olurdu; `anon` ve `authenticated` rolleri bu sütunu okuyamaz.
-- **Yenileme belirteçleri AES-256-GCM ile şifreli saklanır.** GCM seçildi çünkü bütünlüğü de
-  doğruluyor; yalnızca şifreleyen bir kip saldırganın şifreli metni kurcalamasına izin verirdi.
-
-### Oturum köprüsü
-
-Lanux doğrulandıktan sonra Supabase oturumu, `admin/generate_link` ile üretilen `hashed_token`'ın
-istemcide `verifyOtp` ile tüketilmesiyle kurulur. **Supabase'in JWT sırrıyla kendi jetonumuzu
-imzalamak bilinçli olarak reddedildi**: o yol, oturum üretme yetkisini Supabase'in iptal ve süre
-yönetiminin dışına taşır ve sızan tek bir sır sınırsız oturum üretimine dönüşürdü. Jeton adres
-çubuğuna hiç yazılmaz; dönüşte yalnızca bir işaret bırakılır ve oturum POST ile teslim alınır.
-
-### Sadece Lanux ile girenler ve depo erişimi
-
-Lanux ile açılan bir hesapta GitHub kimliği yoktur, dolayısıyla depolar görünmez. Bu durum
-**Ayarlar > Bağlı Hesaplar** ekranında amber renkli bir kartla açıkça söylenir ve GitHub hesabı
-oradan bağlanır.
+- **Kimliği karşı taraf söyler, tarayıcı söylemez.** Hiçbir bağlama isteğinin gövdesinde
+  kullanıcı adı yok. Değer, akış tamamlandıktan sonra karşı tarafın kendi yanıtından
+  (Supabase auth kaydındaki GitHub kimliği, Jubbio'nun `@me` yanıtı) servis rolüyle okunuyor.
+- **Her bağ tekil ve veritabanında zorunlu.** Sunucu yazmadan önce "başkasına bağlı mı" diye
+  bakıyor ama önce-oku-sonra-yaz bir yarış penceresi bırakır; iki eşzamanlı istek ikisi de
+  boş görür. Asıl garanti kısmi UNIQUE indekste
+  (`lower(github_username)`, `jubbio_user_id`).
+- **Kimlik sütunları profil tetikleyicilerinde sabitlenir.** Üye kendi satırını güncelleyerek
+  `github_username` ya da `jubbio_user_id` yazamaz; bu alanlara yalnızca sunucu, yalnızca
+  servis rolüyle dokunur. Yeni bir profil de ASLA bağlı doğmaz (INSERT tetikleyicisi
+  hepsini `NULL`'a çeker).
 
 ### Kapatılan açık: GitHub kullanıcı adı elle yazılıyordu
 
@@ -498,16 +480,12 @@ gövdeye yazılan herhangi bir kullanıcı adı yok sayılır — uçtan uca tes
 
 Buna eşlik eden iki koruma:
 
-- **`lower(github_username)` üzerinde kısmi UNIQUE indeks.** Sunucu yazmadan önce "başkasına bağlı
-  mı" diye bakıyor, ama önce-oku-sonra-yaz bir yarış penceresi bırakır; asıl garanti indekste.
-  `lower()` şart, çünkü GitHub kullanıcı adları büyük/küçük harf duyarsızdır — aksi hâlde `Owner`
-  ve `owner` iki ayrı kayıt olur ve iki üye aynı depoları kendi profilinde gösterir.
+- **`lower(github_username)` üzerinde kısmi UNIQUE indeks.** `lower()` şart, çünkü GitHub
+  kullanıcı adları büyük/küçük harf duyarsızdır — aksi hâlde `Owner` ve `owner` iki ayrı kayıt
+  olur ve iki üye aynı depoları kendi profilinde gösterir.
 - **Kullanıcı adı kırpılmadan doğrulanır.** Önce 39 karaktere kırpıp sonra biçim kontrolü yapmak,
   geçersiz bir değeri geçerli *görünen* başka birinin adına çevirir. (Bu, daha önce abonelikten
   çıkma bağlantısını bozan `headerSafe` kırpmasıyla aynı sınıf hata; test yakaladı.)
-
-Bağlantıyı kaldırma, Lanux tarafındaki korumanın aynısını taşır: GitHub üyenin tek kimliğiyse
-kaldırma reddedilir, aksi hâlde üye kendi hesabının kapısını kilitlemiş olurdu.
 
 Şemanın bu indeksi eklerken mevcut veriyi bozmaması ayrıca doğrulandı: eski akıştan kalmış
 çift kayıtlar (farklı harflerle yazılmış olanlar dahil) en erken bağlanan korunacak şekilde
@@ -516,21 +494,52 @@ tetikleyicisini geçici olarak kapatması gerekiyor — tetikleyici kimlik sütu
 betik SQL Editor'de `postgres` olarak çalıştığı için muaf değildir; kapatma tek bir `DO` bloğu
 (tek işlem) içinde yapılır, böylece koruma hiçbir durumda kapalı kalamaz.
 
+### Kaldırılan engel: GitHub bağlantısını kaldırmak
+
+Eskiden `POST /api/auth/github/unlink`, üyenin başka bir kimliği (Lanux) yoksa isteği
+reddediyordu; gerekçe "kendi hesabının kapısını kilitlememesi"ydi. **Gerekçe yanlıştı:** bu uç
+yalnızca `profiles.github_username` sütununu temizliyor, Supabase auth kaydındaki GitHub
+kimliğine — yani asıl giriş yoluna — hiç dokunmuyor. Bağlantıyı kaldıran üye GitHub ile
+girmeye devam ediyor; kaybettiği tek şey depolarının profilinde gösterilmesi. Engel, olmayan
+bir riske karşı gerçek bir işlevi kilitliyordu ve kaldırıldı.
+
+### Jubbio bağlama (OAuth2 + PKCE)
+
+Jubbio'nun kendi SDK'sı (`jubbio-sdk`) akışın tamamını tarayıcıda yürütüyor: kodu tarayıcı takas
+ediyor, belirteçleri `localStorage`a koyuyor, kullanıcıyı oradan okuyor. **Burada bilinçli olarak
+böyle yapılmıyor.** Bağlama, profilde doğrulanmış bir işaret olarak görünen bir kayıt üretiyor;
+o kaydın kaynağı tarayıcı olamaz. Tarayıcı kodu takas edip sonuçtaki kullanıcı adını bize
+gönderseydi, isteği elle kuran biri istediği Jubbio hesabını kendi profiline yazabilirdi.
+
+Dolayısıyla akış sunucuda:
+
+- **PKCE (S256) zorunlu.** Yetkilendirme kodu ağda veya kayıtlarda görülse bile, doğrulayıcıyı
+  bilmeyen biri onu belirtece çeviremez. Jubbio uygulamaları açık istemci (public client) —
+  istemci sırrı yok, korumanın tamamı PKCE'den geliyor.
+- **`state` ile CSRF kapalı.** Saldırganın başlattığı bir akışın kurbanın tarayıcısında
+  tamamlanmasını engeller; sabit süreli karşılaştırmayla doğrulanıyor.
+- **Akış paketi HMAC ile mühürlü, `httpOnly` çerezde ve 10 dakika ömürlü.** Sunucusuz ortamda
+  iki çağrı arasında paylaşılan bellek yok; durumu imzalı paket olarak taşımak kurcalamayı
+  imkânsız bırakırken çağrılar arası durum ihtiyacını tamamen ortadan kaldırıyor. `httpOnly`
+  şart: paketin içinde PKCE doğrulayıcısı var.
+- **Hedef konak daraltılıyor.** `safeFetch` zaten özel/loopback adresleri reddediyor, ama
+  `JUBBIO_API_BASE` bir yapılandırma değeri; yanlış (ya da kötü niyetle değiştirilmiş) bir
+  değer, kullanıcının yetkilendirme kodunu başkasının sunucusuna göndermek demek olurdu.
+- **Kalıcı anahtar `jubbio_user_id`, kullanıcı adı DEĞİL.** Ad karşı tarafta değiştiğinde bağ
+  kopmamalı, yalnızca gösterilen değer güncellenmeli.
+- **Belirteç saklanmıyor.** Bağlama tek seferlik bir doğrulama; erişim belirtecini tutmak,
+  hiçbir işe yaramayan ama sızabilen bir sır biriktirmek olurdu. Saklanan tek şey kimlik.
+
 ### Yapılandırma
 
-`LANUX_ISSUER`, `LANUX_CLIENT_ID`, `LANUX_CLIENT_SECRET`, `LANUX_REDIRECT_URI` ve
-`LANUX_STATE_SECRET` için `.env.example` dosyasına bakın. Dördü eksikse Lanux girişi tamamen
-kapalıdır ve GitHub girişi etkilenmez. `LANUX_STATE_SECRET` üretimde MUTLAKA sabitlenmelidir;
-tanımsızsa süreç başına rastgele üretilir ve sunucusuz ortamda akış yarıda kopar.
+`JUBBIO_CLIENT_ID` ve `JUBBIO_REDIRECT_URI` verilmezse Jubbio bağlama tamamen kapalıdır,
+düğme devre dışı görünür ve sebebi arayüzde yazar; GitHub etkilenmez. İsteğe bağlı:
+`JUBBIO_AUTHORIZE_URL` (varsayılan `https://jubbio.com`), `JUBBIO_API_BASE` (varsayılan
+`https://gateway.jubbio.com`), `JUBBIO_SCOPES` (varsayılan `identify`).
 
-### Doğrulama
-
-Uçtan uca 70 doğrulama (gerçek Express rotaları ve RS256 imzalayan gerçek bir sahte sağlayıcıya
-karşı) ve `id_token` saldırı takımında 19 doğrulama geçti. Saldırı takımı yalnızca reddedildiğini
-değil, **geçerli bir jetonun aynı çalıştırmada kabul edildiğini** de ölçer — aksi hâlde JWKS'e
-ulaşamamak da "her saldırı reddedildi" gibi görünürdü. Kapsanan saldırılar: yayımlanmamış anahtarla
-imza, `alg=none`, yanlış `aud`, yanlış `iss`, yeniden oynatılan `nonce`, süresi dolmuş jeton, bozuk
-girdi.
+`OAUTH_STATE_SECRET` üretimde MUTLAKA sabitlenmelidir; tanımsızsa süreç başına rastgele
+üretilir ve sunucusuz ortamda akış yarıda kopar. (Eski `LANUX_STATE_SECRET` değeri, zaten
+tanımlı olan dağıtımlar bozulmasın diye yedek olarak okunmaya devam ediyor.)
 
 ---
 

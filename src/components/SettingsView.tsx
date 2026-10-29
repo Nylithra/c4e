@@ -320,7 +320,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
               </button>
 
-              {/* 3. Connected accounts (Lanux + GitHub) */}
+              {/* 3. Connected accounts (GitHub + Jubbio) */}
               <button
                 type="button"
                 onClick={() => setActiveSection('accounts')}
@@ -336,8 +336,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     </span>
                     <span className="text-[11px] text-zinc-400 font-mono block">
                       {language === 'tr'
-                        ? 'Lanux ile giriş ve GitHub depo erişimi'
-                        : 'Lanux sign-in and GitHub repository access'}
+                        ? 'GitHub depo erişimi ve Jubbio hesabı'
+                        : 'GitHub repository access and Jubbio account'}
                     </span>
                   </div>
                 </div>

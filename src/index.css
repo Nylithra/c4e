@@ -700,6 +700,26 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
       linear-gradient(120deg, #1a1a35, #141427);
   }
 
+  /*
+   * Giriş ekranının arkasındaki tek ışık kütlesi.
+   *
+   * Zemin `body`de sabit (`background-attachment: fixed`) ve o yüzden hiç hareket etmiyor;
+   * giriş ekranında ise sayfa kaydırılmadığı için ekran tamamen durgun görünüyordu. Çok
+   * yavaş bir salınım — 18 saniye, küçük genlik — ekranı canlı tutuyor ama okumayı
+   * bozmuyor. Daha hızlısı ya da daha büyüğü dikkati giriş düğmesinden çalardı.
+   */
+  .c4e-auth-glow {
+    background:
+      radial-gradient(closest-side, rgba(99, 102, 241, 0.30), transparent 72%),
+      radial-gradient(closest-side at 70% 60%, rgba(217, 70, 239, 0.22), transparent 72%);
+    animation: c4e-auth-drift 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes c4e-auth-drift {
+    from { transform: translate(-50%, 0) scale(1); opacity: .85; }
+    to   { transform: translate(-48%, 26px) scale(1.07); opacity: 1; }
+  }
+
   .c4e-gradient-text {
     background: linear-gradient(100deg, #93c5fd, #a5b4fc 48%, #d8b4fe);
     -webkit-background-clip: text;
@@ -753,4 +773,6 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
 
 @media (prefers-reduced-motion: reduce) {
   .c4e-hover, .c4e-nav, .c4e-btn, .c4e-pill, .c4e-input { transition: none; }
+  /* Salınım durur ama ışık kalır: kütleyi tamamen kaldırmak ekranı boşaltırdı. */
+  .c4e-auth-glow { animation: none; }
 }

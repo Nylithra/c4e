@@ -357,7 +357,7 @@ export const PUBLIC_PROFILE_COLUMNS =
   // istemediği için `user.github_username` her zaman boş kalıyor, proje oluşturma
   // kapısı da herkese kapalı duruyordu. Yeni bir kimlik sütunu eklenirse buraya da
   // eklenmeli.
-  'github_username,github_linked_at,lanux_user_id,lanux_username,lanux_linked_at';
+  'github_username,github_linked_at,jubbio_user_id,jubbio_username,jubbio_avatar_url,jubbio_linked_at';
 
 /**
  * supabase-js infers the row shape from a STRING LITERAL select, so a runtime-built column

@@ -73,9 +73,10 @@ export interface UserProfile {
    */
   github_username?: string;
   github_linked_at?: string;
-  lanux_user_id?: string;
-  lanux_username?: string;
-  lanux_linked_at?: string;
+  jubbio_user_id?: string;
+  jubbio_username?: string;
+  jubbio_avatar_url?: string;
+  jubbio_linked_at?: string;
   badges?: BadgeItem[];
   betaStatus?: 'pending' | 'approved' | 'rejected';
   betaContact?: string;

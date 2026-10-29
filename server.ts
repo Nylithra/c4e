@@ -63,34 +63,25 @@ import {
   verifySmtp
 } from './src/server/mail';
 import { clearMailbox, readInboxSnapshot, storeWarning } from './src/server/mailStore';
+import { createPkce, openFlow, sealFlow } from './src/server/oauthFlow';
 import {
-  buildAuthorizeUrl,
-  createPkce,
-  decryptRefreshToken,
-  encryptRefreshToken,
-  exchangeCode,
-  getLanuxConfig,
-  lanuxUnavailableReason,
-  notifyServiceLink,
-  openFlow,
-  revokeRefreshToken,
-  sealFlow,
-  verifyIdToken
-} from './src/server/lanuxAuth';
+  buildJubbioAuthorizeUrl,
+  exchangeJubbioCode,
+  fetchJubbioUser,
+  getJubbioConfig,
+  jubbioUnavailableReason
+} from './src/server/jubbio';
 import {
   accountsConfigured,
   clearGithubLink,
-  clearLanuxLink,
-  createSessionToken,
+  clearJubbioLink,
   findByGithubUsername,
   findById,
-  readEncryptedRefreshToken,
+  findByJubbioId,
   readGithubIdentity,
-  resolveLinkAccount,
-  resolveLoginAccount,
   writeGithubLink,
-  writeLanuxLink
-} from './src/server/lanuxAccounts';
+  writeJubbioLink
+} from './src/server/accounts';
 import {
   cronSecretMatches,
   dispatchNotificationEmails,
@@ -2097,7 +2088,7 @@ app.put(
 );
 
 // -------------------------------------------------------------
-// LANUX İLE GİRİŞ (OpenID Connect)
+// BAĞLI HESAPLAR (GitHub, Jubbio)
 // -------------------------------------------------------------
 
 /** Ham `Cookie` başlığından tek bir çerezi okur (cookie-parser bağımlılığı eklemeden). */
@@ -2117,13 +2108,10 @@ function readCookie(req: Request, name: string): string {
   return '';
 }
 
-const FLOW_COOKIE = 'c4e_lanux_oidc';
-const CLAIM_COOKIE = 'c4e_lanux_claim';
-
 /**
  * Akış çerezi. `httpOnly` şart: içinde PKCE doğrulayıcısı var ve tarayıcı JavaScript'ine
  * görünmesi, kodu ele geçiren bir saldırganın belirteç alabilmesi demek olur.
- * `sameSite: 'lax'` gerekiyor çünkü çerez, Lanux'tan gelen üst düzey yönlendirmede geri
+ * `sameSite: 'lax'` gerekiyor çünkü çerez, sağlayıcıdan gelen üst düzey yönlendirmede geri
  * gönderilmeli — 'strict' olsaydı callback çerezi hiç görmezdi.
  */
 function flowCookieOptions() {
@@ -2137,232 +2125,44 @@ function flowCookieOptions() {
 }
 
 /**
- * Akışı başlatır ve yetkilendirme adresini DÖNER (yönlendirmez).
+ * Yönlendirmeli bir akış yarıda kalınca gösterilen sayfa.
  *
- * Neden JSON: 'link' kipinde kullanıcının mevcut oturumunu bilmemiz gerekiyor, oturum ise
- * Supabase belirteci olarak `Authorization` başlığında taşınıyor. Üst düzey bir yönlendirme
- * o başlığı taşımaz; bu yüzden istemci bu ucu fetch ile çağırıp dönen adrese kendisi gider.
+ * Neden JSON değil HTML: buraya tarayıcı ADRES ÇUBUĞUYLA geliyor (sağlayıcının
+ * yönlendirmesi), yani yanıtı okuyacak bir fetch yok. Ham JSON göstermek kullanıcıyı
+ * anlamsız bir metinle baş başa bırakırdı.
  */
-app.get(
-  '/api/auth/lanux/start',
-  rateLimit({ scope: 'lanux-start', windowMs: 60000, max: 20 }),
-  async (req: Request, res: Response) => {
-    const config = getLanuxConfig();
-    if (!config) {
-      res.status(503).json({ success: false, error: 'not_configured', message: lanuxUnavailableReason() });
-      return;
-    }
+function linkFailurePage(res: Response, title: string, message: string, status = 400): void {
+  res
+    .status(status)
+    .type('html')
+    .send(
+      `<!doctype html><html lang="tr"><head><meta charset="utf-8">` +
+        `<meta name="viewport" content="width=device-width,initial-scale=1">` +
+        `<title>${escapeHtml(title)}</title><style>` +
+        `body{margin:0;min-height:100vh;display:grid;place-items:center;background:#09090b;color:#fafafa;` +
+        `font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px}` +
+        `.c{max-width:28rem;text-align:center}h1{font-size:1.15rem;margin:0 0 .75rem}` +
+        `p{color:#a1a1aa;line-height:1.6;font-size:.9rem;margin:0 0 1.5rem}` +
+        `a{display:inline-block;padding:.7rem 1.2rem;border-radius:.75rem;background:#4f46e5;color:#fff;` +
+        `text-decoration:none;font-weight:600;font-size:.85rem}</style></head>` +
+        `<body><div class="c"><h1>${escapeHtml(title)}</h1>` +
+        `<p>${escapeHtml(message)}</p><a href="/settings">Code4Ever'e dön</a></div></body></html>`
+    );
+}
 
-    const mode = req.query.mode === 'link' ? 'link' : 'login';
-    let userId: string | undefined;
-
-    if (mode === 'link') {
-      // Bağlama, kimin hesabına bağlanacağını bilmeyi gerektirir; oturumsuz yapılamaz.
-      // requireAuth elle çağrılıyor çünkü middleware olarak eklenseydi 'login' kipi de
-      // oturum isterdi — oysa giriş yapmak için tam da oturumu olmayanlar gelir.
-      await new Promise<void>((resolve) => requireAuth(req, res, () => resolve()));
-      if (res.headersSent) return;
-      userId = req.auth?.userId;
-    }
-
-    const { verifier, challenge } = createPkce();
-    const state = crypto.randomBytes(24).toString('base64url');
-    const nonce = crypto.randomBytes(24).toString('base64url');
-
-    res.cookie(FLOW_COOKIE, sealFlow({ state, nonce, verifier, mode, userId }), flowCookieOptions());
-    res.json({
-      success: true,
-      url: buildAuthorizeUrl(config, {
-        state,
-        nonce,
-        challenge,
-        prompt: typeof req.query.prompt === 'string' ? req.query.prompt : undefined
-      }),
-      mode
-    });
-  }
-);
-
-/**
- * Lanux'tan dönüş. Buradan sonrası kimlik doğrulamanın kendisi, bu yüzden hiçbir adım
- * atlanmıyor: state → kod takası → id_token imza/issuer/audience/nonce doğrulaması.
- */
-app.get(
-  '/api/auth/lanux/callback',
-  rateLimit({ scope: 'lanux-callback', windowMs: 60000, max: 30 }),
-  async (req: Request, res: Response) => {
-    const config = getLanuxConfig();
-
-    const fail = (message: string, status = 400) => {
-      res.clearCookie(FLOW_COOKIE, { path: '/' });
-      res
-        .status(status)
-        .type('html')
-        .send(
-          `<!doctype html><html lang="tr"><head><meta charset="utf-8">` +
-            `<meta name="viewport" content="width=device-width,initial-scale=1">` +
-            `<title>Lanux bağlantısı tamamlanamadı</title><style>` +
-            `body{margin:0;min-height:100vh;display:grid;place-items:center;background:#09090b;color:#fafafa;` +
-            `font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px}` +
-            `.c{max-width:28rem;text-align:center}h1{font-size:1.15rem;margin:0 0 .75rem}` +
-            `p{color:#a1a1aa;line-height:1.6;font-size:.9rem;margin:0 0 1.5rem}` +
-            `a{display:inline-block;padding:.7rem 1.2rem;border-radius:.75rem;background:#4f46e5;color:#fff;` +
-            `text-decoration:none;font-weight:600;font-size:.85rem}</style></head>` +
-            `<body><div class="c"><h1>Lanux bağlantısı tamamlanamadı</h1>` +
-            `<p>${escapeHtml(message)}</p><a href="/">Code4Ever'e dön</a></div></body></html>`
-        );
-    };
-
-    if (!config) return fail(lanuxUnavailableReason() || 'Lanux girişi yapılandırılmamış.', 503);
-    if (!accountsConfigured()) return fail('Sunucu Supabase ile yapılandırılmamış.', 503);
-
-    const providerError = typeof req.query.error === 'string' ? req.query.error : '';
-    if (providerError) {
-      const description = typeof req.query.error_description === 'string' ? req.query.error_description : '';
-      return fail(
-        providerError === 'access_denied'
-          ? 'Lanux hesabınıza erişim izni verilmedi. İsterseniz tekrar deneyebilirsiniz.'
-          : description || providerError
-      );
-    }
-
-    const flow = openFlow(readCookie(req, FLOW_COOKIE));
-    if (!flow) return fail('Oturum akışı bulunamadı veya süresi doldu. Lütfen baştan deneyin.');
-
-    // CSRF: saldırganın başlattığı bir akışın kurbanın tarayıcısında tamamlanmasını engeller.
-    const state = typeof req.query.state === 'string' ? req.query.state : '';
-    if (!state || !safeEquals(state, flow.state)) return fail('Güvenlik doğrulaması başarısız (state).');
-
-    const code = typeof req.query.code === 'string' ? req.query.code : '';
-    if (!code) return fail('Yetkilendirme kodu alınamadı.');
-
-    const exchanged = await exchangeCode(config, code, flow.verifier);
-    if (!exchanged.ok || !exchanged.tokens) return fail(exchanged.error || 'Belirteç alınamadı.');
-
-    // KİMLİK BURADA KANITLANIR. Bu adım geçilmeden hiçbir bağlama yapılmaz.
-    const verified = await verifyIdToken(config, exchanged.tokens.id_token, flow.nonce);
-    if (!verified.ok || !verified.identity) return fail(verified.error || 'Kimlik doğrulanamadı.');
-
-    const identity = verified.identity;
-    const resolved =
-      flow.mode === 'link'
-        ? await resolveLinkAccount(String(flow.userId || ''), identity)
-        : await resolveLoginAccount(identity);
-
-    if (!resolved.ok || !resolved.profile) return fail(resolved.error || 'Hesap eşlenemedi.');
-
-    const encrypted = exchanged.tokens.refresh_token
-      ? encryptRefreshToken(exchanged.tokens.refresh_token)
-      : null;
-    const linked = await writeLanuxLink(resolved.profile.id, identity, encrypted);
-    if (!linked) return fail('Lanux bağlantısı kaydedilemedi.');
-
-    // Lanux'un "Hizmetlerim" ekranındaki rozeti. Başarısızlığı akışı düşürmez: bağlama
-    // bizim tarafımızda tamamlandı, kullanıcıyı bir rozet yüzünden geri çevirmek yanlış olur.
-    void notifyServiceLink(config, exchanged.tokens.access_token, 'link', resolved.profile.id);
-
-    res.clearCookie(FLOW_COOKIE, { path: '/' });
-
-    // 'link' kipinde kullanıcının zaten oturumu var; yeni oturum üretmeye gerek yok.
-    if (flow.mode === 'link') {
-      res.redirect('/settings?lanux=linked');
-      return;
-    }
-
-    const sessionToken = resolved.profile.email
-      ? await createSessionToken(resolved.profile.email, resolved.profile.id, identity)
-      : null;
-    if (!sessionToken) return fail('Oturum açılamadı. Lütfen tekrar deneyin.', 502);
-
-    /*
-     * Oturum jetonu ADRESE KONMAZ. URL'ye yazılsaydı tarayıcı geçmişine, sunucu günlüklerine
-     * ve dışarı giden isteklerin Referer başlığına sızardı. Bunun yerine kısa ömürlü, httpOnly
-     * bir çereze konuyor; uygulama açılışta bir kez `/session` ucundan talep ediyor ve çerez
-     * o anda siliniyor.
-     */
-    res.cookie(CLAIM_COOKIE, sessionToken, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: IS_PRODUCTION,
-      path: '/',
-      maxAge: 2 * 60 * 1000
-    });
-    res.redirect(resolved.created ? '/?lanux=welcome' : '/?lanux=ok');
-  }
-);
-
-/**
- * Callback'in bıraktığı tek kullanımlık oturum jetonunu teslim eder ve çerezi siler.
- * İstemci bunu Supabase'in `verifyOtp` çağrısıyla gerçek bir oturuma çevirir.
- */
-app.post(
-  '/api/auth/lanux/session',
-  rateLimit({ scope: 'lanux-session', windowMs: 60000, max: 20 }),
-  (req: Request, res: Response) => {
-    const token = readCookie(req, CLAIM_COOKIE);
-    res.clearCookie(CLAIM_COOKIE, { path: '/' });
-    if (!token) {
-      res.status(404).json({ success: false, error: 'no_pending_session' });
-      return;
-    }
-    res.json({ success: true, token_hash: token });
-  }
-);
-
-/** Üyenin Lanux ve GitHub bağlantı durumu. */
-app.get('/api/auth/lanux/status', requireAuth, async (req: Request, res: Response) => {
+/** Üyenin bağlı hesapları: hangi yollardan giriyor, nelere erişiyor. */
+app.get('/api/auth/links/status', requireAuth, async (req: Request, res: Response) => {
   const profile = await findById(req.auth?.userId || '');
   res.json({
     success: true,
-    configured: Boolean(getLanuxConfig()),
-    reason: lanuxUnavailableReason(),
-    lanux: profile?.lanux_user_id
-      ? { linked: true, username: (profile as any).lanux_username || null }
+    github: profile?.github_username ? { linked: true, username: profile.github_username } : { linked: false },
+    jubbio: profile?.jubbio_user_id
+      ? { linked: true, username: profile.jubbio_username || null }
       : { linked: false },
-    github: profile?.github_username ? { linked: true, username: profile.github_username } : { linked: false }
+    jubbioConfigured: Boolean(getJubbioConfig()),
+    jubbioReason: jubbioUnavailableReason()
   });
 });
-
-/**
- * Bağlantıyı kaldırır: Lanux tarafındaki hizmet kaydı ve yenileme belirteci iptal edilir,
- * sonra kendi kaydımız temizlenir.
- *
- * Yalnızca Lanux ile giriş yapmış, başka giriş yolu olmayan bir üyenin bağlantıyı kaldırması
- * ENGELLENİR — aksi hâlde kendi hesabının kapısını kilitlemiş olurdu.
- */
-app.post(
-  '/api/auth/lanux/unlink',
-  requireAuth,
-  rateLimit({ scope: 'lanux-unlink', windowMs: 60000, max: 10, perUser: true }),
-  async (req: Request, res: Response) => {
-    const userId = req.auth?.userId || '';
-    const profile = await findById(userId);
-    if (!profile?.lanux_user_id) {
-      res.status(400).json({ success: false, error: 'not_linked', message: 'Bağlı bir Lanux hesabı yok.' });
-      return;
-    }
-
-    if (!profile.github_username) {
-      res.status(409).json({
-        success: false,
-        error: 'last_identity',
-        message:
-          'Lanux bağlantısını kaldırmadan önce GitHub hesabınızı bağlayın; aksi hâlde hesabınıza giriş yapamazsınız.'
-      });
-      return;
-    }
-
-    const config = getLanuxConfig();
-    if (config) {
-      const stored = await readEncryptedRefreshToken(userId);
-      const refreshToken = stored ? decryptRefreshToken(stored) : null;
-      if (refreshToken) void revokeRefreshToken(config, refreshToken);
-    }
-
-    const cleared = await clearLanuxLink(userId);
-    res.status(cleared ? 200 : 502).json({ success: cleared });
-  }
-);
 
 /**
  * GitHub bağlantısını kaydeder.
@@ -2414,9 +2214,12 @@ app.post(
 /**
  * GitHub bağlantısını kaldırır.
  *
- * Lanux bağlantısı yoksa ENGELLENİR: GitHub o hâlde üyenin tek giriş yolu ve bağlantıyı
- * kaldırmak kendi hesabının kapısını kilitlemek olurdu. (Aynı koruma ters yönde Lanux
- * bağlantısını kaldırırken de var.)
+ * ARTIK ENGEL YOK. Eskiden burada "başka kimliğin yoksa kaldıramazsın" koruması vardı ve
+ * gerekçesi üyeyi hesabının dışında bırakmamaktı. Gerekçe yanlıştı: bu uç yalnızca
+ * `profiles.github_username` sütununu temizliyor, Supabase auth kaydındaki GitHub kimliğine
+ * — yani asıl giriş yoluna — hiç dokunmuyor. Dolayısıyla bağlantıyı kaldıran biri GitHub ile
+ * girmeye devam ediyor; kaybettiği tek şey depolarının profilinde gösterilmesi. Engel,
+ * olmayan bir riske karşı gerçek bir işlevi kilitliyordu.
  */
 app.post(
   '/api/auth/github/unlink',
@@ -2431,17 +2234,127 @@ app.post(
       return;
     }
 
-    if (!profile.lanux_user_id) {
-      res.status(409).json({
-        success: false,
-        error: 'last_identity',
-        message:
-          'GitHub bağlantısını kaldırmadan önce Lanux hesabınızı bağlayın; aksi hâlde hesabınıza giriş yapamazsınız.'
-      });
+    const cleared = await clearGithubLink(userId);
+    res.status(cleared ? 200 : 502).json({ success: cleared });
+  }
+);
+
+// -------------------------------------------------------------
+// JUBBIO BAĞLAMA (OAuth2 + PKCE)
+// -------------------------------------------------------------
+
+const JUBBIO_FLOW_COOKIE = 'c4e_jubbio_oauth';
+
+interface JubbioFlow {
+  state: string;
+  verifier: string;
+  userId: string;
+}
+
+/**
+ * Akışı başlatır ve yetkilendirme adresini DÖNER (yönlendirmez).
+ *
+ * Neden JSON: bağlamanın kimin hesabına yapılacağını bilmek gerekiyor ve oturum Supabase
+ * belirteci olarak `Authorization` başlığında taşınıyor. Üst düzey bir yönlendirme o başlığı
+ * taşımaz; bu yüzden istemci bu ucu fetch ile çağırıp dönen adrese kendisi gidiyor.
+ */
+app.get(
+  '/api/auth/jubbio/start',
+  requireAuth,
+  rateLimit({ scope: 'jubbio-start', windowMs: 60000, max: 20, perUser: true }),
+  (req: Request, res: Response) => {
+    const config = getJubbioConfig();
+    if (!config) {
+      res.status(503).json({ success: false, error: 'not_configured', message: jubbioUnavailableReason() });
       return;
     }
 
-    const cleared = await clearGithubLink(userId);
+    const { verifier, challenge } = createPkce();
+    const state = crypto.randomBytes(24).toString('base64url');
+    const flow: JubbioFlow = { state, verifier, userId: req.auth?.userId || '' };
+
+    res.cookie(JUBBIO_FLOW_COOKIE, sealFlow(flow), flowCookieOptions());
+    res.json({ success: true, url: buildJubbioAuthorizeUrl(config, { state, challenge }) });
+  }
+);
+
+/**
+ * Jubbio'dan dönüş. Hiçbir adım atlanmıyor: state → kod takası → `@me` ile kimlik okuma.
+ *
+ * Kimliği ÖĞRENDİĞİMİZ tek yer Jubbio'nun kendi yanıtı. Tarayıcının adres çubuğundan gelen
+ * hiçbir değer kimlik olarak kabul edilmiyor.
+ */
+app.get(
+  '/api/auth/jubbio/callback',
+  rateLimit({ scope: 'jubbio-callback', windowMs: 60000, max: 30 }),
+  async (req: Request, res: Response) => {
+    const fail = (message: string, status = 400) => {
+      res.clearCookie(JUBBIO_FLOW_COOKIE, { path: '/' });
+      linkFailurePage(res, 'Jubbio bağlantısı tamamlanamadı', message, status);
+    };
+
+    const config = getJubbioConfig();
+    if (!config) return fail(jubbioUnavailableReason() || 'Jubbio bağlantısı yapılandırılmamış.', 503);
+    if (!accountsConfigured()) return fail('Sunucu Supabase ile yapılandırılmamış.', 503);
+
+    const providerError = typeof req.query.error === 'string' ? req.query.error : '';
+    if (providerError) {
+      const description = typeof req.query.error_description === 'string' ? req.query.error_description : '';
+      return fail(
+        providerError === 'access_denied'
+          ? 'Jubbio hesabınıza erişim izni verilmedi. İsterseniz tekrar deneyebilirsiniz.'
+          : description || providerError
+      );
+    }
+
+    const flow = openFlow<JubbioFlow>(readCookie(req, JUBBIO_FLOW_COOKIE));
+    if (!flow?.userId) return fail('Bağlama akışı bulunamadı veya süresi doldu. Lütfen baştan deneyin.');
+
+    // CSRF: saldırganın başlattığı bir akışın kurbanın tarayıcısında tamamlanmasını engeller.
+    const state = typeof req.query.state === 'string' ? req.query.state : '';
+    if (!state || !safeEquals(state, flow.state)) return fail('Güvenlik doğrulaması başarısız (state).');
+
+    const code = typeof req.query.code === 'string' ? req.query.code : '';
+    if (!code) return fail('Yetkilendirme kodu alınamadı.');
+
+    const exchanged = await exchangeJubbioCode(config, code, flow.verifier);
+    if (!exchanged.ok || !exchanged.tokens) return fail(exchanged.error || 'Belirteç alınamadı.');
+
+    const me = await fetchJubbioUser(config, exchanged.tokens.access_token);
+    if (!me.ok || !me.identity) return fail(me.error || 'Jubbio kimliği okunamadı.');
+
+    // Aynı Jubbio hesabı iki C4E profiline bağlanamaz: bağlanabilseydi ikisi de aynı hesabı
+    // "doğrulanmış" gibi gösterirdi ve işaretin hiçbir anlamı kalmazdı.
+    const owner = await findByJubbioId(me.identity.id);
+    if (owner && owner.id !== flow.userId) {
+      return fail('Bu Jubbio hesabı başka bir Code4Ever hesabına bağlı.', 409);
+    }
+
+    const saved = await writeJubbioLink(flow.userId, {
+      id: me.identity.id,
+      username: me.identity.username,
+      avatarUrl: me.identity.avatarUrl
+    });
+    if (!saved) return fail('Jubbio bağlantısı kaydedilemedi.', 502);
+
+    res.clearCookie(JUBBIO_FLOW_COOKIE, { path: '/' });
+    res.redirect('/settings?jubbio=linked');
+  }
+);
+
+app.post(
+  '/api/auth/jubbio/unlink',
+  requireAuth,
+  rateLimit({ scope: 'jubbio-unlink', windowMs: 60000, max: 10, perUser: true }),
+  async (req: Request, res: Response) => {
+    const userId = req.auth?.userId || '';
+    const profile = await findById(userId);
+    if (!profile?.jubbio_user_id) {
+      res.status(400).json({ success: false, error: 'not_linked', message: 'Bağlı bir Jubbio hesabı yok.' });
+      return;
+    }
+
+    const cleared = await clearJubbioLink(userId);
     res.status(cleared ? 200 : 502).json({ success: cleared });
   }
 );

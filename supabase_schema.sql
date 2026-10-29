@@ -416,26 +416,44 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ;
 -- repost gibi yüksek hacimli, düşük değerli olaylar kapalı gelir. Aksi hâlde ilk popüler
 -- gönderi bir kutu dolusu e-posta üretir ve üye topluca aboneliği bırakır.
 -- ================================================================
--- LANUX KİMLİĞİ (OpenID Connect)
+-- BAĞLI KİMLİKLER (GitHub, Jubbio)
 -- ================================================================
 --
--- lanux_user_id, id_token'daki `sub` alanıdır ve TEKİLDİR: bir Lanux hesabı yalnızca tek bir
--- Code4Ever hesabına bağlanabilir. Tekillik veritabanında zorlanıyor, uygulamada değil —
--- iki eşzamanlı bağlama isteği uygulama katmanındaki bir kontrolü atlatabilir, benzersiz
--- indeksi atlatamaz.
+-- ORTAK KURAL: her bağ, karşı tarafın KALICI kimliğine dayanır ve her bağ TEKİLDİR.
+-- Kullanıcı adları karşı tarafta değişebilir; kalıcı anahtar değişmez. Tekillik
+-- veritabanında zorlanıyor, uygulamada değil — iki eşzamanlı bağlama isteği uygulama
+-- katmanındaki "başkasına bağlı mı" kontrolünü atlatabilir, benzersiz indeksi atlatamaz.
 --
--- `sub` DIŞINDAKİ hiçbir alan kalıcı anahtar değildir: kullanıcı adı ve e-posta değişebilir,
--- `sub` değişmez.
+-- Bu sütunlara yalnızca arka uç (servis rolü) yazar; aşağıdaki koruma tetikleyicileri
+-- istemciden gelen her yazmayı geri alıyor.
+
+-- GitHub bağlantısı: depoların profilde gösterilmesi ve projelere depo bağlanması buna bakıyor.
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS github_username TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS github_linked_at TIMESTAMPTZ;
+
+-- Jubbio bağlantısı. Kalıcı anahtar `jubbio_user_id` (Jubbio'nun `@me` yanıtındaki `id`),
+-- kullanıcı adı DEĞİL: ad değiştiğinde bağ kopmamalı, yalnızca gösterilen değer güncellenmeli.
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS jubbio_user_id TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS jubbio_username TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS jubbio_avatar_url TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS jubbio_linked_at TIMESTAMPTZ;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_jubbio_user_id
+  ON public.profiles(jubbio_user_id) WHERE jubbio_user_id IS NOT NULL;
+
+-- ----------------------------------------------------------------
+-- LANUX GİRİŞİ KALDIRILDI — SÜTUNLARI DURUYOR
+-- ----------------------------------------------------------------
+--
+-- "Lanux ile giriş" akışı (OpenID Connect) uygulamadan çıkarıldı. Sütunlar BİLEREK
+-- düşürülmüyor: DROP COLUMN geri alınamaz ve halihazırda bağlanmış hesapların kaydını
+-- siler. Aşağıdaki tanımlar, şemayı sıfırdan kuran bir ortamda koruma tetikleyicilerinin
+-- var olmayan bir sütuna atıfta bulunup patlamaması için duruyor; hiçbir kod bunları
+-- artık okumuyor ya da yazmıyor.
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS lanux_user_id TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS lanux_username TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS lanux_linked_at TIMESTAMPTZ;
--- Yenileme belirteci AES-256-GCM ile ŞİFRELENMİŞ saklanır; bu sütun asla düz metin görmez.
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS lanux_refresh_token TEXT;
-
--- GitHub bağlantısı. Yalnızca Lanux ile giren üyelerin GitHub kimliği olmaz; depolarına
--- erişebilmek için bunu ayrıca bağlamaları gerekir.
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS github_username TEXT;
-ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS github_linked_at TIMESTAMPTZ;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_lanux_user_id
   ON public.profiles(lanux_user_id) WHERE lanux_user_id IS NOT NULL;
@@ -900,19 +918,25 @@ BEGIN
 
   -- KİMLİK BAĞLANTILARI İSTEMCİDEN YAZILAMAZ.
   --
-  -- Bunlar "kim olduğunu" belirleyen alanlar. Serbest bırakılsaydı herhangi bir üye kendi
-  -- profiline bir BAŞKASININ lanux_user_id'sini yazıp, o Lanux hesabıyla giriş yapıldığında
-  -- oturumun kendi hesabına düşmesini sağlayabilirdi — düpedüz hesap ele geçirme. Aynısı
-  -- GitHub bağlantısı için de geçerli: depo erişimi ona bakıyor.
+  -- Bunlar "kim olduğunu" belirleyen alanlar ve profilde doğrulanmış işaret olarak
+  -- görünüyor. Serbest bırakılsaydı herhangi bir üye kendi profiline bir BAŞKASININ
+  -- github_username'ini yazıp onun depolarını kendi vitrininde gösterebilir, ya da
+  -- başkasının Jubbio hesabını kendi profilinde doğrulanmış gibi sunabilirdi.
   --
-  -- Bu alanları yalnızca arka uç yazar, o da ancak Lanux'un imzaladığı id_token doğrulandıktan
+  -- Bu alanları yalnızca arka uç yazar, o da ancak karşı taraf kimliği kanıtladıktan
   -- SONRA (servis rolü yukarıda muaf tutuluyor).
+  NEW.github_username := OLD.github_username;
+  NEW.github_linked_at := OLD.github_linked_at;
+  NEW.jubbio_user_id := OLD.jubbio_user_id;
+  NEW.jubbio_username := OLD.jubbio_username;
+  NEW.jubbio_avatar_url := OLD.jubbio_avatar_url;
+  NEW.jubbio_linked_at := OLD.jubbio_linked_at;
+  -- Lanux girişi kaldırıldı ama sütunlar duruyor; sabitlemeye devam ediyoruz ki elde kalan
+  -- kayıtlar istemciden kurcalanamasın.
   NEW.lanux_user_id := OLD.lanux_user_id;
   NEW.lanux_username := OLD.lanux_username;
   NEW.lanux_linked_at := OLD.lanux_linked_at;
   NEW.lanux_refresh_token := OLD.lanux_refresh_token;
-  NEW.github_username := OLD.github_username;
-  NEW.github_linked_at := OLD.github_linked_at;
 
   -- Reserved usernames may not be claimed by regular members.
   IF lower(coalesce(NEW.username, '')) <> lower(coalesce(OLD.username, ''))
@@ -973,14 +997,18 @@ BEGIN
   NEW.supporter_tier := 'none';
 
   -- Yeni bir profil ASLA bağlı gelmez. Kayıt sırasında bu alanları doldurabilmek, doğrulama
-  -- yapılmadan bir kimliği sahiplenmek demek olurdu; bağlantıyı yalnızca arka uç, id_token
-  -- doğrulandıktan sonra kurar.
+  -- yapılmadan bir kimliği sahiplenmek demek olurdu; bağlantıyı yalnızca arka uç, karşı
+  -- taraf kimliği kanıtladıktan sonra kurar.
+  NEW.github_username := NULL;
+  NEW.github_linked_at := NULL;
+  NEW.jubbio_user_id := NULL;
+  NEW.jubbio_username := NULL;
+  NEW.jubbio_avatar_url := NULL;
+  NEW.jubbio_linked_at := NULL;
   NEW.lanux_user_id := NULL;
   NEW.lanux_username := NULL;
   NEW.lanux_linked_at := NULL;
   NEW.lanux_refresh_token := NULL;
-  NEW.github_username := NULL;
-  NEW.github_linked_at := NULL;
 
   RETURN NEW;
 END;
