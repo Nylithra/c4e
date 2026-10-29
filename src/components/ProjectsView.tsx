@@ -59,6 +59,40 @@ function timeAgo(iso: string | null, tr: boolean): string {
 // PROJE KARTI
 // -------------------------------------------------------------
 
+/**
+ * Projenin görsel işareti: kapak varsa kapak, yoksa adının ilk harfi.
+ *
+ * Kartların hepsi aynı görünüyordu ve liste tek bir gri duvar gibi okunuyordu. Her satıra
+ * bir çapa koymak, göze "bunlar ayrı şeyler" dedirtiyor; kapak görseli olan projeler de
+ * listede hak ettikleri yeri buluyor.
+ */
+const ProjectMark: React.FC<{ project: Project; size: string }> = ({ project, size }) =>
+  project.cover_url ? (
+    <img
+      src={project.cover_url}
+      alt=""
+      className={`${size} flex-none rounded-xl object-cover`}
+      loading="lazy"
+    />
+  ) : (
+    <span className={`c4e-mono-av ${size} flex-none rounded-xl`} aria-hidden="true">
+      {(project.name || '?').charAt(0).toUpperCase()}
+    </span>
+  );
+
+/** Sayı + etiket; kartın alt şeridindeki okunur istatistikler. */
+const Stat: React.FC<{ icon: React.ReactNode; value: React.ReactNode; label: string }> = ({
+  icon,
+  value,
+  label
+}) => (
+  <span className="inline-flex items-center gap-1.5">
+    {icon}
+    <strong className="font-semibold text-zinc-300">{value}</strong>
+    <span className="text-zinc-600">{label}</span>
+  </span>
+);
+
 const ProjectCard: React.FC<{
   project: Project;
   tr: boolean;
@@ -74,78 +108,81 @@ const ProjectCard: React.FC<{
   const followed = project.followed_by_me === true;
 
   return (
-    <div className="c4e-card c4e-hover p-5 space-y-3.5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 space-y-1">
-          <a
-            href={`/project/${project.slug}`}
-            onClick={(e) => {
-              // Ctrl/Cmd+tık ve orta tık yeni sekmede açılsın: bağlantı gibi davranan bir
-              // şeyin bağlantı gibi çalışmaması can sıkıcı.
-              if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-              e.preventDefault();
-              onOpen();
-            }}
-            className="user-text block text-sm font-bold text-white transition-colors hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-          >
-            {project.name}
-          </a>
-          {/* Depo İSTEĞE BAĞLI. Yokken bu satır iki boş simgeye dönüşüyordu:
-              GitHub işareti ve dış bağlantı oku, aralarında hiçbir metin yok.
-              Bağlantı gibi görünen ama hiçbir yere gitmeyen bir şey. */}
-          {project.repo_full_name ? (
-            <a
-              href={project.repo_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="user-text inline-flex min-h-7 items-center gap-1.5 rounded text-[11px] text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Github className="h-3 w-3 flex-shrink-0" />
-              <span className="truncate">{project.repo_full_name}</span>
-              <ExternalLink className="h-2.5 w-2.5 flex-shrink-0" />
-            </a>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-[11px] text-zinc-500">
-              <span className="h-1.5 w-1.5 rounded-full bg-zinc-600" />
-              {tr ? 'Depo bağlı değil' : 'No repository linked'}
-            </span>
+    <article className="group c4e-card c4e-hover overflow-hidden">
+      <div className="flex gap-3.5 p-4 sm:gap-4 sm:p-5">
+        <ProjectMark project={project} size="h-12 w-12 text-base sm:h-14 sm:w-14 sm:text-lg" />
+
+        <div className="min-w-0 flex-1 space-y-2.5">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 space-y-1">
+              <a
+                href={`/project/${project.slug}`}
+                onClick={(e) => {
+                  // Ctrl/Cmd+tık ve orta tık yeni sekmede açılsın: bağlantı gibi davranan bir
+                  // şeyin bağlantı gibi çalışmaması can sıkıcı.
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                  e.preventDefault();
+                  onOpen();
+                }}
+                className="user-text block truncate rounded text-[15px] font-bold text-white transition-colors hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {project.name}
+              </a>
+
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] text-zinc-500">
+                <span className="font-mono">@{project.owner_username}</span>
+                {project.language && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                    {project.language}
+                  </span>
+                )}
+                {/* Depo İSTEĞE BAĞLI. Yokken bu satır iki boş simgeye dönüşüyordu:
+                    GitHub işareti ve dış bağlantı oku, aralarında hiçbir metin yok.
+                    Bağlantı gibi görünen ama hiçbir yere gitmeyen bir şey. */}
+                {project.repo_full_name && (
+                  <a
+                    href={project.repo_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="user-text inline-flex min-h-7 max-w-full items-center gap-1.5 rounded transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Github className="h-3 w-3 flex-none" />
+                    <span className="truncate">{project.repo_full_name}</span>
+                    <ExternalLink className="h-2.5 w-2.5 flex-none" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {isOwner && (
+              <button
+                type="button"
+                onClick={onDelete}
+                disabled={busy}
+                aria-label={tr ? 'Projeyi kaldır' : 'Remove project'}
+                /* Silme düğmesi üzerine gelinceye kadar SOLGUN duruyor. Her kartta tam
+                   kontrastla parlayan bir çöp kutusu, listeyi "sil" çağrısına çeviriyordu. */
+                className="flex min-h-9 min-w-9 flex-none items-center justify-center rounded-xl border border-white/[0.07] text-zinc-600 opacity-0 transition-all hover:border-rose-500/40 hover:bg-rose-500/10 hover:text-rose-300 focus-visible:opacity-100 group-hover:opacity-100 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {project.about && (
+            <p className="user-text line-clamp-2 text-[12.5px] leading-relaxed text-zinc-400">
+              {project.about}
+            </p>
           )}
         </div>
-
-        {isOwner && (
-          <button
-            type="button"
-            onClick={onDelete}
-            disabled={busy}
-            aria-label={tr ? 'Projeyi kaldır' : 'Remove project'}
-            className="flex min-h-9 min-w-9 flex-shrink-0 items-center justify-center rounded-xl border border-white/[0.07] text-zinc-500 transition-colors hover:text-red-400 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
-        )}
       </div>
 
-      {project.about && (
-        <p className="user-text text-[12px] leading-relaxed text-zinc-400">{project.about}</p>
-      )}
-
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-zinc-500">
-        <span>@{project.owner_username}</span>
-        {project.language && (
-          <span className="flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
-            {project.language}
-          </span>
-        )}
-        {project.last_commit_at && (
-          <span className="flex items-center gap-1">
-            <GitCommit className="h-3 w-3" />
-            {tr ? 'son commit' : 'last commit'} {timeAgo(project.last_commit_at, tr)}
-          </span>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2 pt-1">
+      {/*
+        Alt şerit. Eylemler ve sayılar kartın GÖVDESİNDEN ayrıldı: aynı kutunun içinde
+        dururken metinle eşit ağırlıkta okunuyorlardı ve kartın neyi anlattığı kayboluyordu.
+      */}
+      <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.06] bg-black/15 px-4 py-2.5 sm:px-5">
         <button
           type="button"
           onClick={onLike}
@@ -160,15 +197,14 @@ const ProjectCard: React.FC<{
               ? `${project.name} projesini beğen (${project.likes_count} beğeni)`
               : `Like ${project.name} (${project.likes_count} likes)`
           }
-          className={`flex min-h-9 items-center gap-1.5 rounded-xl border px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             liked
-              ? 'border-rose-500/40 bg-rose-500/10 text-rose-300'
-              : 'border-white/[0.08] text-zinc-300 hover:text-white'
+              ? 'bg-rose-500/15 text-rose-300'
+              : 'text-zinc-400 hover:bg-white/[0.06] hover:text-white'
           }`}
         >
           <Heart className={`h-3.5 w-3.5 ${liked ? 'fill-current' : ''}`} />
           <span>{project.likes_count}</span>
-          <span>{tr ? 'beğeni' : 'likes'}</span>
         </button>
 
         {/*
@@ -195,15 +231,15 @@ const ProjectCard: React.FC<{
               ? 'Takip et, her yeni commit için bildirim al'
               : 'Follow to get a notification on every new commit'
           }
-          className={`flex min-h-9 items-center gap-1.5 rounded-xl border px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             followed
-              ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-              : 'border-white/[0.08] text-zinc-300 hover:text-white'
+              ? 'bg-emerald-500/15 text-emerald-300'
+              : 'text-zinc-400 hover:bg-white/[0.06] hover:text-white'
           }`}
         >
           {followed ? <Bell className="h-3.5 w-3.5" /> : <BellOff className="h-3.5 w-3.5" />}
           <span>{followed ? (tr ? 'Takiptesin' : 'Following') : tr ? 'Takip et' : 'Follow'}</span>
-          <span className="text-zinc-500">{project.followers_count}</span>
+          <span className="text-zinc-600">{project.followers_count}</span>
         </button>
 
         {/* Topluluğa ekleme yalnızca SAHİBİNE gösteriliyor: sunucu da aynı kuralı
@@ -215,14 +251,21 @@ const ProjectCard: React.FC<{
             onClick={onShare}
             title={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
             aria-label={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
-            className="flex min-h-9 items-center gap-1.5 rounded-xl border border-white/[0.08] px-3 text-[11px] font-semibold text-zinc-300 transition-colors hover:border-indigo-400/40 hover:bg-indigo-500/[0.12] hover:text-indigo-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            className="flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold text-zinc-400 transition-colors hover:bg-indigo-500/[0.14] hover:text-indigo-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Users className="h-3.5 w-3.5" />
-            <span>{tr ? 'Topluluğa ekle' : 'Add to community'}</span>
+            <span className="hidden sm:inline">{tr ? 'Topluluğa ekle' : 'Add to community'}</span>
           </button>
         )}
+
+        {project.last_commit_at && (
+          <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[11px] text-zinc-600">
+            <GitCommit className="h-3 w-3" />
+            {timeAgo(project.last_commit_at, tr)}
+          </span>
+        )}
       </div>
-    </div>
+    </article>
   );
 };
 
@@ -230,35 +273,59 @@ const ProjectCard: React.FC<{
 // ÖNE ÇIKANLAR
 // -------------------------------------------------------------
 
+/**
+ * Öne çıkan proje kartı.
+ *
+ * Sıradan bir karttan AYRILMASI gerekiyor, yoksa "haftanın projesi" olmanın bir anlamı
+ * kalmaz. Ayrımı renk değil ışık yapıyor: kartın arkasında, başlığın rengini taşıyan
+ * yumuşak bir parıltı. Dolu renkli bir kutu, Aurora'nın cam yüzeyleri arasında yama gibi
+ * duruyordu.
+ */
 const HighlightCard: React.FC<{
   project: Project;
   title: string;
   subtitle: string;
   icon: React.ReactNode;
-  accent: string;
+  /** Parıltının ve başlığın rengi — tek yerden, iki kullanım. */
+  glow: string;
+  tone: string;
   onOpen: () => void;
-}> = ({ project, title, subtitle, icon, accent, onOpen }) => (
-  <div className={`rounded-2xl border p-4 space-y-2 ${accent}`}>
-    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide">
-      {icon}
-      <span>{title}</span>
+}> = ({ project, title, subtitle, icon, glow, tone, onOpen }) => (
+  <div className="relative overflow-hidden c4e-card c4e-hover p-4">
+    <div
+      className={`pointer-events-none absolute -right-10 -top-14 h-36 w-36 rounded-full blur-3xl ${glow}`}
+      aria-hidden="true"
+    />
+
+    <div className="relative flex items-center gap-3">
+      <ProjectMark project={project} size="h-11 w-11 text-sm" />
+
+      <div className="min-w-0 flex-1">
+        <p className={`flex items-center gap-1.5 text-[10px] font-bold tracking-wide ${tone}`}>
+          {icon}
+          <span>{title}</span>
+        </p>
+        <a
+          href={`/project/${project.slug}`}
+          onClick={(e) => {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+            e.preventDefault();
+            onOpen();
+          }}
+          className="user-text mt-0.5 block truncate rounded text-sm font-bold text-white transition-colors hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {project.name}
+        </a>
+        <p className="user-text truncate font-mono text-[11px] text-zinc-500">
+          @{project.owner_username}
+          {project.repo_full_name ? ` · ${project.repo_full_name}` : ''}
+        </p>
+      </div>
+    </div>
+
+    <p className="relative mt-3 border-t border-white/[0.06] pt-2.5 text-[11px] font-semibold text-zinc-400">
+      {subtitle}
     </p>
-    <a
-      href={`/project/${project.slug}`}
-      onClick={(e) => {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-        e.preventDefault();
-        onOpen();
-      }}
-      className="user-text block text-sm font-bold text-white transition-colors hover:text-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-    >
-      {project.name}
-    </a>
-    <p className="user-text text-[11px] text-zinc-400">
-      @{project.owner_username}
-      {project.repo_full_name ? ` · ${project.repo_full_name}` : ''}
-    </p>
-    <p className="text-[11px] font-semibold text-zinc-300">{subtitle}</p>
   </div>
 );
 
@@ -553,6 +620,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [query, setQuery] = useState('');
 
   // Önbellekten başlangıç değeri; pencere açıldığında sunucudan gelen gerçekle güncelleniyor.
   const [githubUsername, setGithubUsername] = useState<string | null>(user.github_username || null);
@@ -613,6 +681,23 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
     if (done) setProjects((current) => current.filter((p) => p.id !== project.id));
   };
 
+  /*
+   * Arama İSTEMCİ TARAFINDA. Liste zaten tamamen yüklü durumda; her tuşta sunucuya gitmek
+   * hem gereksiz hem de yazarken listenin altından kaymasına sebep olurdu.
+   */
+  const visible = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return projects;
+    return projects.filter(
+      (p) =>
+        p.name.toLowerCase().includes(needle) ||
+        (p.about || '').toLowerCase().includes(needle) ||
+        (p.owner_username || '').toLowerCase().includes(needle) ||
+        (p.repo_full_name || '').toLowerCase().includes(needle) ||
+        (p.language || '').toLowerCase().includes(needle)
+    );
+  }, [projects, query]);
+
   const tabs: { key: ProjectSort; label: string }[] = [
     { key: 'new', label: tr ? 'Yeni' : 'New' },
     { key: 'top', label: tr ? 'En çok beğenilen' : 'Most liked' },
@@ -621,42 +706,82 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
 
   return (
     <div className="content-column min-h-screen w-full min-w-0 flex-1 border-r border-white/[0.07] pb-16">
-      <div className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#0a0a14]/90 px-4 py-3 backdrop-blur-xl">
+      <div className="sticky top-0 z-20 border-b border-white/[0.07] bg-[#0a0a14]/85 px-4 py-3 backdrop-blur-xl">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 text-lg font-bold tracking-tight text-white">
-            <Github className="h-5 w-5 text-indigo-400" />
-            <span>{tr ? 'Projeler' : 'Projects'}</span>
-          </h2>
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-extrabold tracking-tight text-white">
+              {tr ? 'Projeler' : 'Projects'}
+            </h2>
+            <p className="truncate text-[11px] text-zinc-500">
+              {tr
+                ? 'Topluluğun yayınladığı işler — beğen, takip et, kendininkini ekle.'
+                : 'What the community is building — like, follow, add your own.'}
+            </p>
+          </div>
 
           <button
             type="button"
             onClick={() => setShowCreate(true)}
-            className="brand-gradient flex min-h-9 items-center gap-1.5 rounded-xl px-3.5 text-xs font-bold shadow-lg transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="c4e-btn flex min-h-10 flex-none items-center gap-1.5 px-3.5 text-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Plus className="h-3.5 w-3.5" />
-            <span>{tr ? 'Proje Oluştur' : 'Create'}</span>
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">{tr ? 'Proje oluştur' : 'Create'}</span>
           </button>
         </div>
 
-        <div className="mt-3 flex gap-1.5 overflow-x-auto">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setSort(tab.key)}
-              className={`min-h-9 flex-shrink-0 rounded-xl px-3 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                sort === tab.key ? 'nav-active text-white' : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="mt-3 flex items-center gap-2">
+          <div className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto no-scrollbar">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setSort(tab.key)}
+                aria-pressed={sort === tab.key}
+                className={`c4e-pill min-h-9 flex-none text-[11px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  sort === tab.key ? 'c4e-pill-on' : ''
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Arama yalnızca listede arama yapacak kadar proje varken gösteriliyor: üç
+              projenin üstünde bir arama kutusu, çözdüğünden fazla yer kaplar. */}
+          {projects.length > 4 && (
+            <div className="c4e-input flex min-h-9 w-32 flex-none items-center gap-1.5 px-2.5 sm:w-44">
+              <Search className="h-3.5 w-3.5 flex-none text-zinc-500" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={tr ? 'Ara…' : 'Search…'}
+                aria-label={tr ? 'Projelerde ara' : 'Search projects'}
+                className="w-full bg-transparent text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  aria-label={tr ? 'Aramayı temizle' : 'Clear search'}
+                  className="flex-none text-zinc-500 hover:text-zinc-300 cursor-pointer"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       <div className="space-y-4 p-4">
         {(highlights.week || highlights.all_time) && (
-          <div className="grid gap-3 sm:grid-cols-2">
+          /* Tek öne çıkan varsa TAM GENİŞLİK. İki sütunluk ızgarada yalnız bir kart,
+             yanındaki boşluk yüzünden "eksik bir şey var" izlenimi veriyordu. */
+          <div
+            className={`grid gap-3 ${
+              highlights.week && highlights.all_time ? 'sm:grid-cols-2' : 'grid-cols-1'
+            }`}
+          >
             {highlights.week && (
               <HighlightCard
                 project={highlights.week}
@@ -667,7 +792,8 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
                     : `${highlights.week.weekly_likes ?? 0} likes in the last 7 days`
                 }
                 icon={<Trophy className="h-3 w-3" />}
-                accent="border-amber-700/40 bg-amber-950/20 text-amber-300"
+                glow="bg-amber-500/25"
+                tone="text-amber-300"
                 onOpen={() => openProject(highlights.week!)}
               />
             )}
@@ -681,7 +807,8 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
                     : `${highlights.all_time.likes_count} likes in total`
                 }
                 icon={<Crown className="h-3 w-3" />}
-                accent="border-indigo-700/40 bg-indigo-950/20 text-indigo-300"
+                glow="bg-indigo-500/25"
+                tone="text-indigo-300"
                 onOpen={() => openProject(highlights.all_time!)}
               />
             )}
@@ -693,22 +820,51 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
             <Loader2 className="h-4 w-4 animate-spin" />
             <span>{tr ? 'Projeler yükleniyor...' : 'Loading projects...'}</span>
           </div>
-        ) : projects.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/[0.07] p-8 text-center">
-            <Github className="mx-auto mb-3 h-7 w-7 text-zinc-700" />
-            <p className="text-xs text-zinc-400">
-              {sort === 'mine'
+        ) : visible.length === 0 ? (
+          <div className="c4e-empty px-6 py-14 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.04] text-zinc-600">
+              {query ? <Search className="h-5 w-5" /> : <Github className="h-5 w-5" />}
+            </div>
+            <p className="text-sm font-bold text-zinc-300">
+              {query
                 ? tr
-                  ? 'Henüz bir projen yok.'
-                  : 'You have no projects yet.'
+                  ? 'Eşleşen proje yok'
+                  : 'No matching project'
+                : sort === 'mine'
+                ? tr
+                  ? 'Henüz bir projen yok'
+                  : 'You have no projects yet'
                 : tr
-                ? 'Henüz proje eklenmemiş. İlk olan sen ol.'
-                : 'No projects yet. Be the first.'}
+                ? 'Henüz proje eklenmemiş'
+                : 'No projects yet'}
             </p>
+            <p className="mx-auto mt-1.5 max-w-xs text-xs leading-relaxed text-zinc-500">
+              {query
+                ? tr
+                  ? 'Başka bir kelime deneyebilir ya da aramayı temizleyebilirsin.'
+                  : 'Try a different word, or clear the search.'
+                : sort === 'mine'
+                ? tr
+                  ? 'Yukarıdaki düğmeyle ilk projeni oluştur; istersen bir GitHub deposu da bağlayabilirsin.'
+                  : 'Create your first project with the button above; you can attach a GitHub repository too.'
+                : tr
+                ? 'Projeler burada listelenir. İlk ekleyen sen ol.'
+                : 'Projects appear here. Be the first to add one.'}
+            </p>
+            {!query && sort === 'mine' && (
+              <button
+                type="button"
+                onClick={() => setShowCreate(true)}
+                className="c4e-btn mx-auto mt-4 flex min-h-10 items-center gap-1.5 px-4 text-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Plus className="h-4 w-4" />
+                <span>{tr ? 'Proje oluştur' : 'Create a project'}</span>
+              </button>
+            )}
           </div>
         ) : (
           <div className="space-y-3">
-            {projects.map((project) => (
+            {visible.map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}

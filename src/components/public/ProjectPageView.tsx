@@ -10,6 +10,7 @@ import {
   Heart,
   ImagePlus,
   Loader2,
+  Link2,
   Pencil,
   Save,
   Trash2,
@@ -77,6 +78,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
   const [cover, setCover] = useState<string | null>(null);
   const [gallery, setGallery] = useState<string[]>([]);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const coverInput = useRef<HTMLInputElement>(null);
   const galleryInput = useRef<HTMLInputElement>(null);
@@ -103,7 +105,41 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
     };
   }, [project]);
 
+  /*
+   * Büyütülmüş görsel ESC ile kapanıyor.
+   *
+   * Tam ekranı kaplayan bir katmanın kapanma yolu yalnızca fareyle tıklamak olmamalı:
+   * klavyeyle gezen biri (ve dokunmatik olmayan her kullanıcı) ESC bekler. Dinleyici
+   * yalnızca katman AÇIKKEN kuruluyor; kapalıyken her tuşa bakmak gereksiz.
+   */
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightbox(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightbox]);
+
   const isOwner = Boolean(currentUserId && project && project.owner_id === currentUserId);
+
+  /**
+   * Sayfanın adresini panoya kopyalar.
+   *
+   * Bu sayfanın bütün amacı paylaşılabilir olması; adres çubuğunu elle seçtirmek yerine
+   * tek düğme koymak, sayfanın kendi işini kolaylaştırıyor. Pano erişimi güvensiz bir
+   * kaynakta ya da izin verilmediğinde HATA FIRLATIR, bu yüzden sessizce yutuluyor:
+   * kopyalanamadığında kullanıcı adresi yine de görebiliyor.
+   */
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Pano kullanılamıyor; sessiz geçiliyor.
+    }
+  };
 
   const beginEdit = () => {
     if (!project) return;
@@ -187,20 +223,26 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
 
   if (!project) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 p-8 text-center">
-        <Github className="h-8 w-8 text-zinc-700" />
-        <p className="text-sm font-bold text-white">{tr ? 'Proje bulunamadı' : 'Project not found'}</p>
-        <p className="user-text max-w-sm text-xs text-zinc-500">
-          {tr
-            ? 'Bu adreste bir proje yok. Silinmiş ya da adres yanlış yazılmış olabilir.'
-            : 'There is no project at this address. It may have been removed, or the link is wrong.'}
-        </p>
-        <a
-          href="/"
-          className="brand-gradient mt-2 flex min-h-11 items-center rounded-xl px-4 text-xs font-bold shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {tr ? 'Code4Ever’e git' : 'Go to Code4Ever'}
-        </a>
+      <div className="flex min-h-screen items-center justify-center p-5">
+        <div className="c4e-glass w-full max-w-sm p-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.05] text-zinc-600">
+            <Github className="h-6 w-6" />
+          </div>
+          <p className="text-base font-bold text-white">
+            {tr ? 'Proje bulunamadı' : 'Project not found'}
+          </p>
+          <p className="user-text mx-auto mt-2 max-w-xs text-xs leading-relaxed text-zinc-500">
+            {tr
+              ? 'Bu adreste bir proje yok. Silinmiş ya da adres yanlış yazılmış olabilir.'
+              : 'There is no project at this address. It may have been removed, or the link is wrong.'}
+          </p>
+          <a
+            href="/"
+            className="c4e-btn mx-auto mt-5 flex min-h-11 w-full items-center justify-center px-4 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {tr ? 'Code4Ever’e git' : 'Go to Code4Ever'}
+          </a>
+        </div>
       </div>
     );
   }
@@ -222,15 +264,31 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             <span>{tr ? 'Projeler' : 'Projects'}</span>
           </button>
 
-          {isOwner && !editing && (
-            <button
-              type="button"
-              onClick={beginEdit}
-              className="flex min-h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              <span>{tr ? 'Düzenle' : 'Edit'}</span>
-            </button>
+          {!editing && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={copyLink}
+                title={tr ? 'Bu sayfanın adresini kopyala' : 'Copy this page’s link'}
+                className="flex min-h-9 items-center gap-1.5 rounded-xl border border-white/[0.08] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:bg-white/[0.06] hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Link2 className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">
+                  {copied ? (tr ? 'Kopyalandı' : 'Copied') : tr ? 'Bağlantı' : 'Link'}
+                </span>
+              </button>
+
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={beginEdit}
+                  className="flex min-h-9 items-center gap-1.5 rounded-xl border border-white/[0.08] px-3 text-xs font-semibold text-zinc-300 transition-colors hover:bg-white/[0.06] hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  <span>{tr ? 'Düzenle' : 'Edit'}</span>
+                </button>
+              )}
+            </div>
           )}
 
           {editing && (
@@ -239,7 +297,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 type="button"
                 onClick={() => setEditing(false)}
                 disabled={busy}
-                className="min-h-9 rounded-xl border border-white/[0.07] px-3 text-xs font-semibold text-zinc-400 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-9 rounded-xl border border-white/[0.08] px-3 text-xs font-semibold text-zinc-400 transition-colors hover:text-white disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {tr ? 'Vazgeç' : 'Cancel'}
               </button>
@@ -247,7 +305,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 type="button"
                 onClick={save}
                 disabled={busy || !draft.name.trim()}
-                className="brand-gradient flex min-h-9 items-center gap-1.5 rounded-xl px-3.5 text-xs font-bold shadow-lg disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-btn flex min-h-9 items-center gap-1.5 px-3.5 text-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
                 <span>{tr ? 'Kaydet' : 'Save'}</span>
@@ -257,9 +315,16 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
         </div>
       </div>
 
-      <div className="mx-auto max-w-3xl space-y-5 p-4">
-        {/* KAPAK */}
-        <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-black/25">
+      {/*
+        Gövde TEK BİR PANEL. Önce her bölüm (kapak, başlık, açıklama, galeri) zeminin
+        üstünde ayrı ayrı duruyordu ve geniş ekranda sayfa "ortada yüzen birkaç parça"
+        gibi okunuyordu — özellikle açıklaması olmayan bir projede, altta kocaman bir
+        boşluk kalıyordu. Panel, sayfanın nerede başlayıp nerede bittiğini gösteriyor.
+      */}
+      <div className="mx-auto max-w-3xl p-4">
+        <div className="c4e-glass overflow-hidden">
+        {/* KAPAK: panelin içinde kenardan kenara. */}
+        <div className="relative">
           {(editing ? cover : project.cover_url) ? (
             <img
               src={(editing ? cover : project.cover_url) as string}
@@ -267,10 +332,17 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
               className="h-48 w-full object-cover sm:h-64"
             />
           ) : (
-            <div className="flex h-32 w-full items-center justify-center bg-gradient-to-br from-indigo-950/40 to-violet-950/40 sm:h-40">
-              <Github className="h-8 w-8 text-zinc-700" />
-            </div>
+            /* Kapaksız projede koca bir boş kutu ve ortasında yalnız bir simge vardı:
+               "eksik" gösteriyordu. Aurora'nın kendi renklerinden türeyen doku ise
+               "sade" gösteriyor ve sayfanın geri kalanıyla aynı dili konuşuyor. */
+            <div className="c4e-banner-fallback h-36 w-full sm:h-48" />
           )}
+          {/* Kapağın alt kenarı panelin içeriğine yumuşak geçsin: keskin bir kesik,
+              görselin orada "bittiğini" değil "kırpıldığını" gösteriyordu. */}
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0d0d18] to-transparent"
+            aria-hidden="true"
+          />
 
           {editing && (
             <div className="absolute bottom-3 right-3 flex gap-2">
@@ -304,6 +376,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
           )}
         </div>
 
+        <div className="space-y-5 p-5 sm:p-6">
         {/* BAŞLIK */}
         {editing ? (
           <div className="space-y-3">
@@ -317,7 +390,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 value={draft.name}
                 maxLength={80}
                 onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
-                className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-input min-h-11 w-full px-3 text-sm font-bold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="space-y-1.5">
@@ -331,25 +404,35 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 maxLength={600}
                 onChange={(e) => setDraft((d) => ({ ...d, about: e.target.value }))}
                 placeholder={tr ? 'Listede görünen tek satır' : 'One line shown in the list'}
-                className="min-h-11 w-full rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="c4e-input min-h-11 w-full px-3 text-xs text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
         ) : (
-          <div className="space-y-2">
-            <h1 className="user-text text-xl font-bold tracking-tight text-white">{project.name}</h1>
+          <div className="space-y-3">
+            <h1 className="user-text text-2xl font-extrabold leading-tight tracking-tight text-white sm:text-3xl">
+              {project.name}
+            </h1>
             {project.about && (
-              <p className="user-text text-xs leading-relaxed text-zinc-400">{project.about}</p>
+              <p className="user-text max-w-2xl text-sm leading-relaxed text-zinc-400">
+                {project.about}
+              </p>
             )}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-zinc-500">
+
+            {/*
+              Künye şeridi. Önce hepsi tek satırda virgülsüz yan yana diziliyordu ve
+              "@ad TypeScript owner/repo son commit 3 gün önce" tek bir karışık cümle gibi
+              okunuyordu. Her parça artık kendi rozetinde: nerede bittiği belli.
+            */}
+            <div className="flex flex-wrap items-center gap-2 text-[11px]">
               <a
                 href={`/@${project.owner_username}`}
-                className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/[0.05] px-3 font-mono text-zinc-300 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 @{project.owner_username}
               </a>
               {project.language && (
-                <span className="flex items-center gap-1">
+                <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/[0.05] px-3 text-zinc-300">
                   <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
                   {project.language}
                 </span>
@@ -359,15 +442,18 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                   href={project.repo_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="user-text flex items-center gap-1.5 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                  className="user-text inline-flex min-h-9 max-w-full items-center gap-1.5 rounded-full bg-white/[0.05] px-3 text-zinc-300 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <Github className="h-3 w-3 flex-shrink-0" />
-                  <span>{project.repo_full_name}</span>
-                  <ExternalLink className="h-2.5 w-2.5 flex-shrink-0" />
+                  <Github className="h-3 w-3 flex-none" />
+                  <span className="truncate">{project.repo_full_name}</span>
+                  <ExternalLink className="h-2.5 w-2.5 flex-none" />
                 </a>
               )}
               {project.last_commit_at && (
-                <span className="flex items-center gap-1">
+                <span
+                  className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/[0.05] px-3 text-zinc-400"
+                  title={new Date(project.last_commit_at).toLocaleString(tr ? 'tr-TR' : 'en-US')}
+                >
                   <GitCommit className="h-3 w-3" />
                   {tr ? 'son commit' : 'last commit'} {timeAgo(project.last_commit_at, tr)}
                 </span>
@@ -378,6 +464,11 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
 
         {/* BEĞEN / TAKİP */}
         <div className="flex flex-wrap items-center gap-2">
+          {/*
+            Oturumsuz ziyaretçide iki düğme de SOLGUN ve tıklanamaz. `title` yeterli
+            değildi: dokunmatikte ipucu hiç görünmüyor ve kullanıcı neden işe yaramadığını
+            anlamıyordu. Sebep şeridin sonunda açıkça yazıyor.
+          */}
           <button
             type="button"
             onClick={() => toggle('like')}
@@ -419,6 +510,12 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             <span>{followed ? (tr ? 'Takiptesin' : 'Following') : tr ? 'Takip et' : 'Follow'}</span>
             <span className="text-zinc-500">{project.followers_count}</span>
           </button>
+
+          {!currentUserId && (
+            <span className="text-[11px] text-zinc-500">
+              {tr ? 'Beğenmek ve takip etmek için giriş yap.' : 'Sign in to like and follow.'}
+            </span>
+          )}
         </div>
 
         {/* AÇIKLAMA */}
@@ -438,23 +535,55 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                   ? 'Proje ne yapıyor, nasıl çalışıyor, neden yazdın?'
                   : 'What does it do, how does it work, why did you build it?'
               }
-              className="w-full resize-y rounded-xl border border-white/[0.07] bg-white/[0.04] px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="c4e-input w-full resize-y px-3 py-2.5 text-[13px] leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             <p className="text-right text-[10px] text-zinc-600">{draft.description.length}/4000</p>
           </div>
-        ) : (
-          project.description && (
-            <div className="rounded-2xl border border-white/[0.07] bg-black/25 p-4">
+        ) : project.description ? (
+          (
+            <div className="c4e-card p-5">
               {/*
                 whitespace-pre-wrap: açıklama düz metin olarak saklanıyor ve satır araları
                 yazanın niyetidir. HTML olarak basmıyoruz — React metni kaçışlıyor ve
                 kullanıcı içeriği hiçbir yerde ham HTML olarak render edilmiyor.
               */}
-              <p className="user-text whitespace-pre-wrap text-xs leading-relaxed text-zinc-300">
+              <p className="user-text whitespace-pre-wrap text-[13px] leading-[1.75] text-zinc-300">
                 {project.description}
               </p>
             </div>
           )
+        ) : (
+          /* Açıklaması olmayan proje. Sahibine ne yapacağını söylüyor; ziyaretçiye ise
+             hiçbir şey göstermemek yerine sayfanın eksik değil SADE olduğunu söylüyor.
+             Önce burada hiçbir şey yoktu ve sayfa yarıda kesilmiş gibi duruyordu. */
+          <div className="c4e-empty px-6 py-10 text-center">
+            <p className="text-sm font-bold text-zinc-400">
+              {isOwner
+                ? tr
+                  ? 'Bu projenin henüz açıklaması yok'
+                  : 'This project has no description yet'
+                : tr
+                ? 'Açıklama eklenmemiş'
+                : 'No description added'}
+            </p>
+            {isOwner && (
+              <>
+                <p className="mx-auto mt-1.5 max-w-sm text-xs leading-relaxed text-zinc-500">
+                  {tr
+                    ? 'Ne yaptığını, nasıl çalıştığını ve neden yazdığını anlat — sayfayı açan kişi bunu arıyor.'
+                    : 'Say what it does, how it works and why you built it — that is what visitors look for.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={beginEdit}
+                  className="c4e-btn mx-auto mt-4 flex min-h-10 items-center gap-1.5 px-4 text-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  <span>{tr ? 'Açıklama ekle' : 'Add a description'}</span>
+                </button>
+              </>
+            )}
+          </div>
         )}
 
         {/* GALERİ */}
@@ -475,7 +604,8 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                   <img
                     src={src}
                     alt={tr ? `${project.name} görsel ${index + 1}` : `${project.name} image ${index + 1}`}
-                    className="h-28 w-full object-cover"
+                    loading="lazy"
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
                   />
                   {editing ? (
                     <button
@@ -503,7 +633,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                     type="button"
                     onClick={() => galleryInput.current?.click()}
                     disabled={busy}
-                    className="flex h-28 items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/[0.07] text-[11px] font-semibold text-zinc-500 transition-colors hover:text-white disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="c4e-empty flex aspect-[4/3] w-full items-center justify-center gap-1.5 text-[11px] font-semibold text-zinc-500 transition-colors hover:border-indigo-400/40 hover:text-white disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
                     <span>{tr ? 'Görsel ekle' : 'Add image'}</span>
@@ -535,28 +665,36 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
         )}
 
         {error && (
-          <p className="user-text flex items-start gap-1.5 text-[11px] text-red-400">
+          <p className="user-text flex items-start gap-1.5 text-[11px] text-rose-300">
             <AlertCircle className="mt-0.5 h-3 w-3 flex-shrink-0" />
             {error}
           </p>
         )}
+        </div>
+        </div>
       </div>
 
       {/* BÜYÜTÜLMÜŞ GÖRSEL */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-[400] flex items-center justify-center bg-black/90 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={tr ? 'Büyütülmüş görsel' : 'Enlarged image'}
+          className="fixed inset-0 z-[400] flex items-center justify-center bg-black/92 p-4 backdrop-blur-sm"
           onClick={() => setLightbox(null)}
         >
           <button
             type="button"
             onClick={() => setLightbox(null)}
             aria-label={tr ? 'Kapat' : 'Close'}
-            className="absolute right-4 top-4 flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-white/[0.04] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute right-4 top-4 flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.06] text-white transition-colors hover:bg-white/[0.12] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-5 w-5" />
           </button>
-          <img src={lightbox} alt="" className="max-h-full max-w-full rounded-xl object-contain" />
+          <img src={lightbox} alt="" className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl" />
+          <p className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[11px] text-zinc-500">
+            {tr ? 'Kapatmak için ESC ya da bir yere tıkla' : 'Press ESC or click anywhere to close'}
+          </p>
         </div>
       )}
     </div>

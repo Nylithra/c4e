@@ -581,7 +581,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onLogout();
                 }}
                 title={language === 'tr' ? 'Çıkış Yap' : 'Sign Out'}
-                className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-white/[0.09] transition-colors cursor-pointer"
+                /* `title` tek basina yetiyor gibi gorunuyordu ama dugme 28x28'di: fareyle
+                   bile isabet ettirmesi zor, dokunmatikte daha da zor. aria-label ayrica
+                   veriliyor cunku `title` bazi ekran okuyucularda okunmuyor. */
+                aria-label={language === 'tr' ? 'Çıkış Yap' : 'Sign Out'}
+                className="flex min-h-9 min-w-9 items-center justify-center rounded-lg text-zinc-500 hover:text-red-400 hover:bg-white/[0.09] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <LogOut className="w-4 h-4" />
               </button>
