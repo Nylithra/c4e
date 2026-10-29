@@ -237,7 +237,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
   // Unauthorized access block
   if (!isAdminAuthorized) {
     return (
-      <div className="c4e-screen content-column text-white flex items-center justify-center p-6 border-r border-white/[0.07]">
+      <div className="c4e-screen content-column text-white flex items-center justify-center p-6">
         <div className="c4e-sheet border-red-500/30 p-8 max-w-md w-full text-center space-y-4">
           <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto text-red-500">
             <ShieldAlert className="w-8 h-8" />
@@ -1730,7 +1730,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                 </h3>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.07] text-[11px] font-mono text-zinc-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="c4e-live-dot w-1.5 h-1.5 rounded-full bg-emerald-400 text-emerald-400" />
                 <span>Doğrulama Kanalı: Aktif</span>
               </div>
             </div>

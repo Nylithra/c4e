@@ -20,6 +20,7 @@ const DialogOverlay = React.forwardRef<
     ref={ref}
     className={cn(
       'fixed inset-0 z-50 bg-[#05050c]/75 backdrop-blur-md',
+      'duration-200 data-[state=closed]:duration-150',
       'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
@@ -40,7 +41,10 @@ const DialogContent = React.forwardRef<
         'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 gap-4',
         'c4e-sheet p-6 text-zinc-100',
         'max-h-[calc(100dvh-2rem)] overflow-y-auto',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+        // Açılış kapanıştan UZUN. Bir şeyin gelişi anlatılır, gidişi anlatılmaz:
+        // kapatmaya basan kullanıcı pencerenin gitmesini beklemek istemez.
+        'duration-200 data-[state=closed]:duration-150 ease-[cubic-bezier(.22,.9,.3,1)]',
+        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-2',
         className
       )}
       {...props}

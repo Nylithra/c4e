@@ -431,6 +431,13 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .app-shell {
   min-width: 0;
   width: 100%;
   min-height: 100vh;
+  /* Sekme değiştiğinde bileşen yeniden bağlanıyor, dolayısıyla giriş kendiliğinden
+     çalışıyor: "yeni bir ekrandasın" demenin en ucuz yolu. */
+  animation: c4e-rise var(--au-base) var(--au-ease) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c4e-screen { animation: none; }
 }
 
 /*
@@ -545,6 +552,26 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
 
   --au-accent: linear-gradient(100deg, #6366f1, #a855f7);
   --au-accent-soft: linear-gradient(100deg, rgba(99,102,241,.26), rgba(168,85,247,.12));
+
+  /*
+   * HAREKET ÖLÇEĞİ.
+   *
+   * Üç süre ve iki yumuşatma; daha fazlası tutarlılığı değil kargaşayı büyütür. Daha
+   * önce arayüzde 387 ayrı `transition-*` vardı ve hepsi Tailwind'in varsayılan
+   * süresiyle çalışıyordu — yani hiçbir şey birbirine göre ZAMANLANMAMIŞTI.
+   *
+   *   fast — durum değişimi (renk, opaklık). Göz fark etmeli ama beklememeli.
+   *   base — bir şeyin ortaya çıkması ya da yer değiştirmesi.
+   *   slow — ekranın tamamını ilgilendiren geçiş.
+   *
+   * Yumuşatma ÇIKIŞTA yavaşlıyor (decelerate): hareket hızlı başlayıp yumuşak duruyor,
+   * yani arayüz "tepki veriyor" gibi hissettiriyor. Doğrusal bir geçiş mekanik durur.
+   */
+  --au-fast: 140ms;
+  --au-base: 240ms;
+  --au-slow: 420ms;
+  --au-ease: cubic-bezier(.22, .9, .3, 1);
+  --au-ease-soft: cubic-bezier(.4, 0, .2, 1);
 }
 
 @layer base {
@@ -612,7 +639,7 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
 
   /* Üzerine gelince aydınlanan etkileşimli yüzey. */
   .c4e-hover {
-    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    transition: background-color var(--au-base) var(--au-ease), border-color var(--au-base) var(--au-ease), box-shadow var(--au-base) var(--au-ease);
   }
   .c4e-hover:hover {
     background: var(--au-panel-hover);
@@ -628,7 +655,7 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     padding: 10px 12px;
     border-radius: 13px;
     color: var(--au-dim);
-    transition: background-color 160ms ease, color 160ms ease;
+    transition: background-color var(--au-fast) var(--au-ease), color var(--au-fast) var(--au-ease);
   }
   .c4e-nav:hover { background: rgba(255, 255, 255, 0.05); color: var(--au-text); }
   .c4e-nav-on {
@@ -648,7 +675,7 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     border-radius: 14px;
     font-weight: 700;
     box-shadow: 0 12px 28px -10px rgba(147, 51, 234, 0.85);
-    transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+    transition: transform var(--au-fast) var(--au-ease), box-shadow var(--au-fast) var(--au-ease), filter var(--au-fast) var(--au-ease);
   }
   .c4e-btn:hover { filter: brightness(1.08); box-shadow: 0 14px 32px -10px rgba(147, 51, 234, 1); }
   .c4e-btn:active { transform: translateY(1px); }
@@ -664,9 +691,11 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     background: rgba(255, 255, 255, 0.05);
     color: var(--au-dim);
     border: 1px solid transparent;
-    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+    transition: background-color var(--au-fast) var(--au-ease), color var(--au-fast) var(--au-ease),
+                border-color var(--au-fast) var(--au-ease), transform var(--au-fast) var(--au-ease);
   }
   .c4e-pill:hover { background: rgba(255, 255, 255, 0.09); color: var(--au-text); }
+  .c4e-pill:active { transform: scale(0.96); }
   .c4e-pill-on {
     background: #fff;
     color: #0a0a14;
@@ -678,7 +707,7 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     border: 1px solid var(--au-line-soft);
     border-radius: var(--au-r-ctrl);
     color: var(--au-text);
-    transition: border-color 160ms ease, background-color 160ms ease;
+    transition: border-color var(--au-fast) var(--au-ease), background-color var(--au-fast) var(--au-ease);
   }
   .c4e-input:focus-within { border-color: rgba(129, 140, 248, 0.55); background: rgba(0, 0, 0, 0.35); }
 
@@ -699,6 +728,155 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     font-weight: 800;
     display: grid;
     place-items: center;
+  }
+
+  /* ========================================================== HAREKET ===
+   *
+   * HAREKET SÜSLEME DEĞİL, AÇIKLAMA.
+   *
+   * Her animasyonun söylediği bir şey var: giriş "bu yeni geldi", sıralı giriş "bunlar
+   * bir dizi", büyüyerek açılma "bu sayfanın ÜSTÜNDE", parıltı "burası yükleniyor".
+   * Bir şey söylemeyen hareket, yalnızca beklemeye sebep olur.
+   *
+   * Hepsi `prefers-reduced-motion` altında DURUYOR ama öğe kaybolmuyor: hareketi
+   * kapatan biri içeriği de kaybetmemeli.
+   * ==================================================================== */
+
+  /*
+   * Ekran ya da panel girişi: aşağıdan hafifçe yükselerek belirir.
+   *
+   * DOLGU `backwards`, `both` DEĞİL — ve bu bir üslup tercihi değil. `both` biterken
+   * son kareyi (translateY(0)) öğenin üzerinde BIRAKIR; sıfır bile olsa bir transform,
+   * içindeki `position: fixed` öğeler için yeni bir sarmalayıcı blok yaratır ve onlar
+   * ekrana değil bu kutuya sabitlenir. `backwards` ise animasyon bitince öğeyi kendi
+   * normal stiline bırakıyor, geriye hiçbir transform kalmıyor.
+   */
+  .c4e-enter {
+    animation: c4e-rise var(--au-base) var(--au-ease) backwards;
+  }
+
+  /* Pencere / açılır katman: biraz büyüyerek gelir — "sayfanın üstünde" demenin yolu. */
+  .c4e-pop {
+    animation: c4e-pop var(--au-base) var(--au-ease) backwards;
+  }
+
+  /*
+   * SIRALI GİRİŞ. Liste öğeleri aynı anda değil, art arda beliriyor.
+   *
+   * Gecikme ONUNCU ÖĞEDE DURUYOR. Durmasaydı yüz öğelik bir listede son öğe iki saniye
+   * sonra görünürdü; sıralı giriş o noktada bilgi vermeyi bırakıp beklemeye dönüşür.
+   */
+  .c4e-stagger > * {
+    animation: c4e-rise var(--au-base) var(--au-ease) backwards;
+  }
+  .c4e-stagger > *:nth-child(1)  { animation-delay: 0ms; }
+  .c4e-stagger > *:nth-child(2)  { animation-delay: 34ms; }
+  .c4e-stagger > *:nth-child(3)  { animation-delay: 68ms; }
+  .c4e-stagger > *:nth-child(4)  { animation-delay: 102ms; }
+  .c4e-stagger > *:nth-child(5)  { animation-delay: 136ms; }
+  .c4e-stagger > *:nth-child(6)  { animation-delay: 170ms; }
+  .c4e-stagger > *:nth-child(7)  { animation-delay: 204ms; }
+  .c4e-stagger > *:nth-child(8)  { animation-delay: 238ms; }
+  .c4e-stagger > *:nth-child(9)  { animation-delay: 272ms; }
+  .c4e-stagger > *:nth-child(n+10) { animation-delay: 300ms; }
+
+  /*
+   * YÜKLENİYOR PARILTISI. `animate-pulse`in yerine geçiyor.
+   *
+   * Yanıp sönen bir blok "bir sorun var" gibi okunuyor; soldan sağa geçen bir parıltı
+   * ise yön taşıyor ve "veri geliyor" diyor. Aynı sebepten parıltı içeriğin okunma
+   * yönünde ilerliyor.
+   */
+  .c4e-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.045);
+    border-radius: var(--au-r-ctrl);
+  }
+  .c4e-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.07) 45%,
+      rgba(255, 255, 255, 0.11) 50%,
+      rgba(255, 255, 255, 0.07) 55%,
+      transparent
+    );
+    animation: c4e-shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Canlı göstergesi: sayı değil, DURUM anlatır — bu yüzden sürekli ve yavaş. */
+  .c4e-live-dot {
+    position: relative;
+  }
+  .c4e-live-dot::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: .35;
+    animation: c4e-halka 2s var(--au-ease-soft) infinite;
+  }
+
+  /* Basılma geri bildirimi: dokunmatikte :hover yok, geriye tek bu kalıyor. */
+  .c4e-press {
+    transition: transform var(--au-fast) var(--au-ease);
+  }
+  .c4e-press:active:not(:disabled) { transform: scale(0.97); }
+
+  /*
+   * Birincil düğmede geçen ışık. Yalnızca ÜZERİNE GELİNCE ve bir kez: sürekli dönen bir
+   * parıltı dikkati düğmede tutar ve sayfanın geri kalanını okutmaz.
+   */
+  .c4e-btn {
+    position: relative;
+    overflow: hidden;
+  }
+  .c4e-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.22) 50%, transparent 80%);
+    transform: translateX(-120%);
+    pointer-events: none;
+  }
+  .c4e-btn:hover:not(:disabled)::after {
+    animation: c4e-parilti 760ms var(--au-ease) 1;
+  }
+
+  /* Bildirim / uyarı şeridi: kenardan kayarak gelir, nereden geldiği belli olsun diye. */
+  .c4e-slide-in {
+    animation: c4e-slide-in var(--au-base) var(--au-ease) backwards;
+  }
+
+  @keyframes c4e-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes c4e-pop {
+    from { opacity: 0; transform: scale(.965); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes c4e-shimmer {
+    100% { transform: translateX(100%); }
+  }
+  @keyframes c4e-halka {
+    0%   { transform: scale(.85); opacity: .35; }
+    70%  { transform: scale(1.7); opacity: 0; }
+    100% { transform: scale(1.7); opacity: 0; }
+  }
+  @keyframes c4e-parilti {
+    0%   { transform: translateX(-120%); }
+    100% { transform: translateX(120%); }
+  }
+  @keyframes c4e-slide-in {
+    from { opacity: 0; transform: translateX(14px); }
+    to   { opacity: 1; transform: translateX(0); }
   }
 
   /* ---------------------------------------------------------- yüzeyler */
@@ -757,7 +935,7 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     border-radius: 14px;
     color: var(--au-text);
     font-weight: 600;
-    transition: background-color 160ms ease, border-color 160ms ease, transform 150ms ease;
+    transition: background-color var(--au-fast) var(--au-ease), border-color var(--au-fast) var(--au-ease), transform var(--au-fast) var(--au-ease);
   }
   .c4e-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.09); border-color: rgba(255,255,255,.15); }
   .c4e-ghost:active:not(:disabled) { transform: translateY(1px); }
@@ -773,9 +951,11 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     min-height: 36px;
     border-radius: 11px;
     color: var(--au-dim);
-    transition: background-color 160ms ease, color 160ms ease;
+    transition: background-color var(--au-fast) var(--au-ease), color var(--au-fast) var(--au-ease),
+                transform var(--au-fast) var(--au-ease);
   }
   .c4e-icon-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.08); color: var(--au-text); }
+  .c4e-icon-btn:active:not(:disabled) { transform: scale(0.92); }
   .c4e-icon-btn:disabled { opacity: .45; }
 
   /*
@@ -793,7 +973,7 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
     border-radius: var(--au-r-card);
     background: var(--au-panel);
     text-align: left;
-    transition: background-color 170ms ease, border-color 170ms ease, transform 170ms ease;
+    transition: background-color var(--au-base) var(--au-ease), border-color var(--au-base) var(--au-ease), transform var(--au-fast) var(--au-ease);
   }
   .c4e-listrow:hover {
     background: var(--au-panel-hover);
@@ -928,9 +1108,30 @@ html[data-c4e-theme="on"][data-c4e-scope="app"] .nav-active {
   .c4e-topbar { background: #0f0f1a; }
 }
 
+/*
+ * HAREKET AZALTMA TERCİHİ.
+ *
+ * Animasyonlar durur ama hiçbir öğe KAYBOLMAZ: `both` dolgulu bir animasyonu yalnızca
+ * `animation: none` ile kapatmak, öğeyi başlangıç karesinde (opacity: 0) bırakır ve
+ * içeriği görünmez yapar. Bu yüzden görünürlük ayrıca geri veriliyor.
+ */
 @media (prefers-reduced-motion: reduce) {
   .c4e-hover, .c4e-nav, .c4e-btn, .c4e-pill, .c4e-input,
-  .c4e-ghost, .c4e-icon-btn, .c4e-listrow { transition: none; }
+  .c4e-ghost, .c4e-icon-btn, .c4e-listrow, .c4e-press { transition: none; }
+
+  .c4e-enter,
+  .c4e-pop,
+  .c4e-slide-in,
+  .c4e-stagger > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .c4e-skeleton::after,
+  .c4e-live-dot::before,
+  .c4e-btn:hover:not(:disabled)::after { animation: none; }
+
   /* Salınım durur ama ışık kalır: kütleyi tamamen kaldırmak ekranı boşaltırdı. */
   .c4e-auth-glow { animation: none; }
 }

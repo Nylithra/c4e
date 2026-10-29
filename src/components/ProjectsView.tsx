@@ -705,7 +705,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
   ];
 
   return (
-    <div className="content-column min-h-screen w-full min-w-0 flex-1 border-r border-white/[0.07] pb-16">
+    <div className="c4e-screen content-column pb-16">
       <div className="c4e-topbar z-20 px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
@@ -863,7 +863,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
             )}
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="c4e-stagger space-y-3">
             {visible.map((project) => (
               <ProjectCard
                 key={project.id}

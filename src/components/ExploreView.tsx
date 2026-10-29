@@ -272,7 +272,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
               <Users className="w-4 h-4 text-zinc-300" />
               <span>{language === 'tr' ? 'Topluluk Sonuçları' : 'Community Results'}</span>
             </h3>
-            <div className="space-y-2">
+            <div className="c4e-stagger space-y-2">
               {filteredCommunities.map((comm) => (
                 <div
                   key={comm.id}
@@ -307,7 +307,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                 {language === 'tr' ? 'Aramanıza uygun gönderi bulunamadı.' : 'No matching posts found.'}
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="c4e-stagger space-y-3">
                 {filteredPosts.map((post) => (
                   <div key={post.id} className="c4e-card p-4 space-y-2">
                     <div className="flex items-center gap-2">

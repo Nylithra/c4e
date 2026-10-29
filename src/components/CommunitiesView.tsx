@@ -150,7 +150,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
             {language === 'tr' ? 'Henüz hiçbir topluluk oluşturulmamış.' : 'No communities created yet.'}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-3.5">
+          <div className="c4e-stagger grid grid-cols-1 gap-3.5">
             {communities.map((comm) => {
               const hasManagePerm = canManageCommunity(comm);
               return (

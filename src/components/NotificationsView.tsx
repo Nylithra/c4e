@@ -277,7 +277,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                 {group.label}
               </h3>
 
-              <ul className="divide-y divide-white/[0.06]">
+              <ul className="c4e-stagger divide-y divide-white/[0.06]">
                 {group.items.map((item) => {
                   const style = TYPE_STYLES[item.type] || FALLBACK_STYLE;
                   const TypeIcon = style.icon;

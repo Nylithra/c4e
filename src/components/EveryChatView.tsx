@@ -157,7 +157,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
                 BETA
               </span>
               <span className="flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="c4e-live-dot w-1.5 h-1.5 rounded-full bg-emerald-400 text-emerald-400" />
                 Groq Active
               </span>
             </div>
