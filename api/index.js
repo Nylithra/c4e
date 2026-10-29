@@ -46,8 +46,8 @@ function safeEquals(a, b) {
   if (bufA.length !== bufB.length || bufA.length === 0) return false;
   return import_node_crypto.default.timingSafeEqual(bufA, bufB);
 }
-function hmacHex(secret, payload) {
-  return import_node_crypto.default.createHmac("sha256", secret).update(payload).digest("hex");
+function hmacHex(secret2, payload) {
+  return import_node_crypto.default.createHmac("sha256", secret2).update(payload).digest("hex");
 }
 function createSignedState(ttlMs = 10 * 60 * 1e3) {
   const nonce = import_node_crypto.default.randomBytes(16).toString("hex");
@@ -244,8 +244,8 @@ async function fetchSupabaseProfile(userId) {
       { headers, timeoutMs: 8e3 }
     );
     if (!response.ok) return null;
-    const rows = JSON.parse(response.text || "[]");
-    return Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
+    const rows2 = JSON.parse(response.text || "[]");
+    return Array.isArray(rows2) && rows2.length > 0 ? rows2[0] : null;
   } catch {
     return null;
   }
@@ -411,16 +411,16 @@ async function rest(pathAndQuery, init = {}) {
     // Bodies are capped per message, but a whole page of them still adds up.
     maxResponseBytes: 8 * 1024 * 1024
   });
-  let rows = [];
+  let rows2 = [];
   if (response.text) {
     try {
       const parsed = JSON.parse(response.text);
-      rows = Array.isArray(parsed) ? parsed : [parsed];
+      rows2 = Array.isArray(parsed) ? parsed : [parsed];
     } catch {
-      rows = [];
+      rows2 = [];
     }
   }
-  return { ok: response.ok, status: response.status, rows };
+  return { ok: response.ok, status: response.status, rows: rows2 };
 }
 function memoryBox(mailbox) {
   let box = memoryMessages.get(mailbox);
@@ -508,15 +508,15 @@ async function saveInboxSnapshot(mailbox, messages, details, meta) {
     memoryState.set(mailbox, state);
     return state;
   }
-  const rows = messages.map((message) => {
+  const rows2 = messages.map((message) => {
     const row = rowFromHeader(mailbox, message, syncedAt);
     const detail = details.get(message.uid);
     return detail ? { ...row, ...bodyFields(detail) } : row;
   });
-  if (rows.length > 0) {
+  if (rows2.length > 0) {
     await rest(`${CACHE_TABLE}?on_conflict=mailbox,uid`, {
       method: "POST",
-      body: JSON.stringify(rows),
+      body: JSON.stringify(rows2),
       // merge-duplicates keeps a body cached by an earlier sync when this row carries none.
       headers: { Prefer: "resolution=merge-duplicates,return=minimal" }
     });
@@ -590,19 +590,19 @@ async function readCachedMessage(mailbox, uid) {
   if (!storeIsDurable()) {
     return memoryBox(mailbox).get(uid)?.detail || null;
   }
-  const { ok, rows } = await rest(
+  const { ok, rows: rows2 } = await rest(
     `${CACHE_TABLE}?mailbox=eq.${encodeURIComponent(mailbox)}&uid=eq.${uid}&select=*&limit=1`
   );
-  if (!ok || rows.length === 0) return null;
-  return detailFromRow(rows[0]);
+  if (!ok || rows2.length === 0) return null;
+  return detailFromRow(rows2[0]);
 }
 async function readSyncState(mailbox) {
   if (!storeIsDurable()) return memoryState.get(mailbox) || emptyState(mailbox);
-  const { ok, rows } = await rest(
+  const { ok, rows: rows2 } = await rest(
     `${STATE_TABLE}?mailbox=eq.${encodeURIComponent(mailbox)}&select=*&limit=1`
   );
-  if (!ok || rows.length === 0) return emptyState(mailbox);
-  const row = rows[0];
+  if (!ok || rows2.length === 0) return emptyState(mailbox);
+  const row = rows2[0];
   return {
     mailbox,
     lastSyncedAt: row.last_synced_at || null,
@@ -653,7 +653,7 @@ var import_express = __toESM(require("express"), 1);
 var import_path = __toESM(require("path"), 1);
 var import_fs = __toESM(require("fs"), 1);
 var import_node_os = __toESM(require("node:os"), 1);
-var import_node_crypto5 = __toESM(require("node:crypto"), 1);
+var import_node_crypto6 = __toESM(require("node:crypto"), 1);
 init_security();
 
 // src/server/communityApi.ts
@@ -688,8 +688,8 @@ function hashApiKey(plaintext) {
   return import_node_crypto2.default.createHash("sha256").update(plaintext, "utf8").digest("hex");
 }
 function generateApiKey() {
-  const secret = import_node_crypto2.default.randomBytes(32).toString("base64url");
-  const plaintext = `${API_KEY_PREFIX}${secret}`;
+  const secret2 = import_node_crypto2.default.randomBytes(32).toString("base64url");
+  const plaintext = `${API_KEY_PREFIX}${secret2}`;
   return {
     plaintext,
     hash: hashApiKey(plaintext),
@@ -705,33 +705,33 @@ async function restRequest(pathAndQuery, init = {}) {
     timeoutMs: 1e4,
     maxResponseBytes: 1024 * 1024
   });
-  let rows = [];
+  let rows2 = [];
   if (response.text) {
     try {
       const parsed = JSON.parse(response.text);
-      rows = Array.isArray(parsed) ? parsed : [parsed];
+      rows2 = Array.isArray(parsed) ? parsed : [parsed];
     } catch {
-      rows = [];
+      rows2 = [];
     }
   }
-  return { ok: response.ok, status: response.status, rows };
+  return { ok: response.ok, status: response.status, rows: rows2 };
 }
 async function findCommunityByHandle(handle) {
   const clean = handle.replace(/^@/, "").toLowerCase();
   if (!clean) return null;
-  const { ok, rows } = await restRequest(
+  const { ok, rows: rows2 } = await restRequest(
     `communities?handle=in.(${encodeURIComponent(`"@${clean}","${clean}"`)})&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count&limit=1`
   );
-  if (!ok || rows.length === 0) return null;
-  return rows[0];
+  if (!ok || rows2.length === 0) return null;
+  return rows2[0];
 }
 async function findCommunityById(id) {
   if (!id) return null;
-  const { ok, rows } = await restRequest(
+  const { ok, rows: rows2 } = await restRequest(
     `communities?id=eq.${encodeURIComponent(id)}&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count&limit=1`
   );
-  if (!ok || rows.length === 0) return null;
-  return rows[0];
+  if (!ok || rows2.length === 0) return null;
+  return rows2[0];
 }
 function canManageCommunity(community, auth) {
   if (!auth?.userId) return false;
@@ -742,25 +742,25 @@ function canManageCommunity(community, auth) {
   return Boolean(me && owner && me === owner);
 }
 async function listKeysForCommunity(communityId) {
-  const { ok, rows } = await restRequest(
+  const { ok, rows: rows2 } = await restRequest(
     `community_api_keys?community_id=eq.${encodeURIComponent(communityId)}&order=created_at.desc&limit=50`
   );
-  return ok ? rows : [];
+  return ok ? rows2 : [];
 }
 async function countActiveKeys(communityId) {
   const keys = await listKeysForCommunity(communityId);
   return keys.filter((k) => !k.revoked_at).length;
 }
 async function insertKey(row) {
-  const { ok, rows } = await restRequest("community_api_keys", {
+  const { ok, rows: rows2 } = await restRequest("community_api_keys", {
     method: "POST",
     body: JSON.stringify(row),
     headers: { Prefer: "return=representation" }
   });
-  return ok && rows.length > 0 ? rows[0] : null;
+  return ok && rows2.length > 0 ? rows2[0] : null;
 }
 async function revokeKey(keyId, communityId) {
-  const { ok, rows } = await restRequest(
+  const { ok, rows: rows2 } = await restRequest(
     `community_api_keys?id=eq.${encodeURIComponent(keyId)}&community_id=eq.${encodeURIComponent(communityId)}`,
     {
       method: "PATCH",
@@ -768,16 +768,16 @@ async function revokeKey(keyId, communityId) {
       headers: { Prefer: "return=representation" }
     }
   );
-  return ok && rows.length > 0;
+  return ok && rows2.length > 0;
 }
 async function resolveApiKey(plaintext) {
   if (!plaintext || !plaintext.startsWith(API_KEY_PREFIX)) return null;
   const hash = hashApiKey(plaintext);
-  const { ok, rows } = await restRequest(
+  const { ok, rows: rows2 } = await restRequest(
     `community_api_keys?key_hash=eq.${encodeURIComponent(hash)}&limit=1`
   );
-  if (!ok || rows.length === 0) return null;
-  const row = rows[0];
+  if (!ok || rows2.length === 0) return null;
+  const row = rows2[0];
   if (row.revoked_at) return null;
   return row;
 }
@@ -795,7 +795,7 @@ async function touchApiKey(row) {
   }
 }
 async function insertCommunityPost(post) {
-  const { ok, rows } = await restRequest("posts", {
+  const { ok, rows: rows2 } = await restRequest("posts", {
     method: "POST",
     body: JSON.stringify({
       ...post,
@@ -812,19 +812,19 @@ async function insertCommunityPost(post) {
     }),
     headers: { Prefer: "return=representation" }
   });
-  return ok && rows.length > 0 ? rows[0] : null;
+  return ok && rows2.length > 0 ? rows2[0] : null;
 }
 async function listCommunityPosts(communityHandle, limit) {
-  const { ok, rows } = await restRequest(
+  const { ok, rows: rows2 } = await restRequest(
     `posts?community_handle=eq.${encodeURIComponent(communityHandle)}&is_deleted=eq.false&order=created_at.desc&limit=${limit}&select=id,content,code_snippet,code_language,category,category_name,author,community_id,community_name,community_handle,likes_count,comments_count,reposts_count,created_at`
   );
-  return ok ? rows : [];
+  return ok ? rows2 : [];
 }
 async function listPublicCommunities(limit) {
-  const { ok, rows } = await restRequest(
+  const { ok, rows: rows2 } = await restRequest(
     `communities?is_private=eq.false&order=members_count.desc&limit=${limit}&select=id,name,handle,description,is_private,created_by,creator_username,members_count,projects_count`
   );
-  return ok ? rows : [];
+  return ok ? rows2 : [];
 }
 var LIMITS = {
   content: 2e3,
@@ -933,6 +933,14 @@ function extractApiKey(req) {
   const fromBody = req.body?.api_key;
   if (typeof fromBody === "string" && fromBody.trim()) return fromBody.trim();
   return "";
+}
+async function findCommunitiesByIds(ids) {
+  if (ids.length === 0) return [];
+  const list = ids.slice(0, 100).map((id) => `"${String(id).replace(/"/g, "")}"`).join(",");
+  const { ok, rows: rows2 } = await restRequest(
+    `communities?id=in.(${encodeURIComponent(list)})&limit=100`
+  );
+  return ok ? rows2 : [];
 }
 
 // src/server/mail.ts
@@ -1233,8 +1241,8 @@ async function resolveRecipientByUsername(rawUsername) {
       { headers, timeoutMs: 1e4 }
     );
     if (response.ok) {
-      const rows = JSON.parse(response.text || "[]");
-      profile = Array.isArray(rows) ? rows[0] : null;
+      const rows2 = JSON.parse(response.text || "[]");
+      profile = Array.isArray(rows2) ? rows2[0] : null;
     }
   } catch {
     return null;
@@ -1599,6 +1607,11 @@ function createPkce() {
   const verifier = import_node_crypto3.default.randomBytes(32).toString("base64url");
   return { verifier, challenge: sha256Base64Url(verifier) };
 }
+function pkceMatches(verifier, challenge, method) {
+  if (!verifier || !challenge) return false;
+  if (method !== "S256") return false;
+  return safeEquals(sha256Base64Url(verifier), challenge);
+}
 function sha256Base64Url(input) {
   return import_node_crypto3.default.createHash("sha256").update(input).digest("base64url");
 }
@@ -1825,6 +1838,359 @@ async function clearJubbioLink(profileId) {
   });
   return ok;
 }
+async function readApiProfile(userId) {
+  const fields = "id,username,display_name,avatar_url,bio,role,email,created_at,joined_communities,github_username,jubbio_username";
+  const { ok, json } = await rest2(
+    `profiles?id=eq.${encodeURIComponent(userId)}&select=${fields}&limit=1`
+  );
+  if (!ok || !Array.isArray(json) || json.length === 0) return null;
+  return json[0];
+}
+
+// src/server/oauthProvider.ts
+var import_node_crypto4 = __toESM(require("node:crypto"), 1);
+init_security();
+function oauthProviderConfigured() {
+  return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
+}
+var SCOPES = {
+  identify: {
+    tr: "Kullan\u0131c\u0131 ad\u0131n\u0131, g\xF6r\xFCnen ad\u0131n\u0131 ve profil resmini g\xF6r\xFCr",
+    en: "See your username, display name and avatar"
+  },
+  email: {
+    tr: "E-posta adresini g\xF6r\xFCr",
+    en: "See your e-mail address"
+  },
+  "projects:read": {
+    tr: "Projelerini listeler",
+    en: "List your projects"
+  },
+  "communities:read": {
+    tr: "\xDCyesi oldu\u011Fun topluluklar\u0131 listeler",
+    en: "List the communities you belong to"
+  }
+};
+var ALL_SCOPES = Object.keys(SCOPES);
+function parseScopes(raw) {
+  const parts = String(raw || "").split(/[\s,+]+/).map((s) => s.trim()).filter(Boolean);
+  if (parts.length === 0) return ["identify"];
+  const out = [];
+  for (const part of parts) {
+    if (!(part in SCOPES)) return null;
+    if (!out.includes(part)) out.push(part);
+  }
+  return out;
+}
+async function rest3(pathAndQuery, init = {}) {
+  const response = await safeFetch(`${SUPABASE_URL}/rest/v1/${pathAndQuery}`, {
+    method: init.method || "GET",
+    headers: {
+      apikey: SUPABASE_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      "Content-Type": "application/json",
+      ...init.prefer ? { Prefer: init.prefer } : {}
+    },
+    body: init.body,
+    timeoutMs: 15e3,
+    maxResponseBytes: 1024 * 1024
+  });
+  let json = null;
+  try {
+    json = JSON.parse(response.text || "null");
+  } catch {
+    json = null;
+  }
+  return { ok: response.ok, status: response.status, json };
+}
+var rows = (json) => Array.isArray(json) ? json : [];
+var CLIENT_ID_PREFIX = "c4e_app_";
+var CLIENT_SECRET_PREFIX = "c4e_sec_";
+var ACCESS_PREFIX = "c4e_at_";
+var REFRESH_PREFIX = "c4e_rt_";
+function sha256(value) {
+  return import_node_crypto4.default.createHash("sha256").update(value).digest("hex");
+}
+function secret(prefix, bytes = 32) {
+  return prefix + import_node_crypto4.default.randomBytes(bytes).toString("base64url");
+}
+function toPublicApp(row) {
+  return {
+    id: row.id,
+    client_id: row.client_id,
+    client_secret_prefix: row.client_secret_prefix,
+    name: row.name,
+    description: row.description,
+    website_url: row.website_url,
+    logo_url: row.logo_url,
+    redirect_uris: Array.isArray(row.redirect_uris) ? row.redirect_uris : [],
+    scopes: Array.isArray(row.scopes) ? row.scopes : [],
+    owner_username: row.owner_username,
+    created_at: row.created_at,
+    last_used_at: row.last_used_at,
+    request_count: Number(row.request_count || 0)
+  };
+}
+function toAppFacts(row) {
+  return {
+    client_id: row.client_id,
+    name: row.name,
+    description: row.description,
+    website_url: row.website_url,
+    logo_url: row.logo_url,
+    owner_username: row.owner_username
+  };
+}
+function redirectUriAllowed(app2, candidate) {
+  const list = Array.isArray(app2.redirect_uris) ? app2.redirect_uris : [];
+  return list.some((uri) => uri === candidate);
+}
+function validateRedirectUri(raw) {
+  const value = String(raw || "").trim();
+  if (!value || value.length > 500) return null;
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    return null;
+  }
+  if (url.hash) return null;
+  const isLocal = url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "[::1]";
+  if (url.protocol === "https:") return url.toString();
+  if (url.protocol === "http:" && isLocal) return url.toString();
+  return null;
+}
+async function getAppByClientId(clientId) {
+  const { ok, json } = await rest3(
+    `oauth_apps?client_id=eq.${encodeURIComponent(clientId)}&revoked_at=is.null&limit=1`
+  );
+  return ok && rows(json).length ? rows(json)[0] : null;
+}
+async function getAppById(id) {
+  const { ok, json } = await rest3(`oauth_apps?id=eq.${encodeURIComponent(id)}&limit=1`);
+  return ok && rows(json).length ? rows(json)[0] : null;
+}
+async function listAppsByOwner(ownerId) {
+  const { ok, json } = await rest3(
+    `oauth_apps?owner_id=eq.${encodeURIComponent(ownerId)}&revoked_at=is.null&order=created_at.desc&limit=50`
+  );
+  return ok ? rows(json) : [];
+}
+async function countAppsByOwner(ownerId) {
+  return (await listAppsByOwner(ownerId)).length;
+}
+async function createApp(input) {
+  const clientSecret = secret(CLIENT_SECRET_PREFIX);
+  const row = {
+    id: `app_${import_node_crypto4.default.randomBytes(12).toString("hex")}`,
+    client_id: CLIENT_ID_PREFIX + import_node_crypto4.default.randomBytes(12).toString("hex"),
+    client_secret_hash: sha256(clientSecret),
+    client_secret_prefix: clientSecret.slice(0, 16),
+    name: input.name,
+    description: input.description || null,
+    website_url: input.website_url || null,
+    redirect_uris: input.redirect_uris,
+    scopes: input.scopes,
+    owner_id: input.owner_id,
+    owner_username: input.owner_username
+  };
+  const { ok, json } = await rest3("oauth_apps", {
+    method: "POST",
+    body: JSON.stringify([row]),
+    prefer: "return=representation"
+  });
+  if (!ok || !rows(json).length) return { ok: false, error: "Uygulama kaydedilemedi." };
+  return { ok: true, app: rows(json)[0], clientSecret };
+}
+async function updateApp(id, patch) {
+  const { ok, json } = await rest3(`oauth_apps?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ ...patch, updated_at: (/* @__PURE__ */ new Date()).toISOString() }),
+    prefer: "return=representation"
+  });
+  return ok && rows(json).length ? rows(json)[0] : null;
+}
+async function rotateSecret(id) {
+  const clientSecret = secret(CLIENT_SECRET_PREFIX);
+  const { ok } = await rest3(`oauth_apps?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      client_secret_hash: sha256(clientSecret),
+      client_secret_prefix: clientSecret.slice(0, 16),
+      updated_at: (/* @__PURE__ */ new Date()).toISOString()
+    })
+  });
+  return ok ? clientSecret : null;
+}
+async function revokeApp(id) {
+  await rest3(`oauth_tokens?app_id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
+  await rest3(`oauth_grants?app_id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
+  await rest3(`oauth_codes?app_id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
+  const { ok } = await rest3(`oauth_apps?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ revoked_at: (/* @__PURE__ */ new Date()).toISOString() })
+  });
+  return ok;
+}
+function clientSecretMatches(app2, candidate) {
+  if (!candidate) return false;
+  const a = Buffer.from(sha256(candidate), "utf8");
+  const b = Buffer.from(String(app2.client_secret_hash || ""), "utf8");
+  return a.length === b.length && import_node_crypto4.default.timingSafeEqual(a, b);
+}
+var CODE_TTL_MS = 10 * 60 * 1e3;
+async function issueCode(input) {
+  const code = `c4e_code_${import_node_crypto4.default.randomBytes(32).toString("base64url")}`;
+  const { ok } = await rest3("oauth_codes", {
+    method: "POST",
+    body: JSON.stringify([
+      {
+        code_hash: sha256(code),
+        app_id: input.appId,
+        user_id: input.userId,
+        scopes: input.scopes,
+        redirect_uri: input.redirectUri,
+        code_challenge: input.codeChallenge || null,
+        code_challenge_method: input.codeChallengeMethod || null,
+        expires_at: new Date(Date.now() + CODE_TTL_MS).toISOString()
+      }
+    ])
+  });
+  return ok ? code : null;
+}
+async function peekCode(code) {
+  const { ok, json } = await rest3(
+    `oauth_codes?code_hash=eq.${encodeURIComponent(sha256(code))}&limit=1`
+  );
+  if (!ok || !rows(json).length) return null;
+  const record = rows(json)[0];
+  if (new Date(record.expires_at).getTime() < Date.now()) return null;
+  return record;
+}
+async function consumeCode(code) {
+  const { ok, json } = await rest3(`oauth_codes?code_hash=eq.${encodeURIComponent(sha256(code))}`, {
+    method: "DELETE",
+    prefer: "return=representation"
+  });
+  if (!ok || !rows(json).length) return null;
+  const record = rows(json)[0];
+  if (new Date(record.expires_at).getTime() < Date.now()) return null;
+  return record;
+}
+async function pruneExpiredCodes() {
+  await rest3(`oauth_codes?expires_at=lt.${encodeURIComponent((/* @__PURE__ */ new Date()).toISOString())}`, {
+    method: "DELETE"
+  });
+}
+var ACCESS_TTL_MS = 60 * 60 * 1e3;
+var REFRESH_TTL_MS = 30 * 24 * 60 * 60 * 1e3;
+async function issueTokens(input) {
+  const accessToken = secret(ACCESS_PREFIX);
+  const refreshToken = secret(REFRESH_PREFIX);
+  const { ok } = await rest3("oauth_tokens", {
+    method: "POST",
+    body: JSON.stringify([
+      {
+        id: `tok_${import_node_crypto4.default.randomBytes(12).toString("hex")}`,
+        access_token_hash: sha256(accessToken),
+        refresh_token_hash: sha256(refreshToken),
+        app_id: input.appId,
+        user_id: input.userId,
+        scopes: input.scopes,
+        expires_at: new Date(Date.now() + ACCESS_TTL_MS).toISOString()
+      }
+    ])
+  });
+  if (!ok) return null;
+  return {
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    token_type: "Bearer",
+    expires_in: Math.floor(ACCESS_TTL_MS / 1e3),
+    scope: input.scopes.join(" ")
+  };
+}
+async function resolveAccessToken(token) {
+  if (!token || !token.startsWith(ACCESS_PREFIX)) return null;
+  const { ok, json } = await rest3(
+    `oauth_tokens?access_token_hash=eq.${encodeURIComponent(sha256(token))}&revoked_at=is.null&limit=1`
+  );
+  if (!ok || !rows(json).length) return null;
+  const record = rows(json)[0];
+  if (new Date(record.expires_at).getTime() < Date.now()) return null;
+  return record;
+}
+async function refreshTokens(refreshToken, appId) {
+  if (!refreshToken || !refreshToken.startsWith(REFRESH_PREFIX)) return null;
+  const { ok, json } = await rest3(
+    `oauth_tokens?refresh_token_hash=eq.${encodeURIComponent(sha256(refreshToken))}&revoked_at=is.null`,
+    { method: "DELETE", prefer: "return=representation" }
+  );
+  if (!ok || !rows(json).length) return null;
+  const record = rows(json)[0];
+  if (record.app_id !== appId) return null;
+  const age = Date.now() - new Date(record.created_at).getTime();
+  if (!Number.isFinite(age) || age > REFRESH_TTL_MS) return null;
+  return issueTokens({ appId: record.app_id, userId: record.user_id, scopes: record.scopes });
+}
+async function revokeToken(token) {
+  const hash = sha256(token);
+  const column = token.startsWith(REFRESH_PREFIX) ? "refresh_token_hash" : "access_token_hash";
+  const { ok } = await rest3(`oauth_tokens?${column}=eq.${encodeURIComponent(hash)}`, {
+    method: "DELETE"
+  });
+  return ok;
+}
+async function touchToken(id) {
+  await rest3(`oauth_tokens?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ last_used_at: (/* @__PURE__ */ new Date()).toISOString() })
+  });
+}
+async function touchApp(id) {
+  const app2 = await getAppById(id);
+  if (!app2) return;
+  await rest3(`oauth_apps?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      last_used_at: (/* @__PURE__ */ new Date()).toISOString(),
+      request_count: Number(app2.request_count || 0) + 1
+    })
+  });
+}
+async function writeGrant(appId, userId, scopes) {
+  const { ok } = await rest3("oauth_grants?on_conflict=app_id,user_id", {
+    method: "POST",
+    body: JSON.stringify([
+      { app_id: appId, user_id: userId, scopes, updated_at: (/* @__PURE__ */ new Date()).toISOString() }
+    ]),
+    prefer: "resolution=merge-duplicates"
+  });
+  return ok;
+}
+async function listGrants(userId) {
+  const { ok, json } = await rest3(
+    `oauth_grants?user_id=eq.${encodeURIComponent(userId)}&order=updated_at.desc&limit=100`
+  );
+  return ok ? rows(json) : [];
+}
+async function revokeGrant(appId, userId) {
+  await rest3(
+    `oauth_tokens?app_id=eq.${encodeURIComponent(appId)}&user_id=eq.${encodeURIComponent(userId)}`,
+    { method: "DELETE" }
+  );
+  const { ok } = await rest3(
+    `oauth_grants?app_id=eq.${encodeURIComponent(appId)}&user_id=eq.${encodeURIComponent(userId)}`,
+    { method: "DELETE" }
+  );
+  return ok;
+}
+async function getAppsByIds(ids) {
+  if (ids.length === 0) return [];
+  const list = ids.map((id) => `"${id.replace(/"/g, "")}"`).join(",");
+  const { ok, json } = await rest3(`oauth_apps?id=in.(${encodeURIComponent(list)})&limit=100`);
+  return ok ? rows(json) : [];
+}
 
 // src/server/notificationMail.ts
 init_security();
@@ -1895,7 +2261,7 @@ function adminHeaders4(extra = {}) {
     ...extra
   };
 }
-async function rest3(pathAndQuery, init = {}) {
+async function rest4(pathAndQuery, init = {}) {
   const response = await safeFetch(`${SUPABASE_URL}/rest/v1/${pathAndQuery}`, {
     method: init.method || "GET",
     headers: adminHeaders4(init.headers),
@@ -1903,16 +2269,16 @@ async function rest3(pathAndQuery, init = {}) {
     timeoutMs: 15e3,
     maxResponseBytes: 4 * 1024 * 1024
   });
-  let rows = [];
+  let rows2 = [];
   if (response.text) {
     try {
       const parsed = JSON.parse(response.text);
-      rows = Array.isArray(parsed) ? parsed : [parsed];
+      rows2 = Array.isArray(parsed) ? parsed : [parsed];
     } catch {
-      rows = [];
+      rows2 = [];
     }
   }
-  return { ok: response.ok, status: response.status, rows };
+  return { ok: response.ok, status: response.status, rows: rows2 };
 }
 var TYPE_LABELS = {
   comment: "g\xF6nderine yan\u0131t verdi",
@@ -1935,9 +2301,9 @@ function describe(row) {
   const content = String(row?.content || "").replace(/\s+/g, " ").trim().slice(0, 140);
   return content ? `${actorName(row)} ${label}: \u201C${content}\u201D` : `${actorName(row)} ${label}.`;
 }
-function summarize(rows) {
+function summarize(rows2) {
   const groups = /* @__PURE__ */ new Map();
-  for (const row of rows) {
+  for (const row of rows2) {
     const key = `${row?.type}|${row?.target_id ?? ""}`;
     const list = groups.get(key) || [];
     list.push(row);
@@ -1976,20 +2342,20 @@ async function dispatchNotificationEmails(options = {}) {
   const skip = (reason, n = 1) => {
     skipped[reason] = (skipped[reason] || 0) + n;
   };
-  const { ok, rows } = await rest3(
+  const { ok, rows: rows2 } = await rest4(
     `notifications?email_sent_at=is.null&is_read=eq.false&select=id,recipient_id,type,actor,content,target_id,created_at&order=created_at.asc&limit=${limit}`
   );
   if (!ok) {
     return { pending: 0, recipients: 0, sent: 0, skipped: { supabase_okunamadi: 1 }, durationMs: Date.now() - startedAt, dryRun };
   }
-  const pending = rows.length;
+  const pending = rows2.length;
   if (pending === 0) {
     return { pending: 0, recipients: 0, sent: 0, skipped, durationMs: Date.now() - startedAt, dryRun };
   }
   const cutoff = Date.now() - maxAgeHours * 3600 * 1e3;
   const stale = [];
   const fresh = [];
-  for (const row of rows) {
+  for (const row of rows2) {
     const at = Date.parse(row.created_at || "");
     if (Number.isFinite(at) && at < cutoff) stale.push(row.id);
     else fresh.push(row);
@@ -2063,7 +2429,7 @@ async function dispatchNotificationEmails(options = {}) {
 async function markSent(ids) {
   if (ids.length === 0) return;
   const list = ids.map((id) => `"${String(id).replace(/"/g, "")}"`).join(",");
-  await rest3(`notifications?id=in.(${encodeURIComponent(list)})`, {
+  await rest4(`notifications?id=in.(${encodeURIComponent(list)})`, {
     method: "PATCH",
     body: JSON.stringify({ email_sent_at: (/* @__PURE__ */ new Date()).toISOString() }),
     headers: { Prefer: "return=minimal" }
@@ -2072,9 +2438,9 @@ async function markSent(ids) {
 async function loadRecipient(recipientId) {
   const encoded = encodeURIComponent(recipientId);
   for (const filter of [`id=eq.${encoded}`, `username=eq.${encoded}`]) {
-    const { ok, rows } = await rest3(`profiles?${filter}&select=id,username,display_name,email,email_prefs&limit=1`);
-    if (ok && rows.length > 0) {
-      const row = rows[0];
+    const { ok, rows: rows2 } = await rest4(`profiles?${filter}&select=id,username,display_name,email,email_prefs&limit=1`);
+    if (ok && rows2.length > 0) {
+      const row = rows2[0];
       return {
         id: String(row.id),
         username: String(row.username || ""),
@@ -2087,12 +2453,12 @@ async function loadRecipient(recipientId) {
   return null;
 }
 async function readEmailPrefs(userId) {
-  const { ok, rows } = await rest3(`profiles?id=eq.${encodeURIComponent(userId)}&select=email_prefs&limit=1`);
-  if (!ok || rows.length === 0) return null;
-  return sanitizeEmailPrefs(rows[0].email_prefs);
+  const { ok, rows: rows2 } = await rest4(`profiles?id=eq.${encodeURIComponent(userId)}&select=email_prefs&limit=1`);
+  if (!ok || rows2.length === 0) return null;
+  return sanitizeEmailPrefs(rows2[0].email_prefs);
 }
 async function writeEmailPrefs(userId, prefs) {
-  const { ok } = await rest3(`profiles?id=eq.${encodeURIComponent(userId)}`, {
+  const { ok } = await rest4(`profiles?id=eq.${encodeURIComponent(userId)}`, {
     method: "PATCH",
     body: JSON.stringify({ email_prefs: prefs }),
     headers: { Prefer: "return=minimal" }
@@ -2100,13 +2466,13 @@ async function writeEmailPrefs(userId, prefs) {
   return ok;
 }
 function cronSecretMatches(presented) {
-  const secret = env("MAIL_NOTIFY_CRON_SECRET");
-  if (!secret) return false;
-  return safeEquals(String(presented || ""), secret);
+  const secret2 = env("MAIL_NOTIFY_CRON_SECRET");
+  if (!secret2) return false;
+  return safeEquals(String(presented || ""), secret2);
 }
 
 // src/server/projects.ts
-var import_node_crypto4 = __toESM(require("node:crypto"), 1);
+var import_node_crypto5 = __toESM(require("node:crypto"), 1);
 init_security();
 function adminHeaders5(extra = {}) {
   return {
@@ -2116,7 +2482,7 @@ function adminHeaders5(extra = {}) {
     ...extra
   };
 }
-async function rest4(pathAndQuery, init = {}) {
+async function rest5(pathAndQuery, init = {}) {
   const response = await safeFetch(`${SUPABASE_URL}/rest/v1/${pathAndQuery}`, {
     method: init.method || "GET",
     headers: adminHeaders5(init.headers),
@@ -2124,16 +2490,16 @@ async function rest4(pathAndQuery, init = {}) {
     timeoutMs: 15e3,
     maxResponseBytes: 4 * 1024 * 1024
   });
-  let rows = [];
+  let rows2 = [];
   if (response.text) {
     try {
       const parsed = JSON.parse(response.text);
-      rows = Array.isArray(parsed) ? parsed : [parsed];
+      rows2 = Array.isArray(parsed) ? parsed : [parsed];
     } catch {
-      rows = [];
+      rows2 = [];
     }
   }
-  return { ok: response.ok, status: response.status, rows };
+  return { ok: response.ok, status: response.status, rows: rows2 };
 }
 function projectsConfigured() {
   return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
@@ -2147,7 +2513,7 @@ function cleanText(raw, max) {
   return String(raw ?? "").replace(/\s+/g, " ").trim().slice(0, max);
 }
 function newProjectId() {
-  return `prj_${import_node_crypto4.default.randomBytes(9).toString("hex")}`;
+  return `prj_${import_node_crypto5.default.randomBytes(9).toString("hex")}`;
 }
 var TR_MAP = {
   \u0131: "i",
@@ -2174,7 +2540,7 @@ async function allocateSlug(name) {
     const candidate = attempt === 0 ? base : `${base.slice(0, 84)}-${attempt + 1}`;
     if (!await findProjectBySlug(candidate)) return candidate;
   }
-  return `${base.slice(0, 80)}-${import_node_crypto4.default.randomBytes(3).toString("hex")}`;
+  return `${base.slice(0, 80)}-${import_node_crypto5.default.randomBytes(3).toString("hex")}`;
 }
 var MAX_IMAGE_CHARS = 500 * 1e3;
 var MAX_GALLERY = 6;
@@ -2258,39 +2624,39 @@ var PROJECT_FIELDS = "id,slug,owner_id,owner_username,name,about,repo_full_name,
 var PROJECT_DETAIL_FIELDS = `${PROJECT_FIELDS},description,cover_url,gallery`;
 async function findProjectBySlug(slug) {
   if (!slug) return null;
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `projects?slug=ilike.${encodeURIComponent(slug)}&is_deleted=eq.false&select=${PROJECT_DETAIL_FIELDS}&limit=1`
   );
-  return ok && rows.length ? rows[0] : null;
+  return ok && rows2.length ? rows2[0] : null;
 }
 async function findProjectDetail(id) {
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `projects?id=eq.${encodeURIComponent(id)}&is_deleted=eq.false&select=${PROJECT_DETAIL_FIELDS}&limit=1`
   );
-  return ok && rows.length ? rows[0] : null;
+  return ok && rows2.length ? rows2[0] : null;
 }
 async function findProjectById(id) {
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `projects?id=eq.${encodeURIComponent(id)}&is_deleted=eq.false&select=${PROJECT_FIELDS}&limit=1`
   );
-  return ok && rows.length ? rows[0] : null;
+  return ok && rows2.length ? rows2[0] : null;
 }
 async function findProjectByRepo(fullName) {
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `projects?repo_full_name=ilike.${encodeURIComponent(fullName)}&is_deleted=eq.false&select=${PROJECT_FIELDS}&limit=1`
   );
-  return ok && rows.length ? rows[0] : null;
+  return ok && rows2.length ? rows2[0] : null;
 }
 async function insertProject(row) {
-  const { ok, rows } = await rest4(`projects?select=${PROJECT_DETAIL_FIELDS}`, {
+  const { ok, rows: rows2 } = await rest5(`projects?select=${PROJECT_DETAIL_FIELDS}`, {
     method: "POST",
     body: JSON.stringify(row),
     headers: { Prefer: "return=representation" }
   });
-  return ok && rows.length ? rows[0] : null;
+  return ok && rows2.length ? rows2[0] : null;
 }
 async function updateProject(id, patch) {
-  const { ok } = await rest4(`projects?id=eq.${encodeURIComponent(id)}`, {
+  const { ok } = await rest5(`projects?id=eq.${encodeURIComponent(id)}`, {
     method: "PATCH",
     body: JSON.stringify(patch)
   });
@@ -2337,13 +2703,13 @@ var TABLE = {
 async function setRelation(relation, projectId, userId, on) {
   const table = TABLE[relation];
   if (!on) {
-    const { ok: ok2 } = await rest4(
+    const { ok: ok2 } = await rest5(
       `${table}?project_id=eq.${encodeURIComponent(projectId)}&user_id=eq.${encodeURIComponent(userId)}`,
       { method: "DELETE" }
     );
     return ok2;
   }
-  const { ok } = await rest4(table, {
+  const { ok } = await rest5(table, {
     method: "POST",
     body: JSON.stringify({ project_id: projectId, user_id: userId }),
     headers: { Prefer: "resolution=ignore-duplicates" }
@@ -2353,36 +2719,36 @@ async function setRelation(relation, projectId, userId, on) {
 async function readRelations(relation, userId, projectIds) {
   if (!userId || projectIds.length === 0) return {};
   const list = projectIds.map((id) => `"${id}"`).join(",");
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `${TABLE[relation]}?user_id=eq.${encodeURIComponent(userId)}&project_id=in.(${encodeURIComponent(list)})&select=project_id`
   );
   if (!ok) return {};
   const map = {};
-  for (const row of rows) map[String(row.project_id)] = true;
+  for (const row of rows2) map[String(row.project_id)] = true;
   return map;
 }
 async function readFollowerIds(projectId) {
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `project_follows?project_id=eq.${encodeURIComponent(projectId)}&select=user_id`
   );
-  return ok ? rows.map((r) => String(r.user_id)).filter(Boolean) : [];
+  return ok ? rows2.map((r) => String(r.user_id)).filter(Boolean) : [];
 }
 async function listProjects(options) {
   const order = options.sort === "top" ? "likes_count.desc,created_at.desc" : "created_at.desc";
   const ownerFilter = options.sort === "mine" && options.ownerId ? `&owner_id=eq.${encodeURIComponent(options.ownerId)}` : "";
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `projects?is_deleted=eq.false${ownerFilter}&select=${PROJECT_FIELDS}&order=${order}&limit=${options.limit}`
   );
-  return ok ? rows : [];
+  return ok ? rows2 : [];
 }
 async function projectOfTheWeek() {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1e3).toISOString();
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `project_likes?created_at=gte.${encodeURIComponent(since)}&select=project_id&limit=5000`
   );
-  if (!ok || rows.length === 0) return null;
+  if (!ok || rows2.length === 0) return null;
   const tally = /* @__PURE__ */ new Map();
-  for (const row of rows) {
+  for (const row of rows2) {
     const id = String(row.project_id);
     tally.set(id, (tally.get(id) || 0) + 1);
   }
@@ -2394,15 +2760,15 @@ async function projectOfTheWeek() {
   return null;
 }
 async function allTimeTop() {
-  const rows = await listProjects({ sort: "top", limit: 1 });
-  return rows.length && Number(rows[0].likes_count) > 0 ? rows[0] : null;
+  const rows2 = await listProjects({ sort: "top", limit: 1 });
+  return rows2.length && Number(rows2[0].likes_count) > 0 ? rows2[0] : null;
 }
 async function notifyFollowers(project, commit, followerIds) {
   const recipients = followerIds.filter((id) => id && id !== project.owner_id);
   if (recipients.length === 0) return 0;
   const now = (/* @__PURE__ */ new Date()).toISOString();
-  const rows = recipients.map((recipientId) => ({
-    id: `ntf_${import_node_crypto4.default.randomBytes(9).toString("hex")}`,
+  const rows2 = recipients.map((recipientId) => ({
+    id: `ntf_${import_node_crypto5.default.randomBytes(9).toString("hex")}`,
     recipient_id: recipientId,
     type: "project_commit",
     actor: {
@@ -2415,19 +2781,19 @@ async function notifyFollowers(project, commit, followerIds) {
     is_read: false,
     created_at: now
   }));
-  const { ok } = await rest4("notifications", { method: "POST", body: JSON.stringify(rows) });
-  return ok ? rows.length : 0;
+  const { ok } = await rest5("notifications", { method: "POST", body: JSON.stringify(rows2) });
+  return ok ? rows2.length : 0;
 }
 async function runCommitWatch(options = {}) {
   const budgetMs = options.budgetMs === void 0 ? 2e4 : Math.max(1e3, options.budgetMs);
   const maxProjects = options.maxProjects === void 0 ? 25 : Math.max(1, options.maxProjects);
   const deadline = Date.now() + budgetMs;
   const result = { checked: 0, newCommits: 0, notified: 0, failed: 0, timedOut: false };
-  const { ok, rows } = await rest4(
+  const { ok, rows: rows2 } = await rest5(
     `projects?is_deleted=eq.false&repo_full_name=not.is.null&select=${PROJECT_FIELDS}&order=last_checked_at.asc.nullsfirst&limit=${maxProjects}`
   );
   if (!ok) return result;
-  for (const project of rows) {
+  for (const project of rows2) {
     if (Date.now() >= deadline) {
       result.timedOut = true;
       break;
@@ -2472,7 +2838,7 @@ function adminHeaders6(extra = {}) {
     ...extra
   };
 }
-async function rest5(pathAndQuery, init = {}) {
+async function rest6(pathAndQuery, init = {}) {
   const response = await safeFetch(`${SUPABASE_URL2}/rest/v1/${pathAndQuery}`, {
     method: init.method || "GET",
     headers: adminHeaders6(init.headers),
@@ -2480,27 +2846,27 @@ async function rest5(pathAndQuery, init = {}) {
     timeoutMs: 15e3,
     maxResponseBytes: 4 * 1024 * 1024
   });
-  let rows = [];
+  let rows2 = [];
   if (response.text) {
     try {
       const parsed = JSON.parse(response.text);
-      rows = Array.isArray(parsed) ? parsed : [parsed];
+      rows2 = Array.isArray(parsed) ? parsed : [parsed];
     } catch {
-      rows = [];
+      rows2 = [];
     }
   }
-  return { ok: response.ok, status: response.status, rows };
+  return { ok: response.ok, status: response.status, rows: rows2 };
 }
 function communityProjectsConfigured() {
   return Boolean(SUPABASE_URL2 && SERVICE_KEY);
 }
 async function isMemberOf(userId, communityId) {
   if (!userId || !communityId) return false;
-  const { ok, rows } = await rest5(
+  const { ok, rows: rows2 } = await rest6(
     `profiles?id=eq.${encodeURIComponent(userId)}&select=joined_communities&limit=1`
   );
-  if (!ok || !rows[0]) return false;
-  const raw = rows[0].joined_communities;
+  if (!ok || !rows2[0]) return false;
+  const raw = rows2[0].joined_communities;
   const list = Array.isArray(raw) ? raw : [];
   return list.map(String).includes(communityId);
 }
@@ -2519,25 +2885,25 @@ async function canSeeCommunity(community, userId, isAdmin) {
   return isMemberOf(userId, community.id);
 }
 async function listCommunityProjectLinks(communityId, limit) {
-  const { ok, rows } = await rest5(
+  const { ok, rows: rows2 } = await rest6(
     `community_projects?community_id=eq.${encodeURIComponent(communityId)}&select=project_id,added_by,added_by_username,created_at&order=created_at.desc&limit=${limit}`
   );
-  return ok ? rows : [];
+  return ok ? rows2 : [];
 }
 async function listProjectCommunityIds(projectId) {
-  const { ok, rows } = await rest5(
+  const { ok, rows: rows2 } = await rest6(
     `community_projects?project_id=eq.${encodeURIComponent(projectId)}&select=community_id`
   );
-  return ok ? rows.map((r) => String(r.community_id)) : [];
+  return ok ? rows2.map((r) => String(r.community_id)) : [];
 }
 async function linkExists(communityId, projectId) {
-  const { ok, rows } = await rest5(
+  const { ok, rows: rows2 } = await rest6(
     `community_projects?community_id=eq.${encodeURIComponent(communityId)}&project_id=eq.${encodeURIComponent(projectId)}&select=project_id&limit=1`
   );
-  return ok && rows.length > 0;
+  return ok && rows2.length > 0;
 }
 async function addProjectToCommunity(communityId, projectId, addedBy, addedByUsername) {
-  const { ok } = await rest5("community_projects", {
+  const { ok } = await rest6("community_projects", {
     method: "POST",
     // Aynı bağ ikinci kez gönderildiğinde hata değil sessiz geçiş: kullanıcı iki kez
     // tıkladığında ekrana hata basmanın bir anlamı yok, sonuç zaten istenen durum.
@@ -2554,7 +2920,7 @@ async function addProjectToCommunity(communityId, projectId, addedBy, addedByUse
   return ok;
 }
 async function removeProjectFromCommunity(communityId, projectId) {
-  const { ok } = await rest5(
+  const { ok } = await rest6(
     `community_projects?community_id=eq.${encodeURIComponent(communityId)}&project_id=eq.${encodeURIComponent(projectId)}`,
     { method: "DELETE", headers: { Prefer: "return=minimal" } }
   );
@@ -2975,7 +3341,7 @@ app.post(
     const payload = validation.value;
     const authorUsername = normalizeUsername(asString(body.author_username ?? body.authorUsername)) || keyRow.created_by_username || "api";
     const post = await insertCommunityPost({
-      id: `post_api_${Date.now()}_${import_node_crypto5.default.randomBytes(6).toString("hex")}`,
+      id: `post_api_${Date.now()}_${import_node_crypto6.default.randomBytes(6).toString("hex")}`,
       author: {
         username: authorUsername,
         display_name: payload.authorName,
@@ -3067,7 +3433,7 @@ app.post(
     const name = sanitizeText(body.name, LIMITS.keyName) || "default";
     const generated = generateApiKey();
     const row = await insertKey({
-      id: `cak_${Date.now()}_${import_node_crypto5.default.randomBytes(6).toString("hex")}`,
+      id: `cak_${Date.now()}_${import_node_crypto6.default.randomBytes(6).toString("hex")}`,
       community_id: community.id,
       community_handle: community.handle,
       name,
@@ -3533,7 +3899,7 @@ app.post(
     const donations = loadByNoGameDonations();
     const referenceCode = asString(req.body?.reference_code, 120);
     const newRecord = {
-      id: `bng_claim_${Date.now()}_${import_node_crypto5.default.randomBytes(3).toString("hex")}`,
+      id: `bng_claim_${Date.now()}_${import_node_crypto6.default.randomBytes(3).toString("hex")}`,
       streamId: BYNOGAME_STREAM_ID,
       username,
       usernameNormalized: username,
@@ -3605,7 +3971,7 @@ app.post("/api/bynogame/webhook", rateLimit({ scope: "donation-webhook", windowM
   }
   const donations = loadByNoGameDonations();
   const newDonation = {
-    id: `bng_${Date.now()}_${import_node_crypto5.default.randomBytes(3).toString("hex")}`,
+    id: `bng_${Date.now()}_${import_node_crypto6.default.randomBytes(3).toString("hex")}`,
     streamId: asString(payload.streamId || payload.stream_id, 80) || BYNOGAME_STREAM_ID,
     username: donor,
     usernameNormalized: donor,
@@ -4139,7 +4505,7 @@ app.get(
       return;
     }
     const { verifier, challenge } = createPkce();
-    const state = import_node_crypto5.default.randomBytes(24).toString("base64url");
+    const state = import_node_crypto6.default.randomBytes(24).toString("base64url");
     const flow = { state, verifier, userId: req.auth?.userId || "" };
     res.cookie(JUBBIO_FLOW_COOKIE, sealFlow(flow), flowCookieOptions());
     res.json({ success: true, url: buildJubbioAuthorizeUrl(config, { state, challenge }) });
@@ -4200,6 +4566,474 @@ app.post(
     }
     const cleared = await clearJubbioLink(userId);
     res.status(cleared ? 200 : 502).json({ success: cleared });
+  }
+);
+var MAX_APPS_PER_OWNER = 10;
+function oauthUnavailable(res) {
+  if (oauthProviderConfigured()) return false;
+  res.status(503).json({
+    success: false,
+    error: "not_configured",
+    message: "Geli\u015Ftirici API'si yap\u0131land\u0131r\u0131lmam\u0131\u015F (SUPABASE_SERVICE_ROLE_KEY eksik)."
+  });
+  return true;
+}
+function readRedirectUris(raw) {
+  const list = Array.isArray(raw) ? raw : [];
+  const uris = [];
+  for (const candidate of list.slice(0, 10)) {
+    const valid = validateRedirectUri(candidate);
+    if (!valid) return { ok: false, uris: [], bad: String(candidate).slice(0, 120) };
+    if (!uris.includes(valid)) uris.push(valid);
+  }
+  return { ok: true, uris, bad: "" };
+}
+app.get("/api/dev/scopes", (_req, res) => {
+  res.json({
+    success: true,
+    scopes: ALL_SCOPES.map((key) => ({ key, ...SCOPES[key] }))
+  });
+});
+app.get("/api/dev/apps", requireAuth, async (req, res) => {
+  if (oauthUnavailable(res)) return;
+  const apps = await listAppsByOwner(req.auth?.userId || "");
+  res.json({ success: true, apps: apps.map(toPublicApp), limit: MAX_APPS_PER_OWNER });
+});
+app.post(
+  "/api/dev/apps",
+  requireAuth,
+  rateLimit({ scope: "dev-apps-create", windowMs: 6e4, max: 10, perUser: true }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const userId = req.auth?.userId || "";
+    const name = cleanText(req.body?.name, 60);
+    if (!name) {
+      res.status(400).json({ success: false, error: "invalid_name", message: "Uygulama ad\u0131 gerekli." });
+      return;
+    }
+    const redirects = readRedirectUris(req.body?.redirect_uris);
+    if (!redirects.ok) {
+      res.status(400).json({
+        success: false,
+        error: "invalid_redirect_uri",
+        message: `Ge\xE7ersiz y\xF6nlendirme adresi: ${redirects.bad}. Yaln\u0131zca https (ya da yerel geli\u015Ftirmede http://localhost) kabul ediliyor ve adres # i\xE7eremez.`
+      });
+      return;
+    }
+    if (redirects.uris.length === 0) {
+      res.status(400).json({
+        success: false,
+        error: "redirect_uri_required",
+        message: "En az bir y\xF6nlendirme adresi gerekli."
+      });
+      return;
+    }
+    const scopes = parseScopes(req.body?.scopes);
+    if (!scopes) {
+      res.status(400).json({
+        success: false,
+        error: "invalid_scope",
+        message: `Bilinmeyen kapsam. Ge\xE7erli olanlar: ${ALL_SCOPES.join(", ")}.`
+      });
+      return;
+    }
+    if (await countAppsByOwner(userId) >= MAX_APPS_PER_OWNER) {
+      res.status(409).json({
+        success: false,
+        error: "limit_reached",
+        message: `En fazla ${MAX_APPS_PER_OWNER} uygulama olu\u015Fturabilirsin.`
+      });
+      return;
+    }
+    const created = await createApp({
+      name,
+      description: cleanText(req.body?.description, 300) || null,
+      website_url: validateRedirectUri(req.body?.website_url) || null,
+      redirect_uris: redirects.uris,
+      scopes,
+      owner_id: userId,
+      owner_username: req.auth?.username || null
+    });
+    if (!created.ok || !created.app) {
+      res.status(502).json({ success: false, error: "save_failed", message: created.error });
+      return;
+    }
+    res.status(201).json({
+      success: true,
+      app: toPublicApp(created.app),
+      client_secret: created.clientSecret,
+      notice: "\u0130stemci s\u0131rr\u0131 yaln\u0131zca B\u0130R KEZ g\xF6steriliyor. Kaybedersen yenisini \xFCretmen gerekir."
+    });
+  }
+);
+async function ownedApp(req, res) {
+  const app2 = await getAppById(String(req.params.id || ""));
+  if (!app2 || app2.revoked_at) {
+    res.status(404).json({ success: false, error: "not_found", message: "Uygulama bulunamad\u0131." });
+    return null;
+  }
+  if (app2.owner_id !== (req.auth?.userId || "")) {
+    res.status(403).json({ success: false, error: "forbidden", message: "Bu uygulama senin de\u011Fil." });
+    return null;
+  }
+  return app2;
+}
+app.patch(
+  "/api/dev/apps/:id",
+  requireAuth,
+  rateLimit({ scope: "dev-apps-update", windowMs: 6e4, max: 30, perUser: true }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const app2 = await ownedApp(req, res);
+    if (!app2) return;
+    const patch = {};
+    if (req.body?.name !== void 0) {
+      const name = cleanText(req.body.name, 60);
+      if (!name) {
+        res.status(400).json({ success: false, error: "invalid_name", message: "Uygulama ad\u0131 gerekli." });
+        return;
+      }
+      patch.name = name;
+    }
+    if (req.body?.description !== void 0) patch.description = cleanText(req.body.description, 300) || null;
+    if (req.body?.website_url !== void 0) {
+      patch.website_url = req.body.website_url ? validateRedirectUri(req.body.website_url) : null;
+    }
+    if (req.body?.redirect_uris !== void 0) {
+      const redirects = readRedirectUris(req.body.redirect_uris);
+      if (!redirects.ok || redirects.uris.length === 0) {
+        res.status(400).json({
+          success: false,
+          error: "invalid_redirect_uri",
+          message: redirects.ok ? "En az bir y\xF6nlendirme adresi gerekli." : `Ge\xE7ersiz y\xF6nlendirme adresi: ${redirects.bad}.`
+        });
+        return;
+      }
+      patch.redirect_uris = redirects.uris;
+    }
+    if (req.body?.scopes !== void 0) {
+      const scopes = parseScopes(req.body.scopes);
+      if (!scopes) {
+        res.status(400).json({ success: false, error: "invalid_scope", message: "Bilinmeyen kapsam." });
+        return;
+      }
+      patch.scopes = scopes;
+    }
+    const updated = await updateApp(app2.id, patch);
+    if (!updated) {
+      res.status(502).json({ success: false, error: "save_failed" });
+      return;
+    }
+    res.json({ success: true, app: toPublicApp(updated) });
+  }
+);
+app.post(
+  "/api/dev/apps/:id/rotate",
+  requireAuth,
+  rateLimit({ scope: "dev-apps-rotate", windowMs: 6e4, max: 10, perUser: true }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const app2 = await ownedApp(req, res);
+    if (!app2) return;
+    const clientSecret = await rotateSecret(app2.id);
+    if (!clientSecret) {
+      res.status(502).json({ success: false, error: "rotate_failed" });
+      return;
+    }
+    res.json({
+      success: true,
+      client_secret: clientSecret,
+      notice: "Eski s\u0131r bu andan itibaren ge\xE7ersiz. Yeni s\u0131rr\u0131 kaydet; bir daha g\xF6sterilmeyecek."
+    });
+  }
+);
+app.delete(
+  "/api/dev/apps/:id",
+  requireAuth,
+  rateLimit({ scope: "dev-apps-delete", windowMs: 6e4, max: 10, perUser: true }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const app2 = await ownedApp(req, res);
+    if (!app2) return;
+    const done = await revokeApp(app2.id);
+    res.status(done ? 200 : 502).json({ success: done });
+  }
+);
+app.get(
+  "/api/oauth/app-info",
+  rateLimit({ scope: "oauth-info", windowMs: 6e4, max: 60 }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const app2 = await getAppByClientId(asString(req.query.client_id, 120));
+    if (!app2) {
+      res.status(404).json({ success: false, error: "unknown_client", message: "Uygulama bulunamad\u0131." });
+      return;
+    }
+    const redirectUri = asString(req.query.redirect_uri, 500);
+    if (!redirectUriAllowed(app2, redirectUri)) {
+      res.status(400).json({
+        success: false,
+        error: "invalid_redirect_uri",
+        message: "Y\xF6nlendirme adresi uygulamada kay\u0131tl\u0131 de\u011Fil."
+      });
+      return;
+    }
+    const requested = parseScopes(req.query.scope);
+    if (!requested) {
+      res.status(400).json({ success: false, error: "invalid_scope", message: "Bilinmeyen kapsam istendi." });
+      return;
+    }
+    const extra = requested.filter((s) => !app2.scopes.includes(s));
+    if (extra.length) {
+      res.status(400).json({
+        success: false,
+        error: "scope_not_allowed",
+        message: `Uygulama \u015Fu kapsam(lar) i\xE7in kay\u0131tl\u0131 de\u011Fil: ${extra.join(", ")}.`
+      });
+      return;
+    }
+    res.json({
+      success: true,
+      app: toAppFacts(app2),
+      scopes: requested.map((key) => ({ key, ...SCOPES[key] }))
+    });
+  }
+);
+app.post(
+  "/api/oauth/authorize",
+  requireAuth,
+  rateLimit({ scope: "oauth-authorize", windowMs: 6e4, max: 30, perUser: true }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const userId = req.auth?.userId || "";
+    const app2 = await getAppByClientId(asString(req.body?.client_id, 120));
+    if (!app2) {
+      res.status(404).json({ success: false, error: "unknown_client" });
+      return;
+    }
+    const redirectUri = asString(req.body?.redirect_uri, 500);
+    if (!redirectUriAllowed(app2, redirectUri)) {
+      res.status(400).json({ success: false, error: "invalid_redirect_uri" });
+      return;
+    }
+    const requested = parseScopes(req.body?.scope);
+    if (!requested || requested.some((s) => !app2.scopes.includes(s))) {
+      res.status(400).json({ success: false, error: "invalid_scope" });
+      return;
+    }
+    const challenge = asString(req.body?.code_challenge, 200);
+    const method = asString(req.body?.code_challenge_method, 10);
+    if (challenge && method !== "S256") {
+      res.status(400).json({
+        success: false,
+        error: "invalid_request",
+        message: "code_challenge_method yaln\u0131zca S256 olabilir."
+      });
+      return;
+    }
+    const code = await issueCode({
+      appId: app2.id,
+      userId,
+      scopes: requested,
+      redirectUri,
+      codeChallenge: challenge || null,
+      codeChallengeMethod: challenge ? "S256" : null
+    });
+    if (!code) {
+      res.status(502).json({ success: false, error: "code_failed" });
+      return;
+    }
+    await writeGrant(app2.id, userId, requested);
+    const target = new URL(redirectUri);
+    target.searchParams.set("code", code);
+    const state = asString(req.body?.state, 500);
+    if (state) target.searchParams.set("state", state);
+    res.json({ success: true, redirect: target.toString() });
+  }
+);
+app.post(
+  "/api/oauth/token",
+  rateLimit({ scope: "oauth-token", windowMs: 6e4, max: 60 }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const fail = (error, description, status = 400) => res.status(status).json({ error, error_description: description });
+    const body = isPlainObject(req.body) ? req.body : {};
+    const grantType = asString(body.grant_type, 40);
+    const app2 = await getAppByClientId(asString(body.client_id, 120));
+    if (!app2) return fail("invalid_client", "Uygulama bulunamad\u0131.", 401);
+    const clientSecret = asString(body.client_secret, 200);
+    const verifier = asString(body.code_verifier, 200);
+    if (grantType === "authorization_code") {
+      const record = await peekCode(asString(body.code, 200));
+      if (!record) return fail("invalid_grant", "Kod ge\xE7ersiz, kullan\u0131lm\u0131\u015F ya da s\xFCresi dolmu\u015F.");
+      if (record.app_id !== app2.id) return fail("invalid_grant", "Kod bu uygulamaya ait de\u011Fil.");
+      if (asString(body.redirect_uri, 500) !== record.redirect_uri) {
+        return fail("invalid_grant", "redirect_uri, yetkilendirmedekiyle ayn\u0131 olmal\u0131.");
+      }
+      if (record.code_challenge) {
+        if (!pkceMatches(verifier, record.code_challenge, record.code_challenge_method || "")) {
+          return fail("invalid_grant", "code_verifier do\u011Frulanamad\u0131.");
+        }
+      } else if (!clientSecretMatches(app2, clientSecret)) {
+        return fail("invalid_client", "client_secret do\u011Frulanamad\u0131.", 401);
+      }
+      const consumed = await consumeCode(asString(body.code, 200));
+      if (!consumed) return fail("invalid_grant", "Kod bu s\u0131rada ba\u015Fka bir istek taraf\u0131ndan kullan\u0131ld\u0131.");
+      const tokens = await issueTokens({ appId: app2.id, userId: consumed.user_id, scopes: consumed.scopes });
+      if (!tokens) return fail("server_error", "Belirte\xE7 \xFCretilemedi.", 502);
+      void pruneExpiredCodes();
+      void touchApp(app2.id);
+      return res.json(tokens);
+    }
+    if (grantType === "refresh_token") {
+      if (clientSecret && !clientSecretMatches(app2, clientSecret)) {
+        return fail("invalid_client", "client_secret do\u011Frulanamad\u0131.", 401);
+      }
+      const tokens = await refreshTokens(asString(body.refresh_token, 200), app2.id);
+      if (!tokens) return fail("invalid_grant", "Yenileme belirteci ge\xE7ersiz ya da s\xFCresi dolmu\u015F.");
+      void touchApp(app2.id);
+      return res.json(tokens);
+    }
+    return fail("unsupported_grant_type", "authorization_code ya da refresh_token kullan\u0131n.");
+  }
+);
+app.post(
+  "/api/oauth/revoke",
+  rateLimit({ scope: "oauth-revoke", windowMs: 6e4, max: 60 }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const token = asString(req.body?.token, 200);
+    if (token) await revokeToken(token);
+    res.json({ success: true });
+  }
+);
+app.get("/api/oauth/authorizations", requireAuth, async (req, res) => {
+  if (oauthUnavailable(res)) return;
+  const grants = await listGrants(req.auth?.userId || "");
+  const apps = await getAppsByIds(grants.map((g) => g.app_id));
+  const byId = new Map(apps.map((a) => [a.id, a]));
+  res.json({
+    success: true,
+    authorizations: grants.map((grant) => {
+      const app2 = byId.get(grant.app_id);
+      if (!app2 || app2.revoked_at) return null;
+      return {
+        app: toAppFacts(app2),
+        scopes: Array.isArray(grant.scopes) ? grant.scopes : [],
+        granted_at: grant.created_at,
+        updated_at: grant.updated_at
+      };
+    }).filter(Boolean)
+  });
+});
+app.delete(
+  "/api/oauth/authorizations/:clientId",
+  requireAuth,
+  rateLimit({ scope: "oauth-revoke-grant", windowMs: 6e4, max: 30, perUser: true }),
+  async (req, res) => {
+    if (oauthUnavailable(res)) return;
+    const app2 = await getAppByClientId(String(req.params.clientId || ""));
+    if (!app2) {
+      res.status(404).json({ success: false, error: "not_found" });
+      return;
+    }
+    const done = await revokeGrant(app2.id, req.auth?.userId || "");
+    res.status(done ? 200 : 502).json({ success: done });
+  }
+);
+function requireScope(scope) {
+  return async (req, res, next) => {
+    if (oauthUnavailable(res)) return;
+    const header = String(req.headers.authorization || "");
+    const token = /^Bearer\s+(.+)$/i.exec(header)?.[1] || "";
+    const record = await resolveAccessToken(token);
+    if (!record) {
+      res.setHeader("WWW-Authenticate", 'Bearer error="invalid_token"');
+      res.status(401).json({ error: "invalid_token", error_description: "Belirte\xE7 ge\xE7ersiz ya da s\xFCresi dolmu\u015F." });
+      return;
+    }
+    if (!record.scopes.includes(scope)) {
+      res.setHeader("WWW-Authenticate", `Bearer error="insufficient_scope", scope="${scope}"`);
+      res.status(403).json({
+        error: "insufficient_scope",
+        error_description: `Bu u\xE7 "${scope}" kapsam\u0131n\u0131 gerektiriyor.`
+      });
+      return;
+    }
+    req.oauth = record;
+    void touchToken(record.id);
+    next();
+  };
+}
+app.get(
+  "/api/v1/users/@me",
+  rateLimit({ scope: "api-me", windowMs: 6e4, max: 120 }),
+  requireScope("identify"),
+  async (req, res) => {
+    const record = req.oauth;
+    const profile = await readApiProfile(record.user_id);
+    if (!profile) {
+      res.status(404).json({ error: "not_found", error_description: "Profil bulunamad\u0131." });
+      return;
+    }
+    res.json({
+      id: profile.id,
+      username: profile.username,
+      display_name: profile.display_name,
+      avatar_url: profile.avatar_url || null,
+      bio: profile.bio || null,
+      role: profile.role || null,
+      github_username: profile.github_username || null,
+      jubbio_username: profile.jubbio_username || null,
+      created_at: profile.created_at,
+      // E-posta YALNIZCA `email` kapsamıyla. Kapsam yoksa alan hiç bulunmuyor —
+      // `null` göndermek "bu üyenin e-postası yok" demek olurdu ve yanlış bilgi verirdi.
+      ...record.scopes.includes("email") ? { email: profile.email || null } : {}
+    });
+  }
+);
+app.get(
+  "/api/v1/users/@me/projects",
+  rateLimit({ scope: "api-me-projects", windowMs: 6e4, max: 120 }),
+  requireScope("projects:read"),
+  async (req, res) => {
+    const record = req.oauth;
+    const list = await listProjects({ sort: "mine", ownerId: record.user_id, limit: 100 });
+    res.json({
+      projects: list.map((p) => ({
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        about: p.about || null,
+        repo_full_name: p.repo_full_name || null,
+        repo_url: p.repo_url || null,
+        language: p.language || null,
+        likes_count: p.likes_count ?? 0,
+        followers_count: p.followers_count ?? 0,
+        created_at: p.created_at
+      }))
+    });
+  }
+);
+app.get(
+  "/api/v1/users/@me/communities",
+  rateLimit({ scope: "api-me-communities", windowMs: 6e4, max: 120 }),
+  requireScope("communities:read"),
+  async (req, res) => {
+    const record = req.oauth;
+    const profile = await readApiProfile(record.user_id);
+    const joined = Array.isArray(profile?.joined_communities) ? profile.joined_communities.map(String) : [];
+    const communities = await findCommunitiesByIds(joined);
+    res.json({
+      communities: communities.map((c) => ({
+        id: c.id,
+        name: c.name,
+        handle: c.handle,
+        description: c.description || null,
+        is_private: c.is_private === true,
+        members_count: c.members_count ?? 0
+      }))
+    });
   }
 );
 app.get(

@@ -184,3 +184,43 @@ export async function clearJubbioLink(profileId: string): Promise<boolean> {
   });
   return ok;
 }
+
+// -------------------------------------------------------------
+// API PROFİLİ
+// -------------------------------------------------------------
+
+export interface ApiProfile {
+  id: string;
+  username: string;
+  display_name: string;
+  avatar_url: string | null;
+  bio: string | null;
+  role: string | null;
+  email: string | null;
+  created_at: string | null;
+  joined_communities: unknown;
+  github_username: string | null;
+  jubbio_username: string | null;
+}
+
+/**
+ * Code4Ever API'sinin `/users/@me` ucuna beslediği profil.
+ *
+ * Sütunlar TEK TEK sayılıyor, `select=*` değil. Sebebi geçmişte yaşanmış bir hata: yıldızla
+ * okunan bir tabloya sonradan eklenen hassas bir sütun, hiçbir kod değişmeden dışarı
+ * sızar. Buraya yeni bir alan eklemek bilinçli bir karar olmalı.
+ *
+ * E-POSTA BURADA OKUNUYOR ama çağıran, `email` kapsamı verilmedikçe onu yanıta KOYMUYOR.
+ * Okumayı kapsama göre ayırmak iki ayrı sorgu demek olurdu; kararı tek yerde (uç noktada)
+ * vermek, "hangi kapsam neyi görür" sorusunun tek bir yerde yanıtlanmasını sağlıyor.
+ */
+export async function readApiProfile(userId: string): Promise<ApiProfile | null> {
+  const fields =
+    'id,username,display_name,avatar_url,bio,role,email,created_at,joined_communities,' +
+    'github_username,jubbio_username';
+  const { ok, json } = await rest(
+    `profiles?id=eq.${encodeURIComponent(userId)}&select=${fields}&limit=1`
+  );
+  if (!ok || !Array.isArray(json) || json.length === 0) return null;
+  return json[0] as ApiProfile;
+}

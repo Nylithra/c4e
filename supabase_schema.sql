@@ -390,6 +390,95 @@ CREATE TABLE IF NOT EXISTS public.community_projects (
 CREATE INDEX IF NOT EXISTS idx_community_projects_community ON public.community_projects(community_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_community_projects_project ON public.community_projects(project_id);
 
+-- ----------------------------------------------------------------
+-- CODE4EVER API: GELİŞTİRİCİ UYGULAMALARI (OAuth2)
+-- ----------------------------------------------------------------
+--
+-- Bir geliştirici /dev/apps ekranından uygulama açıyor; uygulama, üyenin İZNİYLE onun
+-- adına Code4Ever verisine erişiyor ("Code4Ever ile giriş yap", "Code4Ever hesabını bağla").
+--
+-- DÖRT TABLO VE HER BİRİNİN NEDENİ
+--
+--   oauth_apps        — uygulamanın kendisi. İstemci sırrı YALNIZCA SHA-256 özeti olarak
+--                       saklanıyor: veritabanı sızsa bile sır tekrar oynatılamaz ve düz
+--                       metin gerçekten yalnızca üretildiği anda var oluyor. Önek ayrı
+--                       tutuluyor ki sahibi listede sırrı tanıyabilsin ama kullanamasın.
+--   oauth_codes       — yetkilendirme kodları. TABLOYA YAZILIYOR, imzalı bir pakete DEĞİL:
+--                       kod TEK KULLANIMLIK olmak zorunda ve "kullanıldı" bilgisi bir yerde
+--                       durmalı. Kendi kendini doğrulayan bir paket, ele geçirildiğinde
+--                       süresi dolana kadar defalarca takas edilebilirdi.
+--   oauth_tokens      — erişim ve yenileme belirteçleri, yine yalnızca özet olarak.
+--                       Saklanmalarının sebebi iptal: üye "bu uygulamanın erişimini kes"
+--                       dediğinde belirtecin anında geçersizleşmesi gerekiyor, imzalı bir
+--                       jeton ise süresi dolana kadar geçerli kalırdı.
+--   oauth_grants      — üyenin hangi uygulamaya hangi izinleri verdiği. Onay ekranının iki
+--                       kez sorulmaması ve Ayarlar'daki "Bağlı uygulamalar" listesi için.
+--
+-- DÖRDÜ DE İSTEMCİYE KAPALI (anon/authenticated hiçbir yetki almıyor, bölüm 6): hepsine
+-- yalnızca sunucu, servis rolüyle erişiyor. Sır ve belirteç materyali hiçbir tarayıcı
+-- oturumundan ulaşılabilir değil.
+CREATE TABLE IF NOT EXISTS public.oauth_apps (
+  id TEXT PRIMARY KEY,
+  client_id TEXT NOT NULL UNIQUE,
+  -- Düz metin sır HİÇBİR ZAMAN yazılmıyor; yalnızca SHA-256 özeti.
+  client_secret_hash TEXT NOT NULL,
+  client_secret_prefix VARCHAR(24) NOT NULL,
+  name VARCHAR(60) NOT NULL,
+  description VARCHAR(300),
+  website_url TEXT,
+  logo_url TEXT,
+  -- Yönlendirme adresleri TAM EŞLEŞME ile doğrulanıyor; joker yok.
+  redirect_uris TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+  scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'],
+  owner_id TEXT NOT NULL,
+  owner_username TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  last_used_at TIMESTAMPTZ,
+  request_count BIGINT NOT NULL DEFAULT 0,
+  revoked_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS public.oauth_codes (
+  code_hash TEXT PRIMARY KEY,
+  app_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'],
+  redirect_uri TEXT NOT NULL,
+  code_challenge TEXT,
+  code_challenge_method VARCHAR(10),
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.oauth_tokens (
+  id TEXT PRIMARY KEY,
+  access_token_hash TEXT NOT NULL UNIQUE,
+  refresh_token_hash TEXT UNIQUE,
+  app_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'],
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  last_used_at TIMESTAMPTZ,
+  revoked_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS public.oauth_grants (
+  app_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  scopes TEXT[] NOT NULL DEFAULT ARRAY['identify'],
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  PRIMARY KEY (app_id, user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_oauth_apps_owner ON public.oauth_apps(owner_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_oauth_codes_expires ON public.oauth_codes(expires_at);
+CREATE INDEX IF NOT EXISTS idx_oauth_tokens_user ON public.oauth_tokens(user_id, revoked_at);
+CREATE INDEX IF NOT EXISTS idx_oauth_tokens_app ON public.oauth_tokens(app_id, revoked_at);
+CREATE INDEX IF NOT EXISTS idx_oauth_grants_user ON public.oauth_grants(user_id, updated_at DESC);
+
 -- ================================================================
 -- 2. COLUMN MIGRATIONS (safe to re-run)
 -- ================================================================
@@ -1433,6 +1522,13 @@ ALTER TABLE public.post_reports ENABLE ROW LEVEL SECURITY;
 -- RLS on, and deliberately no policy: with the anon/authenticated grants withheld below,
 -- API key material is unreachable from any browser session. Only the service role reads it.
 ALTER TABLE public.community_api_keys ENABLE ROW LEVEL SECURITY;
+-- Aynı gerekçe OAuth tablolarında da geçerli: istemci sırları, yetkilendirme kodları ve
+-- belirteçler yalnızca sunucunun servis rolüyle okunup yazılıyor; hiçbir tarayıcı oturumu
+-- bu materyale ulaşamıyor.
+ALTER TABLE public.oauth_apps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.oauth_codes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.oauth_tokens ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.oauth_grants ENABLE ROW LEVEL SECURITY;
 -- Same reasoning: the admin's cached mail is backend-only, reachable by no browser session.
 ALTER TABLE public.admin_mail_cache ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admin_mail_sync_state ENABLE ROW LEVEL SECURITY;
@@ -1454,7 +1550,8 @@ DECLARE
     'profiles', 'posts', 'communities', 'community_api_keys', 'job_listings',
     'job_applications', 'notifications', 'groups', 'messages', 'group_invites',
     'system_error_reports', 'post_reports', 'admin_mail_cache', 'admin_mail_sync_state',
-    'projects', 'project_likes', 'project_follows'
+    'projects', 'project_likes', 'project_follows', 'community_projects',
+    'oauth_apps', 'oauth_codes', 'oauth_tokens', 'oauth_grants'
   ];
 BEGIN
   FOR pol IN
@@ -1708,6 +1805,20 @@ CREATE POLICY "post_reports_delete_admin" ON public.post_reports
 CREATE POLICY "community_api_keys_service_role" ON public.community_api_keys
   FOR ALL TO service_role USING (true) WITH CHECK (true);
 
+-- 5.12b OAuth geliştirici uygulamaları ---------------------------
+-- 5.12 ile aynı gerekçe: Supabase'in service_role'u normalde BYPASSRLS, ama politikayı
+-- açıkça yazmak, bunun geçerli olmadığı bir kümede de API'nin çalışmaya devam etmesini
+-- sağlıyor — aksi hâlde her belirteç sessizce çözülemez olurdu. anon ve authenticated
+-- hiçbir yetki almıyor (bölüm 6), dolayısıyla sır ve belirteç materyaline ulaşılamıyor.
+CREATE POLICY "oauth_apps_service_role" ON public.oauth_apps
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "oauth_codes_service_role" ON public.oauth_codes
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "oauth_tokens_service_role" ON public.oauth_tokens
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "oauth_grants_service_role" ON public.oauth_grants
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
 -- 5.13 Cached admin mail -----------------------------------------
 -- Identical reasoning to 5.12: stated explicitly so the console keeps working on a cluster
 -- where service_role is not BYPASSRLS, while anon and authenticated hold no grant at all.
@@ -1883,6 +1994,11 @@ GRANT INSERT, UPDATE, DELETE ON public.profiles TO authenticated;
 
 -- public.community_api_keys is intentionally absent from both grant lists above: browsers
 -- never touch key material, the backend reaches it with the service role key only.
+--
+-- public.oauth_apps / oauth_codes / oauth_tokens / oauth_grants are absent for the same
+-- reason: istemci sırları, yetkilendirme kodları ve belirteçler tarayıcıya hiç gitmiyor.
+-- Geliştirici kendi uygulamalarını yalnızca oturum gerektiren /api/dev/apps uçlarından
+-- yönetiyor, anon anahtarıyla değil.
 --
 -- public.admin_mail_cache and public.admin_mail_sync_state are absent for the same reason.
 -- They hold the administrator's private correspondence; it reaches the browser only through

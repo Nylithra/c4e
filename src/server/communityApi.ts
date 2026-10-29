@@ -446,3 +446,21 @@ export function extractApiKey(req: {
 
   return '';
 }
+
+/**
+ * Birden fazla topluluğu tek sorguda okur.
+ *
+ * Üyenin katıldığı toplulukları listelemek için gerekiyor. Tek tek `findCommunityById`
+ * çağırmak, on topluluğu olan bir üyede on ayrı ağ turu demek olurdu.
+ */
+export async function findCommunitiesByIds(ids: string[]): Promise<CommunityRow[]> {
+  if (ids.length === 0) return [];
+  const list = ids
+    .slice(0, 100)
+    .map((id) => `"${String(id).replace(/"/g, '')}"`)
+    .join(',');
+  const { ok, rows } = await restRequest(
+    `communities?id=in.(${encodeURIComponent(list)})&limit=100`
+  );
+  return ok ? (rows as CommunityRow[]) : [];
+}

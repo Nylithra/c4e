@@ -33,7 +33,7 @@ const CodeBlock: React.FC<{ code: string; label?: string }> = ({ code, label }) 
           type="button"
           onClick={copy}
           aria-label="Kopyala"
-          className="flex h-7 items-center gap-1.5 rounded-lg px-2 text-[11px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-[11px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
           <span>{copied ? 'Kopyalandı' : 'Kopyala'}</span>
@@ -99,16 +99,78 @@ export const DevDocsView: React.FC<DevDocsViewProps> = ({ language }) => {
   const tr = language === 'tr';
   const origin = typeof window !== 'undefined' ? window.location.origin : 'https://app.lanux.online';
 
+  /*
+   * Sayfa artık İKİ API anlatıyor ve ikisi farklı soruyu çözüyor:
+   *   Code4Ever API  — ÜYENİN İZNİYLE onun verisine erişmek (OAuth2, /dev/apps).
+   *   Topluluk API   — bir topluluğa makine olarak gönderi yayınlamak (API anahtarı).
+   * Gezinme bu ayrımı taşıyor; tek düz liste, hangi anahtarın nerede kullanıldığını
+   * karıştırmanın en kısa yoluydu.
+   */
   const nav = [
     { id: 'baslangic', label: tr ? 'Başlangıç' : 'Getting started' },
-    { id: 'kimlik', label: tr ? 'Kimlik doğrulama' : 'Authentication' },
+    { id: 'uygulama', label: tr ? 'Uygulama oluşturma' : 'Creating an app' },
+    { id: 'oauth', label: tr ? 'OAuth2 akışı' : 'OAuth2 flow' },
+    { id: 'kapsamlar', label: tr ? 'Kapsamlar ve uçlar' : 'Scopes & endpoints' },
+    { id: 'kimlik', label: tr ? 'Topluluk API: kimlik' : 'Community API: auth' },
     { id: 'anahtar', label: tr ? 'Anahtar yönetimi' : 'Key management' },
-    { id: 'endpointler', label: 'Endpoints' },
+    { id: 'endpointler', label: tr ? 'Topluluk uçları' : 'Community endpoints' },
     { id: 'ornekler', label: tr ? 'Örnekler' : 'Examples' },
     { id: 'hatalar', label: tr ? 'Hata kodları' : 'Error codes' },
     { id: 'limitler', label: tr ? 'Limitler' : 'Limits' },
     { id: 'kurallar', label: tr ? 'Kullanım kuralları' : 'Acceptable use' }
   ];
+
+  const authorizeUrl = `${origin}/oauth/authorize
+  ?client_id=c4e_app_XXXXXXXXXXXXXXXX
+  &redirect_uri=https%3A%2F%2Fuygulamam.com%2Foauth%2Fcallback
+  &response_type=code
+  &scope=identify%20projects%3Aread
+  &state=RASTGELE_DEGER
+  &code_challenge=BASE64URL_SHA256_VERIFIER
+  &code_challenge_method=S256`;
+
+  const tokenExchange = `curl -X POST "${origin}/api/oauth/token" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "grant_type": "authorization_code",
+    "code": "c4e_code_...",
+    "client_id": "c4e_app_XXXXXXXXXXXXXXXX",
+    "redirect_uri": "https://uygulamam.com/oauth/callback",
+    "client_secret": "c4e_sec_...",
+    "code_verifier": "PKCE_KULLANIYORSAN_BU"
+  }'`;
+
+  const tokenResponse = `{
+  "access_token": "c4e_at_...",
+  "refresh_token": "c4e_rt_...",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "scope": "identify projects:read"
+}`;
+
+  const refreshExample = `curl -X POST "${origin}/api/oauth/token" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "grant_type": "refresh_token",
+    "refresh_token": "c4e_rt_...",
+    "client_id": "c4e_app_XXXXXXXXXXXXXXXX",
+    "client_secret": "c4e_sec_..."
+  }'`;
+
+  const meExample = `curl "${origin}/api/v1/users/@me" \\
+  -H "Authorization: Bearer c4e_at_..."
+
+{
+  "id": "0f2c...",
+  "username": "ayse",
+  "display_name": "Ayşe Yılmaz",
+  "avatar_url": "https://...",
+  "bio": "Frontend geliştirici",
+  "role": "Geliştirici",
+  "github_username": "ayse-dev",
+  "jubbio_username": null,
+  "created_at": "2026-02-01T10:00:00.000Z"
+}`;
 
   const curlPublish = `curl -X POST "${origin}/api/v1/communities/@react_tr/posts" \\
   -H "Content-Type: application/json" \\
@@ -184,8 +246,8 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
       title={tr ? 'Geliştirici Dokümantasyonu' : 'Developer Documentation'}
       subtitle={
         tr
-          ? 'Code4Ever Topluluk API ile bir CI işinden, bir bottan veya kendi uygulamanızdan doğrudan topluluk akışlarına kod parçacığı ve gönderi yayınlayabilirsiniz. Okuma uçları herkese açıktır; yazma uçları topluluk API anahtarı ister.'
-          : 'The Code4Ever Community API lets a CI job, a bot or your own app publish snippets and posts straight into a community feed. Read endpoints are open; write endpoints need a community API key.'
+          ? 'İki API var. Code4Ever API, kendi uygulamanı /dev/apps ekranından açıp üyelerin İZNİYLE onların adına veri okumanı sağlar — "Code4Ever ile giriş yap" bununla yazılır. Topluluk API ise bir CI işinden ya da bottan doğrudan topluluk akışlarına gönderi yayınlamak içindir.'
+          : 'There are two APIs. The Code4Ever API lets you create an application on /dev/apps and read a member\'s data WITH THEIR PERMISSION \u2014 this is what "Sign in with Code4Ever" is built on. The Community API is for a CI job or a bot publishing posts straight into a community feed.'
       }
       nav={nav}
     >
@@ -229,7 +291,177 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
         </div>
       </Section>
 
-      <Section id="kimlik" title={tr ? '2. Kimlik doğrulama' : '2. Authentication'}>
+      <Section id="uygulama" title={tr ? '2. Uygulama oluşturma' : '2. Creating an application'}>
+        <p className="text-[13px] leading-relaxed text-zinc-400">
+          {tr
+            ? 'Bir uygulama, ÜYENİN İZNİYLE onun adına Code4Ever verisine erişir. "Code4Ever ile giriş yap" ve "Code4Ever hesabını bağla" bu akışın iki yüzüdür. Uygulamanı /dev/apps ekranından açarsın.'
+            : 'An application accesses a member’s Code4Ever data WITH THEIR PERMISSION. "Sign in with Code4Ever" and "Connect your Code4Ever account" are the two faces of this flow. You create your application on /dev/apps.'}
+        </p>
+
+        <a
+          href="/dev/apps"
+          className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-white px-4 text-xs font-bold text-zinc-950 transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <KeyRound className="h-3.5 w-3.5" />
+          {tr ? 'Uygulamalarıma git' : 'Go to my applications'}
+        </a>
+
+        <Table
+          head={tr ? ['Alan', 'Açıklama'] : ['Field', 'What it is']}
+          rows={[
+            [
+              <code className="font-mono text-zinc-200">client_id</code>,
+              tr
+                ? 'Uygulamanın herkese açık kimliği. Tarayıcıda görünmesi sorun değil.'
+                : 'The public identity of your application. It is fine for it to be visible in a browser.'
+            ],
+            [
+              <code className="font-mono text-zinc-200">client_secret</code>,
+              tr
+                ? 'YALNIZCA ÜRETİLDİĞİ ANDA gösterilir; sunucuda sadece SHA-256 özeti saklanır. Tarayıcıda çalışan koda koyma. Kaybedersen /dev/apps ekranından yenisini üret; eskisi anında geçersizleşir.'
+                : 'Shown ONLY WHEN GENERATED; the server keeps just a SHA-256 hash. Never put it in browser-side code. If you lose it, rotate it on /dev/apps; the old one dies immediately.'
+            ],
+            [
+              <code className="font-mono text-zinc-200">redirect_uri</code>,
+              tr
+                ? 'Yetkilendirme kodunun gönderileceği adres. TAM EŞLEŞME aranır, joker yoktur. https zorunlu; yerel geliştirmede http://localhost kabul edilir.'
+                : 'Where the authorization code is delivered. Matched EXACTLY, no wildcards. https is required; http://localhost is accepted locally.'
+            ],
+            [
+              <code className="font-mono text-zinc-200">scope</code>,
+              tr
+                ? 'Uygulamanın isteyebileceği izinler. Uygulama, kayıtlı kapsamlarının dışında bir şey isteyemez.'
+                : 'What the application may ask for. It cannot request anything outside its registered scopes.'
+            ]
+          ]}
+        />
+
+        <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/[0.07] p-3.5">
+          <ShieldAlert className="mt-0.5 h-4 w-4 flex-none text-amber-300" />
+          <p className="text-[12.5px] leading-relaxed text-amber-200/90">
+            {tr
+              ? 'Tarayıcıda ya da mobil uygulamada çalışan bir istemci sırrı saklayamaz. Böyle bir istemci yazıyorsan client_secret KULLANMA; PKCE ile çalış (aşağıda). Sırrı istemciye gömmek, sırrın herkese açık olması demektir.'
+              : 'A client running in a browser or a mobile app cannot keep a secret. If you are writing one, do NOT use client_secret; use PKCE instead (below). Embedding the secret in a client means publishing it.'}
+          </p>
+        </div>
+      </Section>
+
+      <Section id="oauth" title={tr ? '3. OAuth2 akışı' : '3. The OAuth2 flow'}>
+        <p className="text-[13px] leading-relaxed text-zinc-400">
+          {tr
+            ? 'Standart "authorization code" akışı (RFC 6749) artı PKCE. Üç adım: kullanıcıyı onay ekranına gönder, dönen kodu belirtece çevir, belirteçle API’yi çağır.'
+            : 'The standard authorization-code flow (RFC 6749) plus PKCE. Three steps: send the user to the consent screen, exchange the returned code for a token, call the API with the token.'}
+        </p>
+
+        <h3 className="pt-2 text-[13px] font-bold text-white">
+          {tr ? '3.1 Kullanıcıyı onay ekranına gönder' : '3.1 Send the user to the consent screen'}
+        </h3>
+        <CodeBlock label="authorize" code={authorizeUrl} />
+        <Table
+          head={tr ? ['Parametre', 'Zorunlu', 'Açıklama'] : ['Parameter', 'Required', 'What it does']}
+          rows={[
+            [<code className="font-mono text-zinc-200">client_id</code>, tr ? 'evet' : 'yes', tr ? 'Uygulamanın kimliği.' : 'Your application id.'],
+            [<code className="font-mono text-zinc-200">redirect_uri</code>, tr ? 'evet' : 'yes', tr ? 'Uygulamada kayıtlı adreslerden biri, harfi harfine.' : 'One of your registered addresses, character for character.'],
+            [<code className="font-mono text-zinc-200">response_type</code>, tr ? 'evet' : 'yes', <code className="font-mono text-zinc-200">code</code>],
+            [
+              <code className="font-mono text-zinc-200">scope</code>,
+              tr ? 'hayır' : 'no',
+              tr ? 'Boşlukla ayrılmış izinler. Verilmezse identify.' : 'Space-separated scopes. Defaults to identify.'
+            ],
+            [
+              <code className="font-mono text-zinc-200">state</code>,
+              tr ? 'önerilir' : 'recommended',
+              tr
+                ? 'CSRF koruması. Rastgele üret, oturumda sakla, dönüşte karşılaştır. Olduğu gibi geri verilir.'
+                : 'CSRF protection. Generate randomly, keep it in the session, compare on return. Echoed back as is.'
+            ],
+            [
+              <code className="font-mono text-zinc-200">code_challenge</code>,
+              tr ? 'açık istemcide evet' : 'yes for public clients',
+              <span>
+                {tr ? 'base64url(SHA-256(code_verifier)). ' : 'base64url(SHA-256(code_verifier)). '}
+                <code className="font-mono text-zinc-200">code_challenge_method=S256</code>
+                {tr ? ' ile birlikte gönderilir; plain kabul edilmez.' : ' must accompany it; plain is rejected.'}
+              </span>
+            ]
+          ]}
+        />
+
+        <h3 className="pt-2 text-[13px] font-bold text-white">
+          {tr ? '3.2 Kodu belirtece çevir' : '3.2 Exchange the code for a token'}
+        </h3>
+        <p className="text-[13px] leading-relaxed text-zinc-400">
+          {tr
+            ? 'Kullanıcı izin verince tarayıcı, redirect_uri adresine ?code=...&state=... ile döner. Kod TEK KULLANIMLIK ve 10 dakika ömürlüdür. Takas isteğini SUNUCUNDAN yap.'
+            : 'When the user approves, the browser returns to your redirect_uri with ?code=...&state=... The code is SINGLE-USE and lives 10 minutes. Make the exchange request FROM YOUR SERVER.'}
+        </p>
+        <CodeBlock label="POST /api/oauth/token" code={tokenExchange} />
+        <p className="text-[13px] leading-relaxed text-zinc-400">
+          {tr
+            ? 'Gizli istemci (sunucu) client_secret gönderir; açık istemci (tarayıcı/mobil) onun yerine code_verifier gönderir. Hangisinin isteneceğini yetkilendirme anında code_challenge gönderip göndermediğin belirler.'
+            : 'A confidential client (your server) sends client_secret; a public client sends code_verifier instead. Which one is required is decided by whether you sent a code_challenge at authorize time.'}
+        </p>
+        <CodeBlock label="200 OK" code={tokenResponse} />
+
+        <h3 className="pt-2 text-[13px] font-bold text-white">
+          {tr ? '3.3 Belirteci yenile' : '3.3 Refresh the token'}
+        </h3>
+        <p className="text-[13px] leading-relaxed text-zinc-400">
+          {tr
+            ? 'Erişim belirteci 1 saat, yenileme belirteci 30 gün yaşar. Yenileme DÖNERLİDİR: her yenilemede yeni bir çift verilir ve eskisi anında geçersizleşir. Yanıttaki yeni refresh_token’ı saklamayı unutma.'
+            : 'Access tokens live 1 hour, refresh tokens 30 days. Refresh is ROTATING: each refresh issues a new pair and kills the old one. Remember to store the new refresh_token from the response.'}
+        </p>
+        <CodeBlock label="refresh_token grant" code={refreshExample} />
+      </Section>
+
+      <Section id="kapsamlar" title={tr ? '4. Kapsamlar ve kullanıcı uçları' : '4. Scopes and user endpoints'}>
+        <Table
+          head={tr ? ['Kapsam', 'Ne görür'] : ['Scope', 'What it sees']}
+          rows={[
+            [<code className="font-mono text-zinc-200">identify</code>, tr ? 'Kullanıcı adı, görünen ad, profil resmi, biyografi, rol, bağlı hesap adları.' : 'Username, display name, avatar, bio, role, linked account names.'],
+            [<code className="font-mono text-zinc-200">email</code>, tr ? 'E-posta adresi. Bu kapsam yoksa yanıtta email alanı HİÇ bulunmaz.' : 'The e-mail address. Without this scope the email field is ABSENT from the response.'],
+            [<code className="font-mono text-zinc-200">projects:read</code>, tr ? 'Üyenin projeleri.' : 'The member’s projects.'],
+            [<code className="font-mono text-zinc-200">communities:read</code>, tr ? 'Üyenin katıldığı topluluklar.' : 'The communities the member joined.']
+          ]}
+        />
+
+        <Endpoint method="GET" path="/api/v1/users/@me" auth="Bearer · identify">
+          <p>
+            {tr
+              ? 'Belirtecin sahibi olan üyenin profili. email alanı yalnızca email kapsamı verilmişse bulunur.'
+              : 'The profile of the member who owns the token. The email field exists only with the email scope.'}
+          </p>
+        </Endpoint>
+
+        <Endpoint method="GET" path="/api/v1/users/@me/projects" auth="Bearer · projects:read">
+          <p>{tr ? 'Üyenin projeleri (en yeni önce, en fazla 100).' : 'The member’s projects (newest first, up to 100).'}</p>
+        </Endpoint>
+
+        <Endpoint method="GET" path="/api/v1/users/@me/communities" auth="Bearer · communities:read">
+          <p>{tr ? 'Üyenin katıldığı topluluklar.' : 'The communities the member belongs to.'}</p>
+        </Endpoint>
+
+        <CodeBlock label={tr ? 'kullanıcıyı oku' : 'read the user'} code={meExample} />
+
+        <Endpoint method="POST" path="/api/oauth/revoke" auth={tr ? 'anahtarsız' : 'no auth'}>
+          <p>
+            {tr
+              ? 'Bir erişim ya da yenileme belirtecini iptal eder. Gövde: { "token": "..." }. Bilinmeyen bir belirteç için de başarılı döner (RFC 7009) — aksi hâlde "bu belirteç var mıydı" sorusunu yanıtlayan bir sorgulama aracı olurdu.'
+              : 'Revokes an access or refresh token. Body: { "token": "..." }. It succeeds for unknown tokens too (RFC 7009) — otherwise it would answer "did this token exist?".'}
+          </p>
+        </Endpoint>
+
+        <div className="flex items-start gap-2.5 rounded-xl border border-white/[0.07] bg-white/[0.03] p-3.5">
+          <ShieldAlert className="mt-0.5 h-4 w-4 flex-none text-indigo-300" />
+          <p className="text-[12.5px] leading-relaxed text-zinc-400">
+            {tr
+              ? 'Üye, verdiği erişimi Ayarlar > Bağlı Hesaplar > Bağlı Uygulamalar bölümünden istediği an kesebilir. Kestiği anda uygulamanın o üyeye ait BÜTÜN belirteçleri silinir; bir sonraki istek 401 invalid_token döner. Uygulaman bunu beklemeli ve kullanıcıyı yeniden yetkilendirmeye yönlendirmelidir.'
+              : 'A member can revoke access any time under Settings > Connected Accounts > Connected Applications. ALL of your tokens for that member are deleted immediately and the next request returns 401 invalid_token. Your application should expect this and send the user back through authorization.'}
+          </p>
+        </div>
+      </Section>
+
+      <Section id="kimlik" title={tr ? '5. Topluluk API: kimlik doğrulama' : '5. Community API: authentication'}>
         <p className="text-[13px] leading-relaxed text-zinc-400">
           {tr
             ? 'Yazma isteklerinde anahtarı X-API-Key başlığında gönderin. Anahtarlar lnx_live_ ile başlar.'
@@ -262,7 +494,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
         </p>
       </Section>
 
-      <Section id="anahtar" title={tr ? '3. Anahtar yönetimi' : '3. Key management'}>
+      <Section id="anahtar" title={tr ? '6. Anahtar yönetimi' : '6. Key management'}>
         <p className="text-[13px] leading-relaxed text-zinc-400">
           {tr
             ? 'Anahtarları yalnızca topluluğun kurucusu (veya platform yöneticisi) yönetebilir. Arayüzden: Topluluklar → ilgili topluluk → API düğmesi → Anahtarlar sekmesi. HTTP üzerinden aşağıdaki uçlar kullanılabilir; bu uçlar oturum belirteci (Supabase Bearer token) ister, API anahtarı değil.'
@@ -307,7 +539,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
         </Endpoint>
       </Section>
 
-      <Section id="endpointler" title={tr ? '4. Kamuya açık uçlar' : '4. Public endpoints'}>
+      <Section id="endpointler" title={tr ? '7. Topluluk uçları' : '7. Community endpoints'}>
         <Endpoint method="GET" path="/api/v1/communities" auth={tr ? 'açık' : 'open'}>
           <p>
             {tr
@@ -384,14 +616,14 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
         </Endpoint>
       </Section>
 
-      <Section id="ornekler" title={tr ? '5. Örnekler' : '5. Examples'}>
+      <Section id="ornekler" title={tr ? '8. Örnekler' : '8. Examples'}>
         <CodeBlock label="curl — publish" code={curlPublish} />
         <CodeBlock label="javascript — publish" code={jsPublish} />
         <CodeBlock label="python — publish" code={pyPublish} />
         <CodeBlock label="curl — public reads" code={readExample} />
       </Section>
 
-      <Section id="hatalar" title={tr ? '6. Hata kodları' : '6. Error codes'}>
+      <Section id="hatalar" title={tr ? '9. Hata kodları' : '9. Error codes'}>
         <p className="text-[13px] leading-relaxed text-zinc-400">
           {tr
             ? 'Her hata { "success": false, "error": "..." } biçimindedir. Doğrulama hatalarında ayrıca field alanı döner.'
@@ -412,7 +644,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
         />
       </Section>
 
-      <Section id="limitler" title={tr ? '7. Limitler' : '7. Limits'}>
+      <Section id="limitler" title={tr ? '10. Limitler' : '10. Limits'}>
         <Table
           head={[tr ? 'Sınır' : 'Limit', tr ? 'Değer' : 'Value']}
           rows={[
@@ -432,7 +664,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
         </p>
       </Section>
 
-      <Section id="kurallar" title={tr ? '8. Kullanım kuralları' : '8. Acceptable use'}>
+      <Section id="kurallar" title={tr ? '11. Kullanım kuralları' : '11. Acceptable use'}>
         <ul className="space-y-2 text-[13px] leading-relaxed text-zinc-400">
           {(tr
             ? [

@@ -30,6 +30,7 @@ import {
   canManageCommunity,
   countActiveKeys,
   extractApiKey,
+  findCommunitiesByIds,
   findCommunityById,
   findCommunityByHandle,
   generateApiKey,
@@ -63,7 +64,7 @@ import {
   verifySmtp
 } from './src/server/mail';
 import { clearMailbox, readInboxSnapshot, storeWarning } from './src/server/mailStore';
-import { createPkce, openFlow, sealFlow } from './src/server/oauthFlow';
+import { createPkce, openFlow, pkceMatches, sealFlow } from './src/server/oauthFlow';
 import {
   buildJubbioAuthorizeUrl,
   exchangeJubbioCode,
@@ -78,10 +79,46 @@ import {
   findByGithubUsername,
   findById,
   findByJubbioId,
+  readApiProfile,
   readGithubIdentity,
   writeGithubLink,
   writeJubbioLink
 } from './src/server/accounts';
+import {
+  ALL_SCOPES,
+  SCOPES,
+  type OAuthAppRow,
+  type Scope,
+  clientSecretMatches,
+  consumeCode,
+  countAppsByOwner,
+  createApp,
+  getAppByClientId,
+  getAppById,
+  getAppsByIds,
+  issueCode,
+  issueTokens,
+  listAppsByOwner,
+  listGrants,
+  oauthProviderConfigured,
+  parseScopes,
+  peekCode,
+  pruneExpiredCodes,
+  redirectUriAllowed,
+  refreshTokens,
+  resolveAccessToken,
+  revokeApp,
+  revokeGrant,
+  revokeToken,
+  rotateSecret,
+  toAppFacts,
+  toPublicApp,
+  touchApp,
+  touchToken,
+  updateApp,
+  validateRedirectUri,
+  writeGrant
+} from './src/server/oauthProvider';
 import {
   cronSecretMatches,
   dispatchNotificationEmails,
@@ -2356,6 +2393,649 @@ app.post(
 
     const cleared = await clearJubbioLink(userId);
     res.status(cleared ? 200 : 502).json({ success: cleared });
+  }
+);
+
+// -------------------------------------------------------------
+// CODE4EVER API — GELİŞTİRİCİ UYGULAMALARI (/dev/apps)
+// -------------------------------------------------------------
+//
+// Bir geliştirici burada uygulama açıyor, kullanıcı onay ekranından izin veriyor ve
+// uygulama o üyenin adına Code4Ever verisini okuyabiliyor. Akışın tamamı RFC 6749
+// "authorization code" + PKCE; doküman /docs sayfasında.
+
+const MAX_APPS_PER_OWNER = 10;
+
+function oauthUnavailable(res: Response): boolean {
+  if (oauthProviderConfigured()) return false;
+  res.status(503).json({
+    success: false,
+    error: 'not_configured',
+    message: 'Geliştirici API\'si yapılandırılmamış (SUPABASE_SERVICE_ROLE_KEY eksik).'
+  });
+  return true;
+}
+
+/** Gövdeden yönlendirme adresi listesi okur; her biri tek tek doğrulanıyor. */
+function readRedirectUris(raw: unknown): { ok: boolean; uris: string[]; bad: string } {
+  const list = Array.isArray(raw) ? raw : [];
+  const uris: string[] = [];
+  for (const candidate of list.slice(0, 10)) {
+    const valid = validateRedirectUri(candidate);
+    if (!valid) return { ok: false, uris: [], bad: String(candidate).slice(0, 120) };
+    if (!uris.includes(valid)) uris.push(valid);
+  }
+  return { ok: true, uris, bad: '' };
+}
+
+app.get('/api/dev/scopes', (_req: Request, res: Response) => {
+  res.json({
+    success: true,
+    scopes: ALL_SCOPES.map((key) => ({ key, ...SCOPES[key] }))
+  });
+});
+
+app.get('/api/dev/apps', requireAuth, async (req: Request, res: Response) => {
+  if (oauthUnavailable(res)) return;
+  const apps = await listAppsByOwner(req.auth?.userId || '');
+  res.json({ success: true, apps: apps.map(toPublicApp), limit: MAX_APPS_PER_OWNER });
+});
+
+/**
+ * Uygulama oluşturur.
+ *
+ * İSTEMCİ SIRRI BU YANITTA, BİR KEZ dönüyor ve bir daha hiçbir yerden okunamıyor —
+ * veritabanında yalnızca SHA-256 özeti var. Kaybedilirse tek yol yenisini üretmek.
+ */
+app.post(
+  '/api/dev/apps',
+  requireAuth,
+  rateLimit({ scope: 'dev-apps-create', windowMs: 60000, max: 10, perUser: true }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+    const userId = req.auth?.userId || '';
+
+    const name = cleanText(req.body?.name, 60);
+    if (!name) {
+      res.status(400).json({ success: false, error: 'invalid_name', message: 'Uygulama adı gerekli.' });
+      return;
+    }
+
+    const redirects = readRedirectUris(req.body?.redirect_uris);
+    if (!redirects.ok) {
+      res.status(400).json({
+        success: false,
+        error: 'invalid_redirect_uri',
+        message: `Geçersiz yönlendirme adresi: ${redirects.bad}. Yalnızca https (ya da yerel geliştirmede http://localhost) kabul ediliyor ve adres # içeremez.`
+      });
+      return;
+    }
+    if (redirects.uris.length === 0) {
+      res.status(400).json({
+        success: false,
+        error: 'redirect_uri_required',
+        message: 'En az bir yönlendirme adresi gerekli.'
+      });
+      return;
+    }
+
+    const scopes = parseScopes(req.body?.scopes);
+    if (!scopes) {
+      res.status(400).json({
+        success: false,
+        error: 'invalid_scope',
+        message: `Bilinmeyen kapsam. Geçerli olanlar: ${ALL_SCOPES.join(', ')}.`
+      });
+      return;
+    }
+
+    // Üst sınır, tek bir hesabın sınırsız uygulama açıp onay ekranını kirletmesini
+    // engelliyor. Gerçek bir ihtiyaç değil, kötüye kullanıma karşı bir tavan.
+    if ((await countAppsByOwner(userId)) >= MAX_APPS_PER_OWNER) {
+      res.status(409).json({
+        success: false,
+        error: 'limit_reached',
+        message: `En fazla ${MAX_APPS_PER_OWNER} uygulama oluşturabilirsin.`
+      });
+      return;
+    }
+
+    const created = await createApp({
+      name,
+      description: cleanText(req.body?.description, 300) || null,
+      website_url: validateRedirectUri(req.body?.website_url) || null,
+      redirect_uris: redirects.uris,
+      scopes,
+      owner_id: userId,
+      owner_username: req.auth?.username || null
+    });
+
+    if (!created.ok || !created.app) {
+      res.status(502).json({ success: false, error: 'save_failed', message: created.error });
+      return;
+    }
+
+    res.status(201).json({
+      success: true,
+      app: toPublicApp(created.app),
+      client_secret: created.clientSecret,
+      notice: 'İstemci sırrı yalnızca BİR KEZ gösteriliyor. Kaybedersen yenisini üretmen gerekir.'
+    });
+  }
+);
+
+/** Sahibini doğrular; değilse yanıtı kendisi yazar ve `null` döner. */
+async function ownedApp(req: Request, res: Response): Promise<OAuthAppRow | null> {
+  const app = await getAppById(String(req.params.id || ''));
+  if (!app || app.revoked_at) {
+    res.status(404).json({ success: false, error: 'not_found', message: 'Uygulama bulunamadı.' });
+    return null;
+  }
+  // Sahiplik kontrolü SUNUCUDA. Arayüz zaten yalnızca kendi uygulamalarını listeliyor ama
+  // istek elle kurulabilir; asıl kapı burası.
+  if (app.owner_id !== (req.auth?.userId || '')) {
+    res.status(403).json({ success: false, error: 'forbidden', message: 'Bu uygulama senin değil.' });
+    return null;
+  }
+  return app;
+}
+
+app.patch(
+  '/api/dev/apps/:id',
+  requireAuth,
+  rateLimit({ scope: 'dev-apps-update', windowMs: 60000, max: 30, perUser: true }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+    const app = await ownedApp(req, res);
+    if (!app) return;
+
+    const patch: Record<string, unknown> = {};
+
+    if (req.body?.name !== undefined) {
+      const name = cleanText(req.body.name, 60);
+      if (!name) {
+        res.status(400).json({ success: false, error: 'invalid_name', message: 'Uygulama adı gerekli.' });
+        return;
+      }
+      patch.name = name;
+    }
+
+    if (req.body?.description !== undefined) patch.description = cleanText(req.body.description, 300) || null;
+    if (req.body?.website_url !== undefined) {
+      patch.website_url = req.body.website_url ? validateRedirectUri(req.body.website_url) : null;
+    }
+
+    if (req.body?.redirect_uris !== undefined) {
+      const redirects = readRedirectUris(req.body.redirect_uris);
+      if (!redirects.ok || redirects.uris.length === 0) {
+        res.status(400).json({
+          success: false,
+          error: 'invalid_redirect_uri',
+          message: redirects.ok
+            ? 'En az bir yönlendirme adresi gerekli.'
+            : `Geçersiz yönlendirme adresi: ${redirects.bad}.`
+        });
+        return;
+      }
+      patch.redirect_uris = redirects.uris;
+    }
+
+    if (req.body?.scopes !== undefined) {
+      const scopes = parseScopes(req.body.scopes);
+      if (!scopes) {
+        res.status(400).json({ success: false, error: 'invalid_scope', message: 'Bilinmeyen kapsam.' });
+        return;
+      }
+      patch.scopes = scopes;
+    }
+
+    const updated = await updateApp(app.id, patch as any);
+    if (!updated) {
+      res.status(502).json({ success: false, error: 'save_failed' });
+      return;
+    }
+    res.json({ success: true, app: toPublicApp(updated) });
+  }
+);
+
+app.post(
+  '/api/dev/apps/:id/rotate',
+  requireAuth,
+  rateLimit({ scope: 'dev-apps-rotate', windowMs: 60000, max: 10, perUser: true }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+    const app = await ownedApp(req, res);
+    if (!app) return;
+
+    const clientSecret = await rotateSecret(app.id);
+    if (!clientSecret) {
+      res.status(502).json({ success: false, error: 'rotate_failed' });
+      return;
+    }
+    res.json({
+      success: true,
+      client_secret: clientSecret,
+      notice: 'Eski sır bu andan itibaren geçersiz. Yeni sırrı kaydet; bir daha gösterilmeyecek.'
+    });
+  }
+);
+
+app.delete(
+  '/api/dev/apps/:id',
+  requireAuth,
+  rateLimit({ scope: 'dev-apps-delete', windowMs: 60000, max: 10, perUser: true }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+    const app = await ownedApp(req, res);
+    if (!app) return;
+    const done = await revokeApp(app.id);
+    res.status(done ? 200 : 502).json({ success: done });
+  }
+);
+
+// -------------------------------------------------------------
+// OAUTH2 AKIŞI
+// -------------------------------------------------------------
+
+/**
+ * Onay ekranının ihtiyaç duyduğu her şey.
+ *
+ * İstek parametrelerinin TAMAMI burada doğrulanıyor — ekran çizilmeden önce. Böylece
+ * yanlış yapılandırılmış bir uygulamada kullanıcı "İzin ver"e bastıktan SONRA hataya
+ * düşmüyor; hatayı en baştan görüyor ve geliştiriciye söyleyebiliyor.
+ */
+app.get(
+  '/api/oauth/app-info',
+  rateLimit({ scope: 'oauth-info', windowMs: 60000, max: 60 }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+
+    const app = await getAppByClientId(asString(req.query.client_id, 120));
+    if (!app) {
+      res.status(404).json({ success: false, error: 'unknown_client', message: 'Uygulama bulunamadı.' });
+      return;
+    }
+
+    const redirectUri = asString(req.query.redirect_uri, 500);
+    if (!redirectUriAllowed(app, redirectUri)) {
+      res.status(400).json({
+        success: false,
+        error: 'invalid_redirect_uri',
+        message: 'Yönlendirme adresi uygulamada kayıtlı değil.'
+      });
+      return;
+    }
+
+    const requested = parseScopes(req.query.scope);
+    if (!requested) {
+      res.status(400).json({ success: false, error: 'invalid_scope', message: 'Bilinmeyen kapsam istendi.' });
+      return;
+    }
+
+    // Uygulama, KENDİ kayıtlı kapsamlarının dışında bir şey isteyemez. Geliştirici
+    // konsolda 'identify' yazıp istekte 'email' sormayı deneyebilir; burada durur.
+    const extra = requested.filter((s) => !app.scopes.includes(s));
+    if (extra.length) {
+      res.status(400).json({
+        success: false,
+        error: 'scope_not_allowed',
+        message: `Uygulama şu kapsam(lar) için kayıtlı değil: ${extra.join(', ')}.`
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      app: toAppFacts(app),
+      scopes: requested.map((key) => ({ key, ...SCOPES[key] }))
+    });
+  }
+);
+
+/**
+ * Kullanıcı "İzin ver" dedi: yetkilendirme kodunu üretir ve gidilecek adresi döner.
+ *
+ * Neden JSON, neden 302 değil: bu uç oturum gerektiriyor ve oturum `Authorization`
+ * başlığında taşınıyor. Üst düzey bir yönlendirme o başlığı taşımaz; bu yüzden istemci
+ * fetch ile çağırıp dönen adrese kendisi gidiyor.
+ *
+ * HER PARAMETRE YENİDEN DOĞRULANIYOR. app-info'nun geçmiş olması bir şey kanıtlamaz:
+ * bu istek doğrudan da kurulabilir.
+ */
+app.post(
+  '/api/oauth/authorize',
+  requireAuth,
+  rateLimit({ scope: 'oauth-authorize', windowMs: 60000, max: 30, perUser: true }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+    const userId = req.auth?.userId || '';
+
+    const app = await getAppByClientId(asString(req.body?.client_id, 120));
+    if (!app) {
+      res.status(404).json({ success: false, error: 'unknown_client' });
+      return;
+    }
+
+    const redirectUri = asString(req.body?.redirect_uri, 500);
+    if (!redirectUriAllowed(app, redirectUri)) {
+      res.status(400).json({ success: false, error: 'invalid_redirect_uri' });
+      return;
+    }
+
+    const requested = parseScopes(req.body?.scope);
+    if (!requested || requested.some((s) => !app.scopes.includes(s))) {
+      res.status(400).json({ success: false, error: 'invalid_scope' });
+      return;
+    }
+
+    /*
+     * PKCE. Açık istemciler (tarayıcı/mobil uygulamalar) istemci sırrını saklayamaz;
+     * onların tek koruması bu. `plain` KABUL EDİLMİYOR: kodu ele geçiren saldırgan
+     * doğrulayıcıyı da görmüş olur ve PKCE'nin tek faydası ortadan kalkar.
+     */
+    const challenge = asString(req.body?.code_challenge, 200);
+    const method = asString(req.body?.code_challenge_method, 10);
+    if (challenge && method !== 'S256') {
+      res.status(400).json({
+        success: false,
+        error: 'invalid_request',
+        message: 'code_challenge_method yalnızca S256 olabilir.'
+      });
+      return;
+    }
+
+    const code = await issueCode({
+      appId: app.id,
+      userId,
+      scopes: requested,
+      redirectUri,
+      codeChallenge: challenge || null,
+      codeChallengeMethod: challenge ? 'S256' : null
+    });
+    if (!code) {
+      res.status(502).json({ success: false, error: 'code_failed' });
+      return;
+    }
+
+    // İzin KAYDEDİLİYOR: üye aynı uygulamaya ikinci kez geldiğinde onay ekranı
+    // "zaten izin verdin" diyebiliyor ve Ayarlar'da erişimi kesebiliyor.
+    await writeGrant(app.id, userId, requested);
+
+    const target = new URL(redirectUri);
+    target.searchParams.set('code', code);
+    const state = asString(req.body?.state, 500);
+    if (state) target.searchParams.set('state', state);
+
+    res.json({ success: true, redirect: target.toString() });
+  }
+);
+
+/**
+ * Kod → belirteç takası ve yenileme.
+ *
+ * RFC 6749 biçiminde yanıt veriyor (`access_token`, `token_type`, `expires_in`, `scope`),
+ * çünkü standart istemci kütüphaneleri tam olarak bunu bekliyor. Hata gövdeleri de aynı
+ * biçimde: `{ error, error_description }`.
+ */
+app.post(
+  '/api/oauth/token',
+  rateLimit({ scope: 'oauth-token', windowMs: 60000, max: 60 }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+
+    const fail = (error: string, description: string, status = 400) =>
+      res.status(status).json({ error, error_description: description });
+
+    const body = isPlainObject(req.body) ? (req.body as Record<string, unknown>) : {};
+    const grantType = asString(body.grant_type, 40);
+
+    const app = await getAppByClientId(asString(body.client_id, 120));
+    if (!app) return fail('invalid_client', 'Uygulama bulunamadı.', 401);
+
+    const clientSecret = asString(body.client_secret, 200);
+    const verifier = asString(body.code_verifier, 200);
+
+    if (grantType === 'authorization_code') {
+      /*
+       * Kod önce OKUNUYOR, sonra doğrulanıyor, EN SON tüketiliyor.
+       *
+       * Tersi sıra (oku-ve-sil, sonra doğrula) işe yarıyordu ama bir yanlış istemci sırrı
+       * kodu yakıyordu: geliştirici tek harflik bir yazım hatası için baştan yetkilendirme
+       * yapmak zorunda kalıyor, üstelik gördüğü hata "invalid_client" değil "invalid_grant"
+       * oluyordu — yani hatanın nerede olduğunu söylemiyordu. Tek kullanımlık olma garantisi
+       * bundan etkilenmiyor: onu sağlayan şey, aşağıdaki atomik sil-ve-döndür.
+       */
+      const record = await peekCode(asString(body.code, 200));
+      if (!record) return fail('invalid_grant', 'Kod geçersiz, kullanılmış ya da süresi dolmuş.');
+
+      // Kod BU uygulamaya mı verildi? Değilse, başka bir istemcinin kodunu kendi adına
+      // takas etme denemesidir.
+      if (record.app_id !== app.id) return fail('invalid_grant', 'Kod bu uygulamaya ait değil.');
+
+      // redirect_uri TAKASTA DA eşleşmeli (RFC 6749 §4.1.3). Yetkilendirmede kullanılan
+      // adresten farklı bir adres vermek, kodun başka bir hedefe yönlendirildiğinin
+      // işaretidir.
+      if (asString(body.redirect_uri, 500) !== record.redirect_uri) {
+        return fail('invalid_grant', 'redirect_uri, yetkilendirmedekiyle aynı olmalı.');
+      }
+
+      /*
+       * İSTEMCİ KİMLİĞİ: ya PKCE ya istemci sırrı. Hangisinin isteneceğini YETKİLENDİRME
+       * anında kaydedilen değer belirliyor, istekte gelen değil — aksi hâlde sırrı
+       * bilmeyen biri "ben PKCE kullanıyorum" deyip her ikisini de atlayabilirdi.
+       */
+      if (record.code_challenge) {
+        if (!pkceMatches(verifier, record.code_challenge, record.code_challenge_method || '')) {
+          return fail('invalid_grant', 'code_verifier doğrulanamadı.');
+        }
+      } else if (!clientSecretMatches(app, clientSecret)) {
+        return fail('invalid_client', 'client_secret doğrulanamadı.', 401);
+      }
+
+      // ATOMİK TÜKETİM. Buraya kadar her şey geçerli; kodu şimdi siliyoruz. Silme boş
+      // dönerse eşzamanlı başka bir istek onu almış demektir ve bu isteğe belirteç
+      // verilmez — iki belirteç tek koddan üretilemez.
+      const consumed = await consumeCode(asString(body.code, 200));
+      if (!consumed) return fail('invalid_grant', 'Kod bu sırada başka bir istek tarafından kullanıldı.');
+
+      const tokens = await issueTokens({ appId: app.id, userId: consumed.user_id, scopes: consumed.scopes });
+      if (!tokens) return fail('server_error', 'Belirteç üretilemedi.', 502);
+
+      void pruneExpiredCodes();
+      void touchApp(app.id);
+      return res.json(tokens);
+    }
+
+    if (grantType === 'refresh_token') {
+      // Yenilemede PKCE yok (doğrulayıcı tek seferlikti), dolayısıyla gizli istemciler
+      // sırrı sunmalı. Açık istemciler (sırrı olmayan) için sırrın doğrulanamaması
+      // beklenen durum; o yüzden sır VERİLDİYSE doğrulanıyor.
+      if (clientSecret && !clientSecretMatches(app, clientSecret)) {
+        return fail('invalid_client', 'client_secret doğrulanamadı.', 401);
+      }
+
+      const tokens = await refreshTokens(asString(body.refresh_token, 200), app.id);
+      if (!tokens) return fail('invalid_grant', 'Yenileme belirteci geçersiz ya da süresi dolmuş.');
+
+      void touchApp(app.id);
+      return res.json(tokens);
+    }
+
+    return fail('unsupported_grant_type', 'authorization_code ya da refresh_token kullanın.');
+  }
+);
+
+app.post(
+  '/api/oauth/revoke',
+  rateLimit({ scope: 'oauth-revoke', windowMs: 60000, max: 60 }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+    const token = asString(req.body?.token, 200);
+    // RFC 7009: iptal ucu, bilinmeyen bir belirteç için de BAŞARILI döner. Aksi hâlde
+    // "bu belirteç var mıydı" sorusuna yanıt veren bir sorgulama aracı olurdu.
+    if (token) await revokeToken(token);
+    res.json({ success: true });
+  }
+);
+
+/** Üyenin erişim verdiği uygulamalar (Ayarlar > Bağlı uygulamalar). */
+app.get('/api/oauth/authorizations', requireAuth, async (req: Request, res: Response) => {
+  if (oauthUnavailable(res)) return;
+  const grants = await listGrants(req.auth?.userId || '');
+  const apps = await getAppsByIds(grants.map((g) => g.app_id));
+  const byId = new Map(apps.map((a) => [a.id, a]));
+
+  res.json({
+    success: true,
+    authorizations: grants
+      .map((grant) => {
+        const app = byId.get(grant.app_id);
+        // Kapatılmış bir uygulamanın izni listede durmasın: üyeye artık var olmayan bir
+        // şeyin erişimi varmış gibi göstermek yanlış bilgi olurdu.
+        if (!app || app.revoked_at) return null;
+        return {
+          app: toAppFacts(app),
+          scopes: Array.isArray(grant.scopes) ? grant.scopes : [],
+          granted_at: grant.created_at,
+          updated_at: grant.updated_at
+        };
+      })
+      .filter(Boolean)
+  });
+});
+
+app.delete(
+  '/api/oauth/authorizations/:clientId',
+  requireAuth,
+  rateLimit({ scope: 'oauth-revoke-grant', windowMs: 60000, max: 30, perUser: true }),
+  async (req: Request, res: Response) => {
+    if (oauthUnavailable(res)) return;
+    const app = await getAppByClientId(String(req.params.clientId || ''));
+    if (!app) {
+      res.status(404).json({ success: false, error: 'not_found' });
+      return;
+    }
+    const done = await revokeGrant(app.id, req.auth?.userId || '');
+    res.status(done ? 200 : 502).json({ success: done });
+  }
+);
+
+// -------------------------------------------------------------
+// KAYNAK UÇLARI (Bearer belirteç)
+// -------------------------------------------------------------
+
+/**
+ * Belirteci çözer ve istenen kapsamı arar.
+ *
+ * `requireAuth`tan AYRI bir kapı: o Supabase oturumunu bekliyor, bu ise uygulamaya
+ * verilmiş bir erişim belirtecini. İkisini tek ara katmanda birleştirmek, bir uygulamanın
+ * belirtecinin kullanıcı oturumu sanılmasına ve kapsam kontrolünün atlanmasına kapı açardı.
+ */
+function requireScope(scope: Scope) {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    if (oauthUnavailable(res)) return;
+
+    const header = String(req.headers.authorization || '');
+    const token = /^Bearer\s+(.+)$/i.exec(header)?.[1] || '';
+    const record = await resolveAccessToken(token);
+
+    if (!record) {
+      // WWW-Authenticate, standart istemcilere "belirtecini yenile" demenin yolu.
+      res.setHeader('WWW-Authenticate', 'Bearer error="invalid_token"');
+      res.status(401).json({ error: 'invalid_token', error_description: 'Belirteç geçersiz ya da süresi dolmuş.' });
+      return;
+    }
+
+    if (!record.scopes.includes(scope)) {
+      res.setHeader('WWW-Authenticate', `Bearer error="insufficient_scope", scope="${scope}"`);
+      res.status(403).json({
+        error: 'insufficient_scope',
+        error_description: `Bu uç "${scope}" kapsamını gerektiriyor.`
+      });
+      return;
+    }
+
+    (req as any).oauth = record;
+    void touchToken(record.id);
+    next();
+  };
+}
+
+app.get(
+  '/api/v1/users/@me',
+  rateLimit({ scope: 'api-me', windowMs: 60000, max: 120 }),
+  requireScope('identify'),
+  async (req: Request, res: Response) => {
+    const record = (req as any).oauth as { user_id: string; scopes: string[] };
+    const profile = await readApiProfile(record.user_id);
+    if (!profile) {
+      res.status(404).json({ error: 'not_found', error_description: 'Profil bulunamadı.' });
+      return;
+    }
+
+    res.json({
+      id: profile.id,
+      username: profile.username,
+      display_name: profile.display_name,
+      avatar_url: profile.avatar_url || null,
+      bio: profile.bio || null,
+      role: profile.role || null,
+      github_username: profile.github_username || null,
+      jubbio_username: profile.jubbio_username || null,
+      created_at: profile.created_at,
+      // E-posta YALNIZCA `email` kapsamıyla. Kapsam yoksa alan hiç bulunmuyor —
+      // `null` göndermek "bu üyenin e-postası yok" demek olurdu ve yanlış bilgi verirdi.
+      ...(record.scopes.includes('email') ? { email: profile.email || null } : {})
+    });
+  }
+);
+
+app.get(
+  '/api/v1/users/@me/projects',
+  rateLimit({ scope: 'api-me-projects', windowMs: 60000, max: 120 }),
+  requireScope('projects:read'),
+  async (req: Request, res: Response) => {
+    const record = (req as any).oauth as { user_id: string };
+    const list = await listProjects({ sort: 'mine', ownerId: record.user_id, limit: 100 });
+    res.json({
+      projects: list.map((p: any) => ({
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        about: p.about || null,
+        repo_full_name: p.repo_full_name || null,
+        repo_url: p.repo_url || null,
+        language: p.language || null,
+        likes_count: p.likes_count ?? 0,
+        followers_count: p.followers_count ?? 0,
+        created_at: p.created_at
+      }))
+    });
+  }
+);
+
+app.get(
+  '/api/v1/users/@me/communities',
+  rateLimit({ scope: 'api-me-communities', windowMs: 60000, max: 120 }),
+  requireScope('communities:read'),
+  async (req: Request, res: Response) => {
+    const record = (req as any).oauth as { user_id: string };
+    const profile = await readApiProfile(record.user_id);
+    const joined = Array.isArray(profile?.joined_communities)
+      ? (profile!.joined_communities as unknown[]).map(String)
+      : [];
+
+    const communities = await findCommunitiesByIds(joined);
+    res.json({
+      communities: communities.map((c) => ({
+        id: c.id,
+        name: c.name,
+        handle: c.handle,
+        description: (c as any).description || null,
+        is_private: (c as any).is_private === true,
+        members_count: (c as any).members_count ?? 0
+      }))
+    });
   }
 );
 

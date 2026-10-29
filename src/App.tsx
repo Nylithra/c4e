@@ -120,7 +120,9 @@ import {
   DialogTitle
 } from './components/ui/dialog';
 import { Button } from './components/ui/button';
+import { DevAppsView } from './components/public/DevAppsView';
 import { DevDocsView } from './components/public/DevDocsView';
+import { OAuthConsentView } from './components/public/OAuthConsentView';
 import { LegalView } from './components/public/LegalView';
 import { ProjectPageView } from './components/public/ProjectPageView';
 
@@ -131,10 +133,19 @@ import { ProjectPageView } from './components/public/ProjectPageView';
  *
  * Matching is case-insensitive so /ToS, /tos and /TOS all work.
  */
-type PublicPage = 'dev-docs' | 'tos' | 'privacy' | 'project';
+type PublicPage = 'dev-docs' | 'dev-apps' | 'oauth-consent' | 'tos' | 'privacy' | 'project';
 
 const PUBLIC_ROUTES: Record<string, PublicPage> = {
   '/dev/docs': 'dev-docs',
+  /*
+   * /dev/apps ve /oauth/authorize OTURUM GEREKTİRİYOR ama yine de burada: ikisi de giriş
+   * kapısının ÖNÜNDE çözülmeli. Giriş ekranına düşselerdi, onay akışındaki kullanıcı
+   * giriş yaptıktan sonra isteği kaybeder ve uygulamanın akışı baştan başlardı. Bileşenler
+   * oturumu kendileri kontrol edip uygun ekranı gösteriyor.
+   */
+  '/dev/apps': 'dev-apps',
+  '/dev/applications': 'dev-apps',
+  '/oauth/authorize': 'oauth-consent',
   '/dev/doc': 'dev-docs',
   '/dev': 'dev-docs',
   '/docs': 'dev-docs',
@@ -357,6 +368,25 @@ export default function App() {
       }
     }
   };
+
+  /*
+   * Giriş sonrası `?next=` yönlendirmesi.
+   *
+   * Onay ekranı (/oauth/authorize) oturum yoksa kullanıcıyı giriş ekranına gönderiyor ve
+   * istenen adresi `next` parametresinde taşıyor; giriş tamamlandığında buraya düşülüyor
+   * ve kullanıcı aynı isteğe geri dönüyor. Olmasaydı uygulamanın akışı baştan başlardı.
+   *
+   * YALNIZCA AYNI KÖKTE, `/` ile başlayan bir yol kabul ediliyor. Serbest bırakmak açık
+   * yönlendirme (open redirect) demek olurdu: saldırgan `?next=https://sahte.site` ile
+   * kullanıcıyı giriş sonrası kendi sayfasına atabilirdi. `//` de reddediliyor — tarayıcı
+   * onu protokolsüz bir dış adres olarak okur.
+   */
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const next = new URLSearchParams(window.location.search).get('next');
+    if (!next || !next.startsWith('/') || next.startsWith('//')) return;
+    window.location.replace(next);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     parseHashParams();
@@ -1259,6 +1289,12 @@ export default function App() {
   // Public pages render before every gate — no session, no ban check, no closed beta.
   if (publicPage === 'dev-docs') {
     return <DevDocsView language={language} />;
+  }
+  if (publicPage === 'dev-apps') {
+    return <DevAppsView language={language} isAuthenticated={isAuthenticated} />;
+  }
+  if (publicPage === 'oauth-consent') {
+    return <OAuthConsentView language={language} isAuthenticated={isAuthenticated} />;
   }
   if (publicPage === 'tos' || publicPage === 'privacy') {
     return <LegalView language={language} page={publicPage} />;

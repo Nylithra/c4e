@@ -136,7 +136,11 @@ yer imleri, profil). Topluluğun kendisi keşfedilebilir kalır; herkes katılab
    oluşturup `JUBBIO_CLIENT_ID` ve `JUBBIO_REDIRECT_URI` değerlerini ayarlayın (ayrıntı:
    bölüm 2.4). Bu adım atlanırsa Jubbio bağlama kapalı kalır; GitHub girişi ve uygulamanın
    geri kalanı etkilenmez.
-6. **Proje commit bildirimleri için** `MAIL_NOTIFY_CRON_SECRET` tanımlı olmalı (tarama onu
+6. **Code4Ever API (geliştirici uygulamaları)** `SUPABASE_SERVICE_ROLE_KEY` olmadan çalışmaz;
+   anahtar yoksa `/dev/apps` ve bütün OAuth uçları dürüstçe 503 döner. Şema dört tabloyla
+   (`oauth_apps`, `oauth_codes`, `oauth_tokens`, `oauth_grants`) birlikte gelir. Ayrıntı:
+   bölüm 2.8.
+7. **Proje commit bildirimleri için** `MAIL_NOTIFY_CRON_SECRET` tanımlı olmalı (tarama onu
    kullanıyor) ve tercihen `GITHUB_TOKEN` verilmeli — kimliksiz GitHub isteği saatte 60 ile
    sınırlı ve bu birkaç projede tükenir. Ayrıntı: bölüm 2.5.
 
@@ -824,6 +828,90 @@ Ayrıca kaydetme yükü artık görüntülenen üyeden değil oturum sahibinden 
   yönetici satırlarına dokunulmuyor, ikinci çalıştırma hiçbir şeyi değiştirmiyor.
 - **23 tarayıcı doğrulaması** (`profil-leak`): başkasının profilinde oturum sahibinin
   verisinin hiçbiri görünmüyor, kendi profiline dönünce geri geliyor.
+
+---
+
+## 2.8 Code4Ever API: geliştirici uygulamaları (OAuth2 sağlayıcısı)
+
+Bir geliştirici `/dev/apps` ekranından uygulama açıyor; uygulama, **üyenin izniyle** onun adına
+Code4Ever verisine erişiyor. "Code4Ever ile giriş yap" bu akışla yazılıyor. Akışın tamamı
+RFC 6749 authorization-code + PKCE; dokümanı `/dev/docs` sayfasında.
+
+Bu, 2.1'deki **Topluluk API'sinden farklı bir şey**. Orada anahtar bir topluluğa ait ve makine
+kendi adına yazıyor; burada belirteç bir ÜYEYE ait ve uygulama onun adına okuyor. İkisini aynı
+anahtar sistemine bağlamak, "bu istek kimin adına" sorusunu belirsiz bırakırdı.
+
+### Saklanan hiçbir sır düz metin değil
+
+`client_secret`, yetkilendirme kodları, erişim ve yenileme belirteçleri — hepsi yalnızca
+**SHA-256 özeti** olarak yazılıyor. Veritabanı sızsa bile hiçbiri tekrar oynatılamaz ve düz
+metin gerçekten yalnızca üretildiği anda var oluyor. Arama da özet üzerinden yapılıyor, yani
+sabit genişlikte bir indeks okuması: hangi öneklerin var olduğunu sızdıran bir zamanlama
+sinyali yok. `client_secret` yalnızca üretildiği yanıtta, bir kez dönüyor; arayüz onu hiçbir
+yere kaydetmiyor (localStorage'a koymak sırrı her XSS'e açık hâle getirirdi).
+
+### Dört tablo da tarayıcıya kapalı
+
+`oauth_apps`, `oauth_codes`, `oauth_tokens`, `oauth_grants`: RLS açık, yalnızca `service_role`
+politikası var ve `anon`/`authenticated` rolleri **hiçbir yetki almıyor**. Yerel PostgreSQL 16
+üzerinde ölçüldü: dört tablonun dördünde de `anon` ve `authenticated` için "permission denied",
+servis rolü için okunabiliyor (yani ölçüm yanlış alarm değil).
+
+### Yetkilendirme kodu: tek kullanımlık, ama yanlış sır yüzünden yanmıyor
+
+Kod tabloya yazılıyor, imzalı bir pakete değil: tek kullanımlık olması için "kullanıldı"
+bilgisinin bir yerde durması gerekiyor. Kendi kendini doğrulayan bir paket, ele geçirildiğinde
+süresi dolana kadar defalarca takas edilebilirdi.
+
+Sıralama önemli ve ilk sürümde **yanlıştı**: kod okunur okunmaz siliniyordu, dolayısıyla
+istemci sırrını yanlış yazan geliştiricinin kodu yanıyor, gördüğü hata `invalid_client` yerine
+`invalid_grant` oluyordu — yani hatanın nerede olduğunu söylemiyordu ve tek harflik bir yazım
+hatası için baştan yetkilendirme gerekiyordu. Artık kod **önce okunuyor, sonra doğrulanıyor, en
+son tüketiliyor**. Tek kullanımlık olma garantisi bundan etkilenmiyor: onu sağlayan şey atomik
+`DELETE ... RETURNING`. İki eşzamanlı takas isteğinde yalnızca biri satırı alır, öteki boş döner
+ve belirteç alamaz.
+
+### İstemci kimliği: PKCE ya da sır, kararı yetkilendirme anı verir
+
+Hangisinin isteneceğini **yetkilendirme anında kaydedilen** `code_challenge` belirliyor, istekte
+gelen değil. Tersi olsaydı sırrı bilmeyen biri "ben PKCE kullanıyorum" deyip her ikisini de
+atlayabilirdi. `code_challenge_method=plain` kabul edilmiyor: kodu ele geçiren saldırgan
+doğrulayıcıyı da görmüş olur ve PKCE'nin tek faydası ortadan kalkar.
+
+### Diğer kapatılan yollar
+
+- **`redirect_uri` tam eşleşme, joker yok** — hem yetkilendirmede hem takasta (RFC 6749 §4.1.3).
+  Kısmi eşleşmeye izin vermek, uygulamanın alan adında açık yönlendirme bulan birinin
+  yetkilendirme kodunu kendi sunucusuna aktarabilmesi demek olurdu. Kaydederken de doğrulanıyor:
+  yalnızca `https` (ya da yerelde `http://localhost`) ve parça (`#`) içermeyen adresler.
+- **Uygulama, kayıtlı kapsamlarının dışında bir şey isteyemez.** Konsolda `identify` yazıp
+  istekte `email` sormak reddediliyor.
+- **Kod, verildiği uygulamadan başkasına takas edilemez** — başka bir istemcinin kodunu kendi
+  adına takas etme denemesi `invalid_grant` ile düşüyor.
+- **Yenileme dönerlidir**: her yenilemede yeni çift verilir, eskisi anında geçersizleşir. Sızan
+  bir yenileme belirtecinin 30 günlük ömrü sınırsıza dönmesini engelliyor.
+- **Erişim belirteçleri saklanıyor** (imzalı jeton değil), çünkü iptal anında etkili olmalı. Üye
+  "erişimi kes" dediğinde o uygulamanın kendisine ait bütün belirteçleri siliniyor; bir sonraki
+  istek `401 invalid_token` alıyor. İmzalı bir jeton iptalden sonra da süresi dolana kadar
+  geçerli kalırdı.
+- **`/api/oauth/revoke` bilinmeyen belirteç için de başarılı döner** (RFC 7009). Aksi hâlde "bu
+  belirteç var mıydı" sorusuna yanıt veren bir sorgulama aracı olurdu.
+- **Uygulamayı kapatmak** satırı silmiyor, `revoked_at` işaretliyor — ama verdiği bütün
+  belirteçleri, izinleri ve bekleyen kodları gerçekten siliyor. Kaydı tutmak "bu uygulama bir
+  zamanlar neydi" sorusunu yanıtlanabilir bırakıyor; belirteçleri bırakmak kapatmayı anlamsız
+  kılardı.
+- **Sahiplik sunucuda doğrulanıyor.** Arayüz zaten yalnızca kendi uygulamalarını listeliyor ama
+  istek elle kurulabilir; başkasının uygulamasını düzenleme, silme ya da sırrını döndürme
+  denemeleri `403` alıyor.
+
+### Doğrulama
+
+Uçtan uca **94 ölçüm** (gerçek Express rotaları üzerinde): kapsam kataloğu, uygulama oluşturma
+ve doğrulama, sahiplik, onay ekranı bilgisi, yetkilendirme, belirteç takası, kaynak uçları,
+kapsam zorlaması, yenileme, PKCE, sır döndürme, bağlı uygulamalar, iptal ucu ve uygulama
+kapatma. Her bölümde yalnızca reddedilenler değil, **aynı çalıştırmada geçerli isteğin kabul
+edildiği** de ölçülüyor — aksi hâlde her şey bozuk olduğunda da "tüm saldırılar reddedildi"
+görünürdü. Ayrıca gerçek PostgreSQL 16 üzerinde tablo erişim ölçümü.
 
 ---
 

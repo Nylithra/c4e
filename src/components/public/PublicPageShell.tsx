@@ -30,30 +30,39 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
     <div className="min-h-screen w-full bg-[#0a0a14] text-zinc-200 font-display">
       {/* Top bar */}
       <header className="sticky top-0 z-30 border-b border-white/[0.07] bg-[#0a0a14]/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-2.5">
           <a
             href="/"
-            className="flex items-center gap-2 text-sm font-extrabold tracking-tight text-white hover:opacity-90"
+            className="flex min-h-10 flex-none items-center gap-2 rounded-lg text-sm font-extrabold tracking-tight text-white hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ArrowLeft className="h-4 w-4 text-zinc-400" />
             <span>Code4Ever</span>
           </a>
-          <nav className="flex items-center gap-1 text-[11px] font-semibold">
+          {/* Telefonda YANA KAYIYOR. Dört bağlantı 390px'e sığmıyordu ve sayfanın tamamını
+              yatay kaydırılabilir hâle getiriyordu; şerit kendi içinde kayınca sayfa yerinde
+              kalıyor. `shrink` olmadan flex öğesi kendi içeriğinden küçülmez. */}
+          <nav className="flex min-w-0 shrink items-center gap-1 overflow-x-auto no-scrollbar text-[11px] font-semibold">
             <a
               href="/dev/docs"
-              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+              className="flex min-h-10 flex-none items-center rounded-lg px-2.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {tr ? 'Geliştirici' : 'Developers'}
+              {tr ? 'Dokümanlar' : 'Docs'}
+            </a>
+            <a
+              href="/dev/apps"
+              className="flex min-h-10 flex-none items-center rounded-lg px-2.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {tr ? 'Uygulamalarım' : 'My apps'}
             </a>
             <a
               href="/tos"
-              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+              className="flex min-h-10 flex-none items-center rounded-lg px-2.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {tr ? 'Kullanım Şartları' : 'Terms'}
             </a>
             <a
               href="/privacy"
-              className="rounded-lg px-2.5 py-1.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+              className="flex min-h-10 flex-none items-center rounded-lg px-2.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {tr ? 'Gizlilik' : 'Privacy'}
             </a>
@@ -84,7 +93,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="block rounded-lg px-3 py-1.5 text-[12px] text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className="flex min-h-9 items-center rounded-lg px-3 text-[12px] text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {item.label}
                 </a>
@@ -100,16 +109,16 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
         <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-[11px] text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
           <span className="font-mono">lanux.online — Code4Ever</span>
           <div className="flex flex-wrap items-center gap-4">
-            <a href="/tos" className="hover:text-zinc-300">
+            <a href="/tos" className="inline-flex min-h-9 items-center rounded hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
               {tr ? 'Kullanım Şartları' : 'Terms of Service'}
             </a>
-            <a href="/privacy" className="hover:text-zinc-300">
+            <a href="/privacy" className="inline-flex min-h-9 items-center rounded hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
               {tr ? 'Gizlilik İlkeleri' : 'Privacy Policy'}
             </a>
-            <a href="/dev/docs" className="hover:text-zinc-300">
+            <a href="/dev/docs" className="inline-flex min-h-9 min-w-11 items-center justify-center rounded hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
               API
             </a>
-            <a href="/" className="inline-flex items-center gap-1 hover:text-zinc-300">
+            <a href="/" className="inline-flex min-h-9 items-center gap-1 rounded hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
               {tr ? 'Uygulamaya dön' : 'Back to the app'}
               <ExternalLink className="h-3 w-3" />
             </a>

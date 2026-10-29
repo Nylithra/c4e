@@ -18,9 +18,9 @@ import {
   Bot,
   Layers,
   Check,
-  Palette
-,
-  KeyRound
+  Palette,
+  KeyRound,
+  Puzzle
 } from 'lucide-react';
 import { validateFileSize, notifyFileSizeExceeded } from '../utils/fileUploadHelper';
 import { isPWARunningStandalone } from '../utils/pwaHelper';
@@ -32,6 +32,7 @@ import {
 import { IntegrationsSettings } from './IntegrationsSettings';
 import { EmailNotificationSettings } from './EmailNotificationSettings';
 import { AccountLinksSettings } from './AccountLinksSettings';
+import { ConnectedAppsSettings } from './ConnectedAppsSettings';
 import { ThemeStudio } from './ThemeStudio';
 import { UserAvatar } from './ui/avatar';
 import { ProfileTheme } from '../utils/themeHelper';
@@ -675,6 +676,31 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 : 'Manage how you can sign in to this account and what it can reach.'}
             </p>
             <AccountLinksSettings language={language} />
+
+            {/*
+              Bağlı HESAPLAR ile bağlı UYGULAMALAR ayrı başlıklar altında. İkisi de "bu
+              hesaba ne bağlı" sorusunun cevabı ama farklı yönde: hesaplar senin başka
+              yerlerdeki kimliğin, uygulamalar ise senin hesabına erişen üçüncü taraflar.
+              Aynı listede yan yana dizmek ikisini birbirine karıştırırdı.
+            */}
+            <div className="space-y-3 border-t border-white/[0.07] pt-4">
+              <h4 className="flex items-center gap-2 text-sm font-bold text-white">
+                <Puzzle className="h-4 w-4 text-indigo-400" />
+                <span>{language === 'tr' ? 'Bağlı Uygulamalar' : 'Connected Applications'}</span>
+              </h4>
+              <p className="user-text text-xs leading-relaxed text-zinc-400">
+                {language === 'tr'
+                  ? 'Code4Ever hesabına erişim verdiğin üçüncü taraf uygulamalar. Erişimi kestiğin anda o uygulamanın belirteçleri siliniyor.'
+                  : 'Third-party applications you granted access to your Code4Ever account. Revoking deletes that application\'s tokens immediately.'}
+              </p>
+              <ConnectedAppsSettings language={language} />
+              <p className="text-[11px] text-zinc-600">
+                {language === 'tr' ? 'Kendi uygulamanı mı yapmak istiyorsun? ' : 'Want to build your own? '}
+                <a href="/dev/apps" className="text-indigo-300 underline-offset-2 hover:underline">
+                  /dev/apps
+                </a>
+              </p>
+            </div>
           </div>
         )}
 
