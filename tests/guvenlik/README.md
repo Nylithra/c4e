@@ -8,7 +8,7 @@ tek şey altyapı (veritabanı sunucusu, PostgREST), sınanan şey projenin kend
 
 ---
 
-## 1. `rls_yetki.sql` — veritabanı yetki katmanı (29 senaryo)
+## 1. `rls_yetki.sql` — veritabanı yetki katmanı (46 senaryo)
 
 **Neden veritabanında sınanıyor:** istemci Supabase'e anon anahtarla **doğrudan**
 yazıyor. Yani "kim neyi değiştirebilir" sorusunun tek gerçek yanıtı RLS politikaları
@@ -25,6 +25,8 @@ Kapsadığı başlıklar:
 | D | Grup üyeliği: üye olmayanın listeyi baştan yazması, son mesaj uydurması |
 | E | Topluluk üye sayacı |
 | F | Ayrıcalık yükseltme (`is_admin`, `verified`, kimlik bağlantıları) |
+| G | Sütun düzeyinde okuma yetkisi (başvuru gövdeleri, e-posta, anahtar malzemesi) |
+| H | Mesaj bütünlüğü: karşı tarafın mesaj metnini değiştirmesi |
 
 Her senaryoda aynı üç oyuncu var: **sahip** (içeriğin sahibi), **saldirgan** (giriş
 yapmış ama sahibi değil), **ucuncu** (etkileşimi depoda duran üçüncü kişi). Testin
@@ -50,7 +52,7 @@ psql -d c4e_test -f supabase_schema.sql
 psql -d c4e_test -f tests/guvenlik/rls_yetki.sql
 ```
 
-Son satır `29/29 senaryo geçti` yazmalı. Kalan bir senaryo varsa altında beklenen ve
+Son satır `46/46 senaryo geçti` yazmalı. Kalan bir senaryo varsa altında beklenen ve
 bulunan değerle birlikte listelenir.
 
 **Oturum taklidi nasıl çalışıyor:** `supabase_taklit.sql`, `auth.uid()` ve

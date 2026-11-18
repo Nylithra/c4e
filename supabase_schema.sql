@@ -1684,6 +1684,69 @@ BEGIN
 END;
 $$;
 
+/**
+ * Grup üyeliği için birleştirici.
+ *
+ * `groups.members` bir DİZGE dizisi değil, `{id, username, display_name, avatar_url,
+ * role, joined_at}` nesnelerinden oluşan bir dizi (bkz. src/types.ts GroupMember).
+ * Bu yüzden ad listelerinde kullanılan apply_own_membership burada işe yaramıyor:
+ * karşılaştırma nesnenin tamamına denk gelir, hiçbir zaman eşleşmez ve katılma
+ * sessizce çalışmaz olur.
+ *
+ * Kural: başkasının kaydı depodaki hâliyle AYNEN korunuyor; çağıran yalnızca kendi
+ * kaydını ekleyip çıkarabiliyor. Kendi kaydı zaten varsa depodaki hâli korunuyor,
+ * yeni ekleniyorsa `role` 'member' olarak sabitleniyor — yoksa üye kendini üye
+ * listesinde yönetici gibi gösterebilirdi (gerçek yetki ayrı `admins` sütununda
+ * duruyor, ama listede görünen etiket de yanlış olmamalı).
+ */
+CREATE OR REPLACE FUNCTION public.merge_own_group_membership(
+  old_members JSONB, new_members JSONB, me TEXT
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+DECLARE
+  stored   JSONB := coalesce(old_members, '[]'::jsonb);
+  incoming JSONB := coalesce(new_members, '[]'::jsonb);
+  result   JSONB := '[]'::jsonb;
+  item     JSONB;
+  benim    JSONB;
+  istiyor  BOOLEAN;
+BEGIN
+  IF me IS NULL OR me = '' THEN RETURN stored; END IF;
+
+  -- Çağıran gönderdiği listede kendini sayıyor mu? Okunan tek bilgi bu.
+  SELECT EXISTS (
+    SELECT 1 FROM jsonb_array_elements(incoming) AS e
+    WHERE lower(coalesce(e->>'username', '')) = me
+  ) INTO istiyor;
+
+  -- Başkalarının kayıtları depodaki sırayla ve depodaki hâliyle geçiyor.
+  FOR item IN SELECT e FROM jsonb_array_elements(stored) AS e LOOP
+    IF lower(coalesce(item->>'username', '')) <> me THEN
+      result := result || jsonb_build_array(item);
+    ELSE
+      benim := item;  -- çağıranın depodaki kaydı
+    END IF;
+  END LOOP;
+
+  IF istiyor THEN
+    IF benim IS NOT NULL THEN
+      -- Zaten üye: kaydı depodaki hâliyle kalıyor (kendi etiketini değiştiremiyor).
+      result := result || jsonb_build_array(benim);
+    ELSE
+      -- Yeni katılım: gelen kayıt alınıyor, rol 'member' olarak sabitleniyor.
+      SELECT e INTO benim FROM jsonb_array_elements(incoming) AS e
+      WHERE lower(coalesce(e->>'username', '')) = me LIMIT 1;
+      result := result || jsonb_build_array(jsonb_set(benim, ARRAY['role'], '"member"'::jsonb, true));
+    END IF;
+  END IF;
+
+  RETURN result;
+END;
+$$;
+
 /** Yorumlar için merge_own_entries: sahiplik `author.username` alanında duruyor. */
 CREATE OR REPLACE FUNCTION public.merge_own_comments(old_comments JSONB, new_comments JSONB, me TEXT)
 RETURNS JSONB
@@ -1955,7 +2018,7 @@ BEGIN
    * (yukarıdaki erken dönüş).
    */
   merged := OLD;
-  merged.members := public.apply_own_membership(OLD.members, NEW.members, me);
+  merged.members := public.merge_own_group_membership(OLD.members, NEW.members, me);
 
   /*
    * SON MESAJ ÖNİZLEMESİNİ YALNIZCA ÜYE TAZELEYEBİLİR.
@@ -1965,8 +2028,8 @@ BEGIN
    * oradaymış gibi gösterebiliyordu.
    */
   IF me IS NOT NULL AND me <> '' AND EXISTS (
-    SELECT 1 FROM jsonb_array_elements_text(coalesce(merged.members, '[]'::jsonb)) AS e(v)
-    WHERE lower(e.v) = me
+    SELECT 1 FROM jsonb_array_elements(coalesce(merged.members, '[]'::jsonb)) AS e
+    WHERE lower(coalesce(e->>'username', '')) = me
   ) THEN
     merged.last_message := NEW.last_message;
   END IF;
@@ -1975,6 +2038,60 @@ BEGIN
   RETURN merged;
 END;
 $$;
+
+-- 4.5 Mesajlar: bir mesajın içeriğini yalnızca GÖNDEREN değiştirebilir; sohbetteki
+-- öteki taraf okundu bilgisinden başkasına dokunamaz.
+CREATE OR REPLACE FUNCTION public.restrict_message_updates()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  me TEXT := public.current_username();
+  merged public.messages;
+BEGIN
+  IF auth.role() = 'service_role' OR public.is_platform_admin() THEN
+    RETURN NEW;
+  END IF;
+
+  -- Gönderen kendi mesajında serbest (düzenleme, silme işareti, medya değişimi).
+  IF me IS NOT NULL AND lower(coalesce(OLD.sender_username, '')) = me THEN
+    NEW.sender_username := OLD.sender_username;
+    NEW.sender_id := OLD.sender_id;
+    NEW.conversation_id := OLD.conversation_id;
+    NEW.created_at := OLD.created_at;
+    RETURN NEW;
+  END IF;
+
+  /*
+   * ÖTEKİ TARAF YALNIZCA OKUNDU BİLGİSİNİ YAZABİLİR.
+   *
+   * `messages_update_sender` politikası adına rağmen sohbetteki HERKESE UPDATE
+   * veriyor — ve bunun bir nedeni var: karşı taraf mesajı okuduğunda `status`'u
+   * 'read' yapıyor, yani okundu bilgisi gönderenin değil okuyanın yazdığı bir şey.
+   *
+   * Ama sütun kısıtı olmadığı için izin orada bitmiyordu: aynı yetkiyle `content`
+   * de yazılabiliyordu. Yani ikili bir sohbette karşı taraf, SİZİN mesajınızın
+   * metnini değiştirebiliyordu — sohbette hiç yazmadığınız bir cümle, sizin
+   * adınıza, sizin baloncuğunuzda görünüyordu. Grup sohbetlerinde bunu gruptaki
+   * herkes yapabiliyordu.
+   *
+   * Çözüm gönderi tetikleyicisiyle aynı biçimde: depodaki satır temel alınıp
+   * YALNIZCA okundu bilgisi üstüne yazılıyor. Burada açıkça sayılmayan bir sütun
+   * — bugünkü içerik sütunları ve sonradan eklenecek olanlar — gönderen olmayan
+   * biri tarafından hiç değiştirilemiyor.
+   */
+  merged := OLD;
+  merged.status := NEW.status;
+  RETURN merged;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_restrict_message_updates ON public.messages;
+CREATE TRIGGER trg_restrict_message_updates
+BEFORE UPDATE ON public.messages
+FOR EACH ROW EXECUTE FUNCTION public.restrict_message_updates();
 
 DROP TRIGGER IF EXISTS trg_restrict_group_updates ON public.groups;
 CREATE TRIGGER trg_restrict_group_updates
@@ -2730,6 +2847,7 @@ GRANT EXECUTE ON FUNCTION public.assert_profile_media_size(TEXT, TEXT) TO anon, 
 GRANT EXECUTE ON FUNCTION public.apply_own_membership(JSONB, JSONB, TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.merge_own_comments(JSONB, JSONB, TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.merge_own_entries(JSONB, JSONB, TEXT, TEXT[]) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.merge_own_group_membership(JSONB, JSONB, TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.owns_profile(TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.owns_profile(UUID) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.is_conversation_participant(TEXT) TO anon, authenticated;

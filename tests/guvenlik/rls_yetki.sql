@@ -206,6 +206,11 @@ SELECT pg_temp.kontrol('üye kendi başvurusunu ekleyebiliyor', '2|2|["ucuncu", 
 -- =============================================================
 -- D. GRUP ÜYELİĞİ
 -- =============================================================
+--
+-- DİKKAT: `groups.members` bir dizge dizisi DEĞİL, GroupMember nesnelerinden
+-- oluşan bir dizi ({id, username, display_name, avatar_url, role, joined_at}).
+-- Testler bu yapıyı birebir kullanıyor; dizge dizisiyle yazılmış bir test,
+-- nesne dizisinde çalışmayan bir birleştiriciyi geçerli gösterirdi.
 \echo ''
 \echo '--- D. Grup üyeliği ---'
 
@@ -213,34 +218,64 @@ SET test.role = 'service_role';
 DELETE FROM public.groups WHERE id = 'grup_test';
 INSERT INTO public.groups (id, name, avatar_url, creator_id, creator_username, admins, members, last_message)
 VALUES ('grup_test', 'Ekip', '', 'aaaaaaaa-0000-0000-0000-000000000001', 'sahip',
-  '["sahip"]'::jsonb, '["sahip","ucuncu"]'::jsonb, '{"content":"gerçek mesaj"}'::jsonb);
+  '["sahip"]'::jsonb,
+  '[{"id":"m1","username":"sahip","display_name":"Sahip","avatar_url":"","role":"admin","joined_at":"2026-01-01T00:00:00Z"},
+    {"id":"m2","username":"ucuncu","display_name":"Üçüncü","avatar_url":"","role":"member","joined_at":"2026-01-01T00:00:00Z"}]'::jsonb,
+  '{"content":"gerçek mesaj"}'::jsonb);
 
 SET test.role = 'authenticated';
 SET test.uid  = 'bbbbbbbb-0000-0000-0000-000000000002';
 
 UPDATE public.groups SET members = '[]'::jsonb WHERE id = 'grup_test';
-SELECT pg_temp.kontrol('üye olmayan grubu boşaltamıyor', '["sahip", "ucuncu"]',
-  (SELECT members::text FROM public.groups WHERE id = 'grup_test'));
+SELECT pg_temp.kontrol('üye olmayan grubu boşaltamıyor', 'sahip,ucuncu',
+  (SELECT string_agg(e->>'username', ',' ORDER BY e->>'id')
+     FROM public.groups g, jsonb_array_elements(g.members) e WHERE g.id = 'grup_test'));
 
-UPDATE public.groups SET members = '["sahip","ucuncu","yabanci"]'::jsonb WHERE id = 'grup_test';
-SELECT pg_temp.kontrol('üye olmayan gruba başkasını ekleyemiyor', '["sahip", "ucuncu"]',
-  (SELECT members::text FROM public.groups WHERE id = 'grup_test'));
+UPDATE public.groups SET members = members ||
+  '[{"id":"m9","username":"yabanci","display_name":"Yabancı","avatar_url":"","role":"member","joined_at":"2026-01-01T00:00:00Z"}]'::jsonb
+WHERE id = 'grup_test';
+SELECT pg_temp.kontrol('üye olmayan gruba başkasını ekleyemiyor', 'sahip,ucuncu',
+  (SELECT string_agg(e->>'username', ',' ORDER BY e->>'id')
+     FROM public.groups g, jsonb_array_elements(g.members) e WHERE g.id = 'grup_test'));
 
 UPDATE public.groups SET last_message = '{"content":"UYDURMA"}'::jsonb WHERE id = 'grup_test';
 SELECT pg_temp.kontrol('üye olmayan son mesajı uyduramıyor', 'gerçek mesaj',
   (SELECT last_message->>'content' FROM public.groups WHERE id = 'grup_test'));
 
-UPDATE public.groups SET members = members || '["saldirgan"]'::jsonb WHERE id = 'grup_test';
-SELECT pg_temp.kontrol('üye kendini gruba ekleyebiliyor', '["sahip", "ucuncu", "saldirgan"]',
-  (SELECT members::text FROM public.groups WHERE id = 'grup_test'));
+-- Katılma: istemci kendi kaydını listeye ekliyor. Rolü 'admin' yazmayı deniyor.
+UPDATE public.groups SET members = members ||
+  '[{"id":"m3","username":"saldirgan","display_name":"Saldırgan","avatar_url":"","role":"admin","joined_at":"2026-03-03T00:00:00Z"}]'::jsonb
+WHERE id = 'grup_test';
+SELECT pg_temp.kontrol('üye kendini gruba ekleyebiliyor', 'sahip,ucuncu,saldirgan',
+  (SELECT string_agg(e->>'username', ',' ORDER BY e->>'id')
+     FROM public.groups g, jsonb_array_elements(g.members) e WHERE g.id = 'grup_test'));
+SELECT pg_temp.kontrol('katılan kendini yönetici etiketiyle ekleyemiyor', 'member',
+  (SELECT e->>'role' FROM public.groups g, jsonb_array_elements(g.members) e
+    WHERE g.id = 'grup_test' AND e->>'username' = 'saldirgan'));
 
 UPDATE public.groups SET last_message = '{"content":"üye olarak yazdım"}'::jsonb WHERE id = 'grup_test';
 SELECT pg_temp.kontrol('üye son mesajı tazeleyebiliyor', 'üye olarak yazdım',
   (SELECT last_message->>'content' FROM public.groups WHERE id = 'grup_test'));
 
-UPDATE public.groups SET members = '["sahip","ucuncu"]'::jsonb WHERE id = 'grup_test';
-SELECT pg_temp.kontrol('üye gruptan ayrılabiliyor', '["sahip", "ucuncu"]',
-  (SELECT members::text FROM public.groups WHERE id = 'grup_test'));
+-- Başkasının kaydını değiştirmeyi dene: üçüncünün görünen adı.
+UPDATE public.groups SET members =
+  (SELECT jsonb_agg(CASE WHEN e->>'username' = 'ucuncu'
+                         THEN jsonb_set(e, ARRAY['display_name'], '"DEGISTI"'::jsonb)
+                         ELSE e END)
+     FROM jsonb_array_elements(members) e)
+WHERE id = 'grup_test';
+SELECT pg_temp.kontrol('başkasının üyelik kaydı değiştirilemiyor', 'Üçüncü',
+  (SELECT e->>'display_name' FROM public.groups g, jsonb_array_elements(g.members) e
+    WHERE g.id = 'grup_test' AND e->>'username' = 'ucuncu'));
+
+-- Ayrılma: kendi kaydını listeden çıkarıyor.
+UPDATE public.groups SET members =
+  (SELECT coalesce(jsonb_agg(e), '[]'::jsonb) FROM jsonb_array_elements(members) e
+    WHERE e->>'username' <> 'saldirgan')
+WHERE id = 'grup_test';
+SELECT pg_temp.kontrol('üye gruptan ayrılabiliyor', 'sahip,ucuncu',
+  (SELECT string_agg(e->>'username', ',' ORDER BY e->>'id')
+     FROM public.groups g, jsonb_array_elements(g.members) e WHERE g.id = 'grup_test'));
 
 -- =============================================================
 -- E. TOPLULUK ÜYE SAYACI
@@ -319,6 +354,48 @@ SELECT pg_temp.kontrol('oauth_tokens tarayiciya kapali', 'false',
   has_table_privilege('authenticated', 'public.oauth_tokens', 'SELECT')::text);
 SELECT pg_temp.kontrol('oauth_apps tarayiciya kapali', 'false',
   has_table_privilege('authenticated', 'public.oauth_apps', 'SELECT')::text);
+
+-- =============================================================
+-- H. MESAJ BÜTÜNLÜĞÜ
+-- =============================================================
+--
+-- `messages_update_sender` politikası adına rağmen sohbetteki HERKESE UPDATE
+-- veriyor ve bunun bir nedeni var: okundu bilgisini mesajı okuyan yazıyor.
+-- Sütun kısıtı olmadığında bu izin orada bitmiyordu.
+\echo ''
+\echo '--- H. Mesaj bütünlüğü ---'
+
+SET test.role = 'service_role';
+DELETE FROM public.messages WHERE id = 'msg_test';
+INSERT INTO public.messages (id, conversation_id, sender_id, sender_username, sender_display_name, content, status)
+VALUES ('msg_test', 'dm_sahip_saldirgan', 'aaaaaaaa-0000-0000-0000-000000000001',
+        'sahip', 'Sahip', 'Sahibin yazdigi mesaj.', 'sent');
+
+-- Sohbetteki ÖTEKİ taraf: mesajı o yazmadı.
+SET test.role = 'authenticated';
+SET test.uid  = 'bbbbbbbb-0000-0000-0000-000000000002';
+
+UPDATE public.messages SET content = 'BU CUMLEYI BEN YAZMADIM' WHERE id = 'msg_test';
+SELECT pg_temp.kontrol('karşı taraf mesaj metnini değiştiremiyor', 'Sahibin yazdigi mesaj.',
+  (SELECT content FROM public.messages WHERE id = 'msg_test'));
+
+UPDATE public.messages SET sender_display_name = 'Baskasi' WHERE id = 'msg_test';
+SELECT pg_temp.kontrol('karşı taraf gönderen adını değiştiremiyor', 'Sahip',
+  (SELECT sender_display_name FROM public.messages WHERE id = 'msg_test'));
+
+UPDATE public.messages SET media_url = 'https://kotu.test/resim.png' WHERE id = 'msg_test';
+SELECT pg_temp.kontrol('karşı taraf mesaja medya ekleyemiyor', '<null>',
+  (SELECT coalesce(media_url, '<null>') FROM public.messages WHERE id = 'msg_test'));
+
+UPDATE public.messages SET status = 'read' WHERE id = 'msg_test';
+SELECT pg_temp.kontrol('karşı taraf okundu bilgisini yazabiliyor', 'read',
+  (SELECT status FROM public.messages WHERE id = 'msg_test'));
+
+-- Gönderenin kendisi: düzenleme hakkı onda.
+SET test.uid = 'aaaaaaaa-0000-0000-0000-000000000001';
+UPDATE public.messages SET content = 'Kendi mesajimi duzenledim.', is_edited = true WHERE id = 'msg_test';
+SELECT pg_temp.kontrol('gönderen kendi mesajını düzenleyebiliyor', 'Kendi mesajimi duzenledim.',
+  (SELECT content FROM public.messages WHERE id = 'msg_test'));
 
 -- =============================================================
 -- ÖZET
