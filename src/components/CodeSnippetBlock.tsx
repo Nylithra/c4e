@@ -61,14 +61,14 @@ export const CodeSnippetBlock: React.FC<CodeSnippetBlockProps> = ({ snippet, lan
 
   return (
     <div className="c4e-well p-3.5 space-y-2.5 font-mono relative overflow-hidden group shadow-inner">
-      <div className="flex items-center justify-between text-[11px] text-zinc-400 border-b border-white/[0.07] pb-2">
+      <div className="flex items-center justify-between text-[13px] text-zinc-400 border-b border-white/[0.07] pb-2">
         <div className="flex items-center gap-2 truncate">
           <Code2 className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
           <span className="font-semibold text-zinc-200 truncate">{title}</span>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.07] text-[10px] text-emerald-400 font-mono font-semibold">
+          <span className="px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.07] text-[12px] text-emerald-400 font-mono font-semibold">
             {lang}
           </span>
           <button
@@ -90,7 +90,7 @@ export const CodeSnippetBlock: React.FC<CodeSnippetBlockProps> = ({ snippet, lan
 
       {isTruncatable && (
         <div className="pt-1.5 border-t border-white/[0.07] flex items-center justify-between">
-          <span className="text-[10px] text-zinc-500 font-mono">
+          <span className="text-[12px] text-zinc-500 font-mono">
             {isExpanded
               ? `${lineCount} ${language === 'tr' ? 'satır gösteriliyor' : 'lines displayed'}`
               : `${Math.min(8, lineCount)} / ${lineCount} ${language === 'tr' ? 'satır' : 'lines'}`}
@@ -98,7 +98,7 @@ export const CodeSnippetBlock: React.FC<CodeSnippetBlockProps> = ({ snippet, lan
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-[11px] text-zinc-300 hover:text-white font-mono flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
+            className="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-[13px] text-zinc-300 hover:text-white font-mono flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
           >
             {isExpanded ? (
               <>

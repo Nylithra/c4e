@@ -82,7 +82,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
               }`}
             >
               <span>{language === 'tr' ? 'Yıllık Ödeme' : 'Yearly'}</span>
-              <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono">
+              <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[12px] font-mono">
                 %20 İndirim
               </span>
             </button>
@@ -105,7 +105,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-blue-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-1">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-blue-600 text-white text-[12px] font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />
                   <span>{language === 'tr' ? 'En Popüler' : 'Most Popular'}</span>
                 </div>
@@ -131,7 +131,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
                 {/* Badge Award Preview */}
                 {plan.badgeLabel && (
                   <div className="c4e-card p-3 space-y-1.5">
-                    <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">
+                    <span className="text-[12px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">
                       {language === 'tr' ? 'Kazanılacak Rozet:' : 'Awarded Badge:'}
                     </span>
                     <div className="flex items-center gap-2">
@@ -152,7 +152,7 @@ export const SubscriptionsView: React.FC<SubscriptionsViewProps> = ({
 
                 {/* Features list */}
                 <div className="space-y-2.5 pt-2">
-                  <span className="text-[11px] font-bold text-zinc-300 font-mono uppercase tracking-wider">
+                  <span className="text-[13px] font-bold text-zinc-300 font-mono uppercase tracking-wider">
                     {language === 'tr' ? 'Paket İçeriği:' : 'Included Features:'}
                   </span>
                   <ul className="space-y-2 text-xs text-zinc-300">

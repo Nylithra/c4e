@@ -209,7 +209,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
         {/* Sonuçların nereden geldiğini söylemek önemli: "arşivin tamamı" ile "ekrandaki
             gönderiler" çok farklı iki şey ve kullanıcı hangisine baktığını bilmeli. */}
         {q.length >= 2 && (
-          <div className="flex items-center gap-1.5 text-[11px] text-zinc-500">
+          <div className="flex items-center gap-1.5 text-[13px] text-zinc-500">
             {searching ? (
               <>
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -255,7 +255,7 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                 >
                   <div>
                     <span className="text-xs font-bold text-white block">{t.tag}</span>
-                    <span className="text-[10px] text-zinc-500 font-mono">
+                    <span className="text-[12px] text-zinc-500 font-mono">
                       {t.posts_count} {language === 'tr' ? 'gönderi' : 'posts'}
                     </span>
                   </div>
@@ -280,13 +280,13 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                   className="c4e-card p-3 flex items-center justify-between cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <UserAvatar src={comm.avatar_url} name={comm.name} className="w-10 h-10 rounded-xl ring-1 ring-white/[0.08] text-[10px]" />
+                    <UserAvatar src={comm.avatar_url} name={comm.name} className="w-10 h-10 rounded-xl ring-1 ring-white/[0.08] text-[12px]" />
                     <div>
                       <h4 className="text-xs font-bold text-white">{comm.name}</h4>
-                      <span className="text-[10px] text-purple-400 font-mono">/c/@{comm.handle.replace(/^@/, '')}</span>
+                      <span className="text-[12px] text-purple-400 font-mono">/c/@{comm.handle.replace(/^@/, '')}</span>
                     </div>
                   </div>
-                  <span className="text-[10px] text-zinc-400 font-mono bg-white/[0.04] px-2 py-1 rounded-lg">
+                  <span className="text-[12px] text-zinc-400 font-mono bg-white/[0.04] px-2 py-1 rounded-lg">
                     {comm.members_count} {language === 'tr' ? 'üye' : 'members'}
                   </span>
                 </div>
@@ -314,10 +314,10 @@ export const ExploreView: React.FC<ExploreViewProps> = ({
                       <UserAvatar
                         src={post.author.avatar_url}
                         name={post.author.display_name || post.author.username}
-                        className="w-7 h-7 text-[10px]"
+                        className="w-7 h-7 text-[12px]"
                       />
                       <span className="text-xs font-bold text-white">{post.author.display_name}</span>
-                      <span className="text-[10px] text-zinc-500 font-mono">@{post.author.username}</span>
+                      <span className="text-[12px] text-zinc-500 font-mono">@{post.author.username}</span>
                     </div>
                     <p className="text-xs text-zinc-300 user-text">{post.content}</p>
                     {post.media_url && (

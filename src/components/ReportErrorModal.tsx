@@ -103,7 +103,7 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
               <h3 className="text-sm font-bold text-white">
                 {language === 'tr' ? 'Sistem & Webhook Hatası Bildir' : 'Report System or Webhook Issue'}
               </h3>
-              <p className="text-[11px] text-zinc-400 font-mono">
+              <p className="text-[13px] text-zinc-400 font-mono">
                 {language === 'tr'
                   ? 'Admin paneline anlık log ve hata kaydı gönderin'
                   : 'Send real-time error log to admin dashboard'}
@@ -214,7 +214,7 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
                   <Terminal className="w-3.5 h-3.5 text-zinc-400" />
                   <span>{language === 'tr' ? 'Log Kaydı / JSON / Hata Çıktısı' : 'Error Logs / Technical Details'}</span>
                 </label>
-                <span className="text-[10px] font-mono text-zinc-500">
+                <span className="text-[12px] font-mono text-zinc-500">
                   {language === 'tr' ? 'Opsiyonel (Otomatik doldurulabilir)' : 'Optional'}
                 </span>
               </div>
@@ -227,7 +227,7 @@ export const ReportErrorModal: React.FC<ReportErrorModalProps> = ({
                     ? '{"error": "Webhook returned 404", "status": 404, ...}'
                     : 'Paste error stack or response logs here...'
                 }
-                className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-2.5 text-[11px] font-mono text-zinc-300 placeholder:text-zinc-700 focus:outline-none focus:border-red-500"
+                className="w-full bg-black/25 border border-white/[0.07] rounded-xl p-2.5 text-[13px] font-mono text-zinc-300 placeholder:text-zinc-700 focus:outline-none focus:border-red-500"
               />
             </div>
 

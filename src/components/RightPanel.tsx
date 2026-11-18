@@ -57,7 +57,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             <p className="text-xs font-semibold text-zinc-400">
               {language === 'tr' ? 'Henüz trend konu yok' : 'No trending topics yet'}
             </p>
-            <p className="max-w-[14rem] text-[11px] leading-relaxed text-zinc-600">
+            <p className="max-w-[14rem] text-[13px] leading-relaxed text-zinc-600">
               {language === 'tr'
                 ? 'Etiketli gönderiler çoğaldıkça en çok konuşulanlar burada görünür.'
                 : 'As tagged posts pile up, the most discussed ones show up here.'}
@@ -75,9 +75,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                   <span className="text-xs font-bold text-white group-hover:text-zinc-200 font-mono">
                     {trend.topic || trend.tag}
                   </span>
-                  <span className="text-[10px] text-zinc-500 font-mono">{trend.category}</span>
+                  <span className="text-[12px] text-zinc-500 font-mono">{trend.category}</span>
                 </div>
-                <span className="text-[10px] text-zinc-400 font-mono block">
+                <span className="text-[12px] text-zinc-400 font-mono block">
                   {trend.posts_count} {language === 'tr' ? 'gönderi' : 'posts'}
                 </span>
               </div>
@@ -112,13 +112,13 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                   <UserAvatar
                     src={comm.avatar_url}
                     name={comm.name}
-                    className="w-8 h-8 rounded-xl ring-1 ring-white/[0.08] flex-shrink-0 text-[10px]"
+                    className="w-8 h-8 rounded-xl ring-1 ring-white/[0.08] flex-shrink-0 text-[12px]"
                   />
                   <div className="truncate">
                     <span className="text-xs font-bold text-white truncate block hover:text-zinc-200">
                       {comm.name}
                     </span>
-                    <span className="text-[10px] text-purple-400 font-mono truncate block">
+                    <span className="text-[12px] text-purple-400 font-mono truncate block">
                       /c/@{comm.handle.replace(/^@/, '')}
                     </span>
                   </div>
@@ -144,14 +144,14 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       </div>
 
       <div className="c4e-well p-3 text-center space-y-1.5">
-        <span className="text-[11px] font-mono text-zinc-400 flex items-center justify-center gap-1">
+        <span className="text-[13px] font-mono text-zinc-400 flex items-center justify-center gap-1">
           <Sparkles className="w-3 h-3 text-zinc-400" />
           <span>{brandTitle}</span>
         </span>
-        <span className="text-[10px] text-zinc-500 font-mono block">{brandDomain}</span>
+        <span className="text-[12px] text-zinc-500 font-mono block">{brandDomain}</span>
 
         {/* Legal and developer pages render outside the app shell, so they are plain links. */}
-        <nav className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 pt-1 text-[10px] text-zinc-500">
+        <nav className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 pt-1 text-[12px] text-zinc-500">
           <a href="/dev/docs" className="hover:text-zinc-300 transition-colors">
             {language === 'tr' ? 'Geliştirici API' : 'Developer API'}
           </a>

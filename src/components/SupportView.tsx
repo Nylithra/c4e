@@ -277,7 +277,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
           <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
           <span>{language === 'tr' ? 'Bağış Doğrulama Sistemi Aktif' : 'Donation Verification Active'}</span>
           <span className="text-zinc-500 hidden sm:inline">•</span>
-          <span className="text-[11px] text-zinc-400 hidden sm:inline font-mono">ID: {BYNOGAME_STREAM_ID.substring(0, 13)}...</span>
+          <span className="text-[13px] text-zinc-400 hidden sm:inline font-mono">ID: {BYNOGAME_STREAM_ID.substring(0, 13)}...</span>
         </div>
 
         {isSparkSupporter && (
@@ -296,7 +296,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
       <div className="max-w-2xl mx-auto">
         <div className="relative rounded-3xl p-6 md:p-8 border border-amber-500/50 bg-[#0e0d10] shadow-2xl shadow-amber-500/5 ring-1 ring-amber-500/20 space-y-6">
           {/* Top badge */}
-          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-zinc-950 text-[11px] font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-1.5">
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-zinc-950 text-[13px] font-extrabold uppercase tracking-wider shadow-lg flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 fill-zinc-950" />
             <span>{language === 'tr' ? 'Spark Destekçi Paketi' : 'Spark Supporter Package'}</span>
           </div>
@@ -305,10 +305,10 @@ export const SupportView: React.FC<SupportViewProps> = ({
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-2xl font-black text-white">Spark Destekçi</h2>
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-bold font-mono">
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[12px] font-bold font-mono">
                   SPARK ROZETİ
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold font-mono flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[12px] font-bold font-mono flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3" /> {language === 'tr' ? 'Doğrulanmış Destek' : 'Verified Support'}
                 </span>
               </div>
@@ -324,7 +324,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                 <CreditCard className="w-3.5 h-3.5 text-amber-400" />
                 <span>{language === 'tr' ? 'Serbest Miktar' : 'Flexible Amount'}</span>
               </div>
-              <div className="text-[10px] font-mono text-zinc-500 mt-1">
+              <div className="text-[12px] font-mono text-zinc-500 mt-1">
                 {language === 'tr' ? 'Abonelik YOK — Tek Seferlik' : 'No subscription — One time'}
               </div>
             </div>
@@ -332,7 +332,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
 
           {/* Awarded Badge Preview */}
           <div className="c4e-well p-4 space-y-2">
-            <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider block font-bold">
+            <span className="text-[12px] font-mono text-zinc-400 uppercase tracking-wider block font-bold">
               {language === 'tr' ? 'Kazanılacak Profil Rozeti:' : 'Earned Profile Badge:'}
             </span>
             <div className="flex items-center gap-2">
@@ -463,7 +463,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                   <p className="font-bold">
                     {language === 'tr' ? 'Bağış Bildiriminiz İncelemede' : 'Donation Report Under Review'}
                   </p>
-                  <p className="text-zinc-300 text-[11px] leading-relaxed">
+                  <p className="text-zinc-300 text-[13px] leading-relaxed">
                     {checkResult.message}
                   </p>
                 </div>
@@ -479,10 +479,10 @@ export const SupportView: React.FC<SupportViewProps> = ({
                   <p className="font-bold">
                     {language === 'tr' ? 'Otomatik Doğrulama Bekleniyor' : 'Awaiting Verification'}
                   </p>
-                  <p className="text-zinc-400 text-[11px] leading-relaxed">
+                  <p className="text-zinc-400 text-[13px] leading-relaxed">
                     {checkResult.message}
                   </p>
-                  <p className="text-zinc-400 text-[11px] leading-relaxed">
+                  <p className="text-zinc-400 text-[13px] leading-relaxed">
                     {language === 'tr'
                       ? 'Bağış sayfasında kullanıcı adı alanına tam olarak '
                       : 'Please make sure you entered '}
@@ -509,7 +509,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
           {checkResult.status === 'error' && (
             <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs space-y-2 animate-in fade-in">
               <p className="font-bold">{language === 'tr' ? 'Bilgilendirme' : 'Notice'}</p>
-              <p className="text-zinc-400 text-[11px]">{checkResult.message}</p>
+              <p className="text-zinc-400 text-[13px]">{checkResult.message}</p>
               <button
                 type="button"
                 onClick={() => setIsClaimModalOpen(true)}
@@ -521,12 +521,12 @@ export const SupportView: React.FC<SupportViewProps> = ({
           )}
 
           {/* Stream ID Information Footer Box */}
-          <div className="p-3.5 rounded-2xl bg-black/25 border border-white/[0.07] flex items-center justify-between gap-3 text-zinc-400 text-[11px] font-mono">
+          <div className="p-3.5 rounded-2xl bg-black/25 border border-white/[0.07] flex items-center justify-between gap-3 text-zinc-400 text-[13px] font-mono">
             <div className="flex items-center gap-2 overflow-hidden">
               <Radio className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
               <span className="truncate">{language === 'tr' ? 'Doğrulama Kanalı: Aktif' : 'Verification Channel: Active'}</span>
             </div>
-            <span className="text-[10px] text-zinc-500 flex-shrink-0">Code4Ever Support</span>
+            <span className="text-[12px] text-zinc-500 flex-shrink-0">Code4Ever Support</span>
           </div>
         </div>
       </div>
@@ -680,7 +680,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-zinc-300 flex items-center justify-between">
                     <span>{language === 'tr' ? 'Referans / Dekont / İşlem Kodu (Varsa)' : 'Reference / Transaction Code (Optional)'}</span>
-                    <span className="text-[10px] text-zinc-500 font-normal">{language === 'tr' ? 'Opsiyonel' : 'Optional'}</span>
+                    <span className="text-[12px] text-zinc-500 font-normal">{language === 'tr' ? 'Opsiyonel' : 'Optional'}</span>
                   </label>
                   <input
                     type="text"
@@ -695,7 +695,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-zinc-300 flex items-center justify-between">
                     <span>{language === 'tr' ? 'Bağış Mesajınız / Notunuz' : 'Message / Note'}</span>
-                    <span className="text-[10px] text-zinc-500 font-normal">{language === 'tr' ? 'Opsiyonel' : 'Optional'}</span>
+                    <span className="text-[12px] text-zinc-500 font-normal">{language === 'tr' ? 'Opsiyonel' : 'Optional'}</span>
                   </label>
                   <input
                     type="text"
@@ -767,7 +767,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
 
             {/* Copyable Username Box for Convenience */}
             <div className="c4e-well p-3.5 text-left space-y-1.5">
-              <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider block font-bold">
+              <span className="text-[12px] font-mono text-zinc-400 uppercase tracking-wider block font-bold">
                 {language === 'tr' ? 'Bağış Sayfasına Yazılacak Kullanıcı Adınız:' : 'Your Username to Enter on Donation Page:'}
               </span>
               <div className="flex items-center justify-between gap-2">
@@ -795,7 +795,7 @@ export const SupportView: React.FC<SupportViewProps> = ({
             </div>
 
             {/* Notice Footer Note */}
-            <p className="text-[11px] text-zinc-400 leading-relaxed">
+            <p className="text-[13px] text-zinc-400 leading-relaxed">
               {language === 'tr'
                 ? 'Bağışınız tamamlandıktan sonra sistemimiz üzerinden otomatik kontrol edilecek ve Spark Destekçisi rozetiniz tanımlanacaktır.'
                 : 'After your donation completes, it will be verified to automatically award your Spark Supporter badge.'}

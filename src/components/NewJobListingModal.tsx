@@ -101,7 +101,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
               <h3 className="text-sm font-bold text-white tracking-tight">
                 {language === 'tr' ? 'Yeni İlan Oluştur' : 'Create New Listing'}
               </h3>
-              <p className="text-[11px] text-zinc-400 font-mono">
+              <p className="text-[13px] text-zinc-400 font-mono">
                 {language === 'tr' ? 'İş veya ekip arkadaşı arayışınızı paylaşın' : 'Post your job or team listing'}
               </p>
             </div>
@@ -175,7 +175,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
               className="c4e-input w-full px-3.5 py-2.5 text-xs text-white placeholder-zinc-500"
               required
             />
-            <div className="text-[10px] text-zinc-500 text-right mt-1 font-mono">
+            <div className="text-[12px] text-zinc-500 text-right mt-1 font-mono">
               {title.length}/120
             </div>
           </div>
@@ -198,7 +198,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
               className="c4e-input w-full px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 resize-none"
               required
             />
-            <div className="text-[10px] text-zinc-500 text-right mt-1 font-mono">
+            <div className="text-[12px] text-zinc-500 text-right mt-1 font-mono">
               {description.length}/3000
             </div>
           </div>
@@ -217,7 +217,7 @@ export const NewJobListingModal: React.FC<NewJobListingModalProps> = ({
               className="c4e-input w-full px-3.5 py-2.5 text-xs text-white font-mono"
               required
             />
-            <span className="text-[10px] text-zinc-500 mt-1 block">
+            <span className="text-[12px] text-zinc-500 mt-1 block">
               {language === 'tr' ? 'Bu pozisyon veya ekip için alınacak kişi sayısı' : 'Number of open positions for this listing'}
             </span>
           </div>

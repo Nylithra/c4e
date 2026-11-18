@@ -650,7 +650,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               <span className="block text-xs font-bold text-white">
                 {language === 'tr' ? 'Bu toplulukta paylaşım yapmak için katıl' : 'Join to post in this community'}
               </span>
-              <span className="block text-[11px] text-zinc-400 leading-relaxed">
+              <span className="block text-[13px] text-zinc-400 leading-relaxed">
                 {language === 'tr'
                   ? 'Akışı herkes okuyabilir; gönderi paylaşmak için üye olman yeterli.'
                   : 'Anyone can read the feed — membership is only needed to post.'}
@@ -661,7 +661,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
             <button
               type="button"
               onClick={() => onToggleJoinCommunity(communityScope.id)}
-              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-black flex items-center justify-center gap-1.5 shadow-lg shadow-purple-600/20 transition-all active:scale-95 cursor-pointer flex-shrink-0"
+              className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-[13px] font-black flex items-center justify-center gap-1.5 shadow-lg shadow-purple-600/20 transition-all active:scale-95 cursor-pointer flex-shrink-0"
             >
               <Users className="w-3.5 h-3.5" />
               {language === 'tr' ? 'Topluluğa Katıl' : 'Join community'}
@@ -691,7 +691,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               <span>{label}</span>
               {count !== null && count !== undefined && (
                 <span
-                  className={`rounded-md px-1.5 py-0.5 font-mono text-[10px] ${
+                  className={`rounded-md px-1.5 py-0.5 font-mono text-[12px] ${
                     communityTab === key ? 'bg-black/10 text-zinc-700' : 'bg-white/10 text-zinc-400'
                   }`}
                 >
@@ -724,7 +724,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               {/* Inside a community the target chip stays visible even in the compact state —
                   the writer must always know where the post is going. */}
               {communityScope && !isComposerExpanded && (
-                <div className="sm:hidden flex items-center gap-1.5 text-[11px] font-mono text-purple-300">
+                <div className="sm:hidden flex items-center gap-1.5 text-[13px] font-mono text-purple-300">
                   <Users className="w-3.5 h-3.5 flex-shrink-0" />
                   <span className="truncate">{communityScope.name}</span>
                   <Lock className="w-3 h-3 flex-shrink-0 text-purple-300/70" />
@@ -748,18 +748,18 @@ export const FeedView: React.FC<FeedViewProps> = ({
                 {/* Community target: locked inside a community feed, selectable otherwise */}
                 {communityScope ? (
                   <div className="flex items-center justify-between bg-purple-500/10 border border-purple-500/25 rounded-xl px-3 py-2 text-xs min-h-[38px]">
-                    <span className="text-purple-300 font-mono text-[11px] flex items-center gap-1.5 min-w-0">
+                    <span className="text-purple-300 font-mono text-[13px] flex items-center gap-1.5 min-w-0">
                       <Users className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">{communityScope.name}</span>
                     </span>
-                    <span className="text-[10px] text-purple-300/70 font-mono flex items-center gap-1 flex-shrink-0">
+                    <span className="text-[12px] text-purple-300/70 font-mono flex items-center gap-1 flex-shrink-0">
                       <Lock className="w-3 h-3" />
                       {language === 'tr' ? 'topluluk akışı' : 'community feed'}
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between c4e-input rounded-xl px-3 py-2 text-xs min-h-[38px]">
-                    <span className="text-zinc-400 font-mono text-[11px] flex items-center gap-1.5">
+                  <div className="flex items-center justify-between gap-3 c4e-input rounded-xl px-3.5 py-2 text-xs min-h-[44px]">
+                    <span className="text-zinc-400 font-mono text-[13px] flex items-center gap-1.5">
                       <Users className="w-3.5 h-3.5 text-purple-400" />
                       <span>{language === 'tr' ? 'Topluluk:' : 'Scope:'}</span>
                     </span>
@@ -767,7 +767,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       value={selectedCommunityId || ''}
                       aria-label={language === 'tr' ? 'Gönderinin paylaşılacağı topluluk' : 'Community to post in'}
                       onChange={(e) => setSelectedCommunityId(e.target.value || null)}
-                      className="c4e-input text-zinc-200 text-xs px-2 py-1 font-mono cursor-pointer max-w-[130px]"
+                      className="c4e-input text-zinc-200 text-xs px-2.5 py-1.5 font-mono cursor-pointer min-w-0 max-w-[12rem]"
                     >
                       <option value="" className="bg-white/[0.04] text-zinc-400">
                         {language === 'tr' ? '🌐 Genel Feed' : '🌐 General Feed'}
@@ -872,7 +872,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     />
                     <div className="absolute right-2 bottom-2">
                       <span
-                        className={`text-[10px] font-mono px-2 py-0.5 rounded-md transition-all shadow-sm ${
+                        className={`text-[12px] font-mono px-2 py-0.5 rounded-md transition-all shadow-sm ${
                           codeSnippet.length > MAX_CODE_LENGTH
                             ? 'bg-red-500/20 text-red-400 border border-red-500/50 font-bold animate-pulse'
                             : codeSnippet.length >= 4000
@@ -926,8 +926,8 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   {selectedRepo && (
                     <div className="c4e-card p-2.5 space-y-1 text-xs">
                       <span className="font-bold text-white block">{selectedRepo.name}</span>
-                      <p className="text-[11px] text-zinc-400">{selectedRepo.description}</p>
-                      <span className="text-[10px] font-mono text-zinc-300 block">{selectedRepo.html_url}</span>
+                      <p className="text-[13px] text-zinc-400">{selectedRepo.description}</p>
+                      <span className="text-[12px] font-mono text-zinc-300 block">{selectedRepo.html_url}</span>
                     </div>
                   )}
                 </div>
@@ -989,7 +989,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       covered the placeholder's second line; it now lives in the action row. */}
                   <span
                     aria-live="polite"
-                    className={`text-[11px] font-mono px-2 py-0.5 rounded-md transition-colors ${
+                    className={`text-[13px] font-mono px-2 py-0.5 rounded-md transition-colors ${
                       content.length > MAX_CONTENT_LENGTH
                         ? 'bg-red-500/20 text-red-400 border border-red-500/50 font-bold'
                         : content.length >= MAX_CONTENT_LENGTH * 0.8
@@ -1183,7 +1183,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                         </span>
                         <span className="text-xs text-zinc-600">·</span>
                         <span
-                          className="text-[11px] text-zinc-500 font-mono"
+                          className="text-[13px] text-zinc-500 font-mono"
                           title={post.created_at ? new Date(post.created_at).toLocaleString() : ''}
                         >
                           {formatTimeAgo(post.created_at || post.time_ago, language)}
@@ -1315,7 +1315,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     {post.project_card.description && (
                       <p className="text-xs text-zinc-400">{post.project_card.description}</p>
                     )}
-                    <div className="flex items-center gap-4 text-[10px] font-mono text-zinc-500 pt-1">
+                    <div className="flex items-center gap-4 text-[12px] font-mono text-zinc-500 pt-1">
                       <span className="text-blue-400">{post.project_card.language}</span>
                       <span className="flex items-center gap-1">
                         <Star className="w-3 h-3 text-amber-400" />
@@ -1499,11 +1499,11 @@ export const FeedView: React.FC<FeedViewProps> = ({
                                     {comment.author.display_name}
                                   </span>
                                   <UserBadges user={commentAuthor} showTextLabels={false} />
-                                  <span className="text-zinc-500 font-mono text-[10px]">
+                                  <span className="text-zinc-500 font-mono text-[12px]">
                                     @{comment.author.username}
                                   </span>
                                 </div>
-                                <span className="text-zinc-600 font-mono text-[10px]">
+                                <span className="text-zinc-600 font-mono text-[12px]">
                                   {formatTimeAgo(comment.created_at || 'Az önce', language)}
                                 </span>
                               </div>
@@ -1551,7 +1551,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     </>
                   )}
                 </span>
-                <span className="text-[10px] text-zinc-500 font-mono">@{contextMenu.post.author.username}</span>
+                <span className="text-[12px] text-zinc-500 font-mono">@{contextMenu.post.author.username}</span>
               </div>
 
               {/* Profile Button */}
@@ -1697,7 +1697,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
           </AlertDialogHeader>
 
           {postToDelete?.content && (
-            <p className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] text-[11px] text-zinc-400 line-clamp-2 italic font-mono">
+            <p className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] text-[13px] text-zinc-400 line-clamp-2 italic font-mono">
               &quot;{postToDelete.content}&quot;
             </p>
           )}

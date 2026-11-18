@@ -64,7 +64,7 @@ export const PWAInstallBanner: React.FC<PWAInstallBannerProps> = ({
           <h4 className="text-xs font-bold text-white tracking-tight">
             {language === 'tr' ? 'Telefona Nasıl İndirilir?' : 'How to Install on Phone'}
           </h4>
-          <p className="text-[11px] text-zinc-400 font-mono truncate">
+          <p className="text-[13px] text-zinc-400 font-mono truncate">
             {language === 'tr' ? '3 adımda ana ekrana ekleme rehberi' : '3-step setup guide'}
           </p>
         </div>

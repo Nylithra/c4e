@@ -143,7 +143,7 @@ export const OAuthConsentView: React.FC<OAuthConsentViewProps> = ({ language, is
         </p>
         {/* Hatayı GÖREN kullanıcı ama ÇÖZEBİLECEK olan geliştirici; bu yüzden mesaj olduğu
             gibi gösteriliyor ve kullanıcıya ne yapacağı söyleniyor. */}
-        <p className="mx-auto mt-3 max-w-xs text-[11px] leading-relaxed text-zinc-600">
+        <p className="mx-auto mt-3 max-w-xs text-[13px] leading-relaxed text-zinc-600">
           {tr
             ? 'Bu genellikle uygulamanın yanlış yapılandırılmasından olur. Uygulamayı yapan kişiye bu mesajı iletebilirsin.'
             : 'This usually means the application is misconfigured. You can pass this message to whoever built it.'}
@@ -210,7 +210,7 @@ export const OAuthConsentView: React.FC<OAuthConsentViewProps> = ({ language, is
         )}
         <div className="min-w-0">
           <h1 className="truncate text-base font-extrabold text-white">{info.app.name}</h1>
-          <p className="truncate text-[11px] text-zinc-500">
+          <p className="truncate text-[13px] text-zinc-500">
             {info.app.owner_username
               ? `${tr ? 'geliştirici' : 'by'} @${info.app.owner_username}`
               : tr
@@ -240,7 +240,7 @@ export const OAuthConsentView: React.FC<OAuthConsentViewProps> = ({ language, is
         )}
 
         <div className="space-y-2">
-          <p className="text-[11px] font-bold tracking-wide text-zinc-500">
+          <p className="text-[13px] font-bold tracking-wide text-zinc-500">
             {tr ? 'Bu uygulama şunları yapabilecek' : 'This application will be able to'}
           </p>
           <ul className="space-y-1.5">
@@ -248,8 +248,8 @@ export const OAuthConsentView: React.FC<OAuthConsentViewProps> = ({ language, is
               <li key={scope.key} className="flex items-start gap-2.5 c4e-card px-3.5 py-2.5">
                 <Check className="mt-0.5 h-3.5 w-3.5 flex-none text-emerald-400" />
                 <span className="min-w-0">
-                  <span className="block text-[12.5px] text-zinc-200">{tr ? scope.tr : scope.en}</span>
-                  <span className="block font-mono text-[10.5px] text-zinc-600">{scope.key}</span>
+                  <span className="block text-[14px] text-zinc-200">{tr ? scope.tr : scope.en}</span>
+                  <span className="block font-mono text-[12px] text-zinc-600">{scope.key}</span>
                 </span>
               </li>
             ))}
@@ -263,7 +263,7 @@ export const OAuthConsentView: React.FC<OAuthConsentViewProps> = ({ language, is
         */}
         <div className="c4e-well flex items-start gap-2.5 px-3.5 py-3">
           <ShieldCheck className="mt-0.5 h-4 w-4 flex-none text-indigo-300" />
-          <p className="text-[11.5px] leading-relaxed text-zinc-400">
+          <p className="text-[13px] leading-relaxed text-zinc-400">
             {tr ? (
               <>
                 İzin verirsen <strong className="font-mono text-zinc-200">{host}</strong> adresine
@@ -283,7 +283,7 @@ export const OAuthConsentView: React.FC<OAuthConsentViewProps> = ({ language, is
         </div>
 
         {error && (
-          <p className="user-text flex items-start gap-1.5 text-[11.5px] text-rose-300">
+          <p className="user-text flex items-start gap-1.5 text-[13px] text-rose-300">
             <AlertCircle className="mt-0.5 h-3.5 w-3.5 flex-none" />
             {error}
           </p>

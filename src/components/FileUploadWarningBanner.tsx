@@ -64,7 +64,7 @@ export const FileUploadWarningBanner: React.FC<FileUploadWarningBannerProps> = (
                         : "Bu dosya 15MB'dan büyük!"}
                     </span>
                   </h3>
-                  <span className="px-2 py-0.5 rounded-md bg-red-500/20 border border-red-500/30 text-red-300 font-mono text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded-md bg-red-500/20 border border-red-500/30 text-red-300 font-mono text-[12px] font-bold">
                     {warningData.fileSizeMB} MB / Max {warningData.maxAllowedMB} MB
                   </span>
                 </div>
@@ -95,7 +95,7 @@ export const FileUploadWarningBanner: React.FC<FileUploadWarningBannerProps> = (
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
 
-                    <span className="text-[11px] text-zinc-400 font-mono hidden sm:inline-flex items-center gap-1">
+                    <span className="text-[13px] text-zinc-400 font-mono hidden sm:inline-flex items-center gap-1">
                       <HardDrive className="w-3 h-3 text-amber-400" />
                       15MB ➔ 250MB
                     </span>

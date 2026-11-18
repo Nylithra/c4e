@@ -72,8 +72,8 @@ const ColorField: React.FC<{
   return (
     <label className="c4e-well flex items-center justify-between gap-3 p-2.5">
       <span className="min-w-0">
-        <span className="block text-[11px] font-bold text-zinc-200 truncate">{label}</span>
-        {hint && <span className="block text-[10px] text-zinc-500 truncate">{hint}</span>}
+        <span className="block text-[13px] font-bold text-zinc-200 truncate">{label}</span>
+        {hint && <span className="block text-[12px] text-zinc-500 truncate">{hint}</span>}
       </span>
       <span className="flex items-center gap-2 flex-shrink-0">
         <input
@@ -81,7 +81,7 @@ const ColorField: React.FC<{
           value={draft}
           onChange={(e) => commit(e.target.value.trim())}
           spellCheck={false}
-          className="w-[88px] px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.12] text-[11px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
+          className="w-[88px] px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.12] text-[13px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
         />
         <input
           type="color"
@@ -105,7 +105,7 @@ const SliderField: React.FC<{
   onChange: (value: number) => void;
 }> = ({ label, value, min, max, step = 1, unit = '', onChange }) => (
   <label className="c4e-well block p-2.5">
-    <span className="flex items-center justify-between text-[11px] font-bold text-zinc-200 mb-1.5">
+    <span className="flex items-center justify-between text-[13px] font-bold text-zinc-200 mb-1.5">
       <span>{label}</span>
       <span className="font-mono text-zinc-400">
         {value}
@@ -136,8 +136,8 @@ const ToggleField: React.FC<{
     className="c4e-listrow w-full flex items-center justify-between gap-3 p-3 text-left cursor-pointer"
   >
     <span className="min-w-0">
-      <span className="block text-[11px] font-bold text-zinc-100">{label}</span>
-      {description && <span className="block text-[10px] text-zinc-500 leading-relaxed">{description}</span>}
+      <span className="block text-[13px] font-bold text-zinc-100">{label}</span>
+      {description && <span className="block text-[12px] text-zinc-500 leading-relaxed">{description}</span>}
     </span>
     <span
       className={`w-10 h-5 rounded-full flex-shrink-0 relative transition-colors ${checked ? 'bg-amber-500' : 'bg-zinc-700'}`}
@@ -202,7 +202,7 @@ const GradientEditor: React.FC<{
             key={kind}
             type="button"
             onClick={() => update({ kind })}
-            className={`py-2 rounded-xl text-[11px] font-bold border transition-colors cursor-pointer ${
+            className={`py-2 rounded-xl text-[13px] font-bold border transition-colors cursor-pointer ${
               gradient.kind === kind
                 ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
                 : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:border-white/[0.16]'
@@ -271,7 +271,7 @@ const GradientEditor: React.FC<{
               key={shape}
               type="button"
               onClick={() => update({ shape })}
-              className={`py-2 rounded-xl text-[11px] font-bold border transition-colors cursor-pointer ${
+              className={`py-2 rounded-xl text-[13px] font-bold border transition-colors cursor-pointer ${
                 gradient.shape === shape
                   ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
                   : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:border-white/[0.16]'
@@ -285,14 +285,14 @@ const GradientEditor: React.FC<{
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold text-zinc-300">
+          <span className="text-[13px] font-bold text-zinc-300">
             {t(language, 'Renk Durakları', 'Colour stops')} ({gradient.stops.length}/{MAX_GRADIENT_STOPS})
           </span>
           <button
             type="button"
             onClick={addStop}
             disabled={gradient.stops.length >= MAX_GRADIENT_STOPS}
-            className="px-2.5 py-1 rounded-lg bg-white/[0.07] hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed text-[10px] font-bold text-zinc-200 flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1 rounded-lg bg-white/[0.07] hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed text-[12px] font-bold text-zinc-200 flex items-center gap-1 cursor-pointer"
           >
             <Plus className="w-3 h-3" />
             {t(language, 'Renk Ekle', 'Add colour')}
@@ -317,7 +317,7 @@ const GradientEditor: React.FC<{
                   const next = e.target.value.trim();
                   if (isValidColor(next)) updateStop(index, { color: next });
                 }}
-                className="flex-1 min-w-0 px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.12] text-[11px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
+                className="flex-1 min-w-0 px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.12] text-[13px] font-mono text-zinc-200 focus:outline-none focus:border-zinc-500"
               />
               <button
                 type="button"
@@ -371,7 +371,7 @@ const FillSection: React.FC<{
       </span>
       <span className="min-w-0">
         <h4 className="text-xs font-extrabold text-white">{title}</h4>
-        <p className="text-[10px] text-zinc-500 leading-relaxed">{description}</p>
+        <p className="text-[12px] text-zinc-500 leading-relaxed">{description}</p>
       </span>
     </header>
 
@@ -381,7 +381,7 @@ const FillSection: React.FC<{
           key={kind}
           type="button"
           onClick={() => onChange({ ...fill, kind })}
-          className={`py-2 rounded-xl text-[11px] font-bold border transition-colors cursor-pointer ${
+          className={`py-2 rounded-xl text-[13px] font-bold border transition-colors cursor-pointer ${
             fill.kind === kind
               ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
               : 'bg-black/25 border-white/[0.07] text-zinc-400 hover:border-white/[0.16]'
@@ -447,7 +447,7 @@ const ThemePreview: React.FC<{ theme: ProfileTheme; user: UserProfile; language:
         </div>
         <button
           type="button"
-          className={`c4e-theme-accent px-3.5 py-1.5 text-[11px] font-bold ${theme.accent.gradient.animate ? 'c4e-theme-animated' : ''}`}
+          className={`c4e-theme-accent px-3.5 py-1.5 text-[13px] font-bold ${theme.accent.gradient.animate ? 'c4e-theme-animated' : ''}`}
         >
           {t(language, 'Mesaj Gönder', 'Send message')}
         </button>
@@ -457,18 +457,18 @@ const ThemePreview: React.FC<{ theme: ProfileTheme; user: UserProfile; language:
         <p className="text-sm font-extrabold" style={{ color: theme.text.primary }}>
           {user.display_name || t(language, 'Görünen Ad', 'Display name')}
         </p>
-        <p className="text-[11px] font-mono c4e-theme-muted">@{user.username || 'kullanici'}</p>
+        <p className="text-[13px] font-mono c4e-theme-muted">@{user.username || 'kullanici'}</p>
       </div>
 
       <div className="c4e-theme-surface p-3" style={{ backdropFilter: theme.effects.blur ? `blur(${theme.effects.blur}px)` : undefined }}>
-        <p className="text-[11px] leading-relaxed" style={{ color: theme.text.primary }}>
+        <p className="text-[13px] leading-relaxed" style={{ color: theme.text.primary }}>
           {t(language, 'Bu bir örnek kart. Kart arka planı, kenarlık ve köşe yarıçapı temanızdan gelir.', 'Sample card. Surface, border and radius come from your theme.')}
         </p>
-        <p className="text-[11px] mt-1.5 c4e-theme-muted">{t(language, 'İkincil metin rengi', 'Muted text colour')}</p>
-        <p className="text-[11px] mt-1.5 font-mono" style={{ color: theme.text.code }}>
+        <p className="text-[13px] mt-1.5 c4e-theme-muted">{t(language, 'İkincil metin rengi', 'Muted text colour')}</p>
+        <p className="text-[13px] mt-1.5 font-mono" style={{ color: theme.text.code }}>
           const spark = &quot;{t(language, 'kod rengi', 'code colour')}&quot;;
         </p>
-        <p className="text-[11px] mt-1.5 c4e-theme-link underline">{t(language, 'Bağlantı rengi', 'Link colour')}</p>
+        <p className="text-[13px] mt-1.5 c4e-theme-link underline">{t(language, 'Bağlantı rengi', 'Link colour')}</p>
       </div>
       </div>
     </div>
@@ -573,11 +573,11 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           <span className="min-w-0">
             <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
               {t(language, 'Gradyan Tema Stüdyosu', 'Gradient Theme Studio')}
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[9px] font-black uppercase tracking-wider">
+              <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[11px] font-black uppercase tracking-wider">
                 Spark
               </span>
             </h3>
-            <p className="text-[11px] text-zinc-400 leading-relaxed">
+            <p className="text-[13px] text-zinc-400 leading-relaxed">
               {t(
                 language,
                 'Her rengi, gradyan türünü ve yönünü değiştirin. Temanız profilinizde diğer kullanıcılara da görünür.',
@@ -591,7 +591,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           <button
             type="button"
             onClick={() => setLivePreview((prev) => !prev)}
-            className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:border-white/[0.16] text-[11px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:border-white/[0.16] text-[13px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
             title={t(language, 'Canlı önizleme', 'Live preview')}
           >
             {livePreview ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -600,7 +600,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           <button
             type="button"
             onClick={handleReset}
-            className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:border-white/[0.16] text-[11px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
+            className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] hover:border-white/[0.16] text-[13px] font-bold text-zinc-300 flex items-center gap-1.5 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             {t(language, 'Sıfırla', 'Reset')}
@@ -608,7 +608,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
           <button
             type="button"
             onClick={handleSave}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 text-[11px] font-black flex items-center gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 text-[13px] font-black flex items-center gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer"
           >
             {savedAt ? <Check className="w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />}
             {savedAt ? t(language, 'Kaydedildi', 'Saved') : t(language, 'Kaydet', 'Save')}
@@ -702,8 +702,8 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
                     </span>
 
                     <span className="block bg-black/40 px-2 py-1.5">
-                      <span className="block truncate text-[11px] font-bold text-zinc-100">{item.name}</span>
-                      <span className="block truncate text-[9.5px] text-zinc-500">{item.description}</span>
+                      <span className="block truncate text-[13px] font-bold text-zinc-100">{item.name}</span>
+                      <span className="block truncate text-[11px] text-zinc-500">{item.description}</span>
                     </span>
                   </button>
                 );
@@ -884,12 +884,12 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({ user, language, onSave
 
         {/* Sticky preview */}
         <aside className="lg:sticky lg:top-4 space-y-3">
-          <p className="text-[11px] font-bold text-zinc-300 flex items-center gap-1.5">
+          <p className="text-[13px] font-bold text-zinc-300 flex items-center gap-1.5">
             <Eye className="w-3.5 h-3.5 text-amber-400" />
             {t(language, 'Önizleme', 'Preview')}
           </p>
           <ThemePreview theme={draft} user={user} language={language} />
-          <p className="text-[10px] text-zinc-500 leading-relaxed">
+          <p className="text-[12px] text-zinc-500 leading-relaxed">
             {t(
               language,
               'Renk değerleri kaydedilirken doğrulanır; yalnızca geçerli HEX renkleri ve sınırlandırılmış sayısal değerler saklanır.',

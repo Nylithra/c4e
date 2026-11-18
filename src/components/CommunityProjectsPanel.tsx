@@ -114,7 +114,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
             <span className="block text-sm font-bold text-zinc-200 group-hover:text-white">
               {tr ? 'Projeni bu topluluğa ekle' : 'Add your project here'}
             </span>
-            <span className="block text-[11px] text-zinc-500">
+            <span className="block text-[13px] text-zinc-500">
               {tr
                 ? 'Yalnızca kendi projelerini ekleyebilirsin.'
                 : 'You can only add projects you own.'}
@@ -166,7 +166,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
                       href={project.repo_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="user-text inline-flex items-center gap-1.5 text-[11px] text-zinc-400 transition-colors hover:text-white rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="user-text inline-flex items-center gap-1.5 text-[13px] text-zinc-400 transition-colors hover:text-white rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <Github className="h-3 w-3 flex-none" />
                       <span className="truncate">{project.repo_full_name}</span>
@@ -199,7 +199,7 @@ export const CommunityProjectsPanel: React.FC<CommunityProjectsPanelProps> = ({
                 </p>
               )}
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-white/[0.06] pt-3.5 font-mono text-[11px] text-zinc-500">
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-white/[0.06] pt-3.5 font-mono text-[13px] text-zinc-500">
                 <span className="inline-flex items-center gap-1.5">
                   <Heart className="h-3 w-3 text-rose-400" />
                   <strong className="text-zinc-300">{project.likes_count}</strong>

@@ -128,7 +128,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
             ? 'EveryChat Şuanda BETA Aşamasındadır.'
             : 'EveryChat Is Now Beta'}
         </p>
-        <div className="px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-[11px] font-mono text-zinc-500">
+        <div className="px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.07] text-[13px] font-mono text-zinc-500">
           Oturum Sahibi: <span className="text-zinc-300">@{user.username || 'misafir'}</span>
         </div>
       </div>
@@ -153,15 +153,15 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-white tracking-tight">EveryChat</h2>
-              <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-blue-600 text-white rounded">
+              <span className="px-1.5 py-0.5 text-[11px] font-bold font-mono bg-blue-600 text-white rounded">
                 BETA
               </span>
-              <span className="flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="flex items-center gap-1 text-[12px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                 <span className="c4e-live-dot w-1.5 h-1.5 rounded-full bg-emerald-400 text-emerald-400" />
                 Groq Active
               </span>
             </div>
-            <p className="text-[11px] text-zinc-400 font-mono">
+            <p className="text-[13px] text-zinc-400 font-mono">
               Llama 3.3 70B Versatile • @nylithra özel alan
             </p>
           </div>
@@ -214,10 +214,10 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
 
               <div className="space-y-1 max-w-2xl">
                 <div className="flex items-center gap-2 px-1">
-                  <span className="text-[11px] font-bold text-zinc-300">
+                  <span className="text-[13px] font-bold text-zinc-300">
                     {isUser ? user.display_name : 'EveryChat AI (Groq)'}
                   </span>
-                  <span className="text-[10px] text-zinc-500 font-mono">{msg.timestamp}</span>
+                  <span className="text-[12px] text-zinc-500 font-mono">{msg.timestamp}</span>
                 </div>
 
                 <div
@@ -235,7 +235,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
                     <div className="mt-2 pt-2 border-t border-white/[0.07] flex items-center justify-end">
                       <button
                         onClick={() => handleCopy(msg.content, msg.id)}
-                        className="flex items-center gap-1 text-[10px] text-zinc-400 hover:text-white transition-colors"
+                        className="flex items-center gap-1 text-[12px] text-zinc-400 hover:text-white transition-colors"
                       >
                         {copiedId === msg.id ? (
                           <>
@@ -279,7 +279,7 @@ export const EveryChatView: React.FC<EveryChatViewProps> = ({ user, language }) 
             <button
               key={i}
               onClick={() => handleSendMessage(prompt)}
-              className="text-[11px] bg-white/[0.06] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 px-3 py-1.5 rounded-xl transition-all text-left truncate max-w-full"
+              className="text-[13px] bg-white/[0.06] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 px-3 py-1.5 rounded-xl transition-all text-left truncate max-w-full"
             >
               💡 {prompt}
             </button>

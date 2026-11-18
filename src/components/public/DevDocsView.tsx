@@ -28,18 +28,18 @@ const CodeBlock: React.FC<{ code: string; label?: string }> = ({ code, label }) 
   return (
     <div className="c4e-well overflow-hidden">
       <div className="flex items-center justify-between border-b border-white/[0.07] px-3 py-1.5">
-        <span className="font-mono text-[11px] text-zinc-500">{label || 'example'}</span>
+        <span className="font-mono text-[13px] text-zinc-500">{label || 'example'}</span>
         <button
           type="button"
           onClick={copy}
           aria-label="Kopyala"
-          className="flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-[11px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
           <span>{copied ? 'Kopyalandı' : 'Kopyala'}</span>
         </button>
       </div>
-      <pre className="overflow-x-auto p-3 text-[12px] leading-relaxed text-zinc-300">
+      <pre className="overflow-x-auto p-3 text-[13.5px] leading-relaxed text-zinc-300">
         <code>{code}</code>
       </pre>
     </div>
@@ -55,22 +55,22 @@ const Endpoint: React.FC<{
   <div className="c4e-card space-y-3 p-4">
     <div className="flex flex-wrap items-center gap-2">
       <span
-        className={`rounded-md border px-2 py-0.5 font-mono text-[11px] font-bold ${METHOD_COLORS[method]}`}
+        className={`rounded-md border px-2 py-0.5 font-mono text-[13px] font-bold ${METHOD_COLORS[method]}`}
       >
         {method}
       </span>
-      <code className="user-text font-mono text-[13px] text-white">{path}</code>
-      <span className="ml-auto rounded-full border border-white/[0.12] bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+      <code className="user-text font-mono text-[14px] text-white">{path}</code>
+      <span className="ml-auto rounded-full border border-white/[0.12] bg-white/[0.04] px-2 py-0.5 font-mono text-[12px] text-zinc-400">
         {auth}
       </span>
     </div>
-    <div className="space-y-3 text-[13px] leading-relaxed text-zinc-400">{children}</div>
+    <div className="space-y-3 text-[14px] leading-relaxed text-zinc-400">{children}</div>
   </div>
 );
 
 const Table: React.FC<{ head: string[]; rows: Array<Array<React.ReactNode>> }> = ({ head, rows }) => (
   <div className="overflow-x-auto rounded-xl border border-white/[0.07]">
-    <table className="w-full min-w-[420px] border-collapse text-left text-[12px]">
+    <table className="w-full min-w-[420px] border-collapse text-left text-[13.5px]">
       <thead>
         <tr className="bg-white/[0.04]">
           {head.map((h) => (
@@ -252,7 +252,7 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
       nav={nav}
     >
       <Section id="baslangic" title={tr ? '1. Başlangıç' : '1. Getting started'}>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Taban adres aşağıdaki gibidir. Tüm istek ve yanıt gövdeleri UTF-8 JSON’dur ve tüm uçlar HTTPS üzerinden çalışır.'
             : 'The base address is below. Every request and response body is UTF-8 JSON and every endpoint is HTTPS only.'}
@@ -284,15 +284,15 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
           ].map((card) => (
             <div key={card.title} className="c4e-card p-3.5">
               <card.icon className="mb-2 h-4 w-4 text-zinc-300" />
-              <h3 className="text-[13px] font-bold text-white">{card.title}</h3>
-              <p className="mt-1 text-[12px] leading-relaxed text-zinc-500">{card.body}</p>
+              <h3 className="text-[14px] font-bold text-white">{card.title}</h3>
+              <p className="mt-1 text-[13.5px] leading-relaxed text-zinc-500">{card.body}</p>
             </div>
           ))}
         </div>
       </Section>
 
       <Section id="uygulama" title={tr ? '2. Uygulama oluşturma' : '2. Creating an application'}>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Bir uygulama, ÜYENİN İZNİYLE onun adına Code4Ever verisine erişir. "Code4Ever ile giriş yap" ve "Code4Ever hesabını bağla" bu akışın iki yüzüdür. Uygulamanı /dev/apps ekranından açarsın.'
             : 'An application accesses a member’s Code4Ever data WITH THEIR PERMISSION. "Sign in with Code4Ever" and "Connect your Code4Ever account" are the two faces of this flow. You create your application on /dev/apps.'}
@@ -338,7 +338,7 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
 
         <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/[0.07] p-3.5">
           <ShieldAlert className="mt-0.5 h-4 w-4 flex-none text-amber-300" />
-          <p className="text-[12.5px] leading-relaxed text-amber-200/90">
+          <p className="text-[14px] leading-relaxed text-amber-200/90">
             {tr
               ? 'Tarayıcıda ya da mobil uygulamada çalışan bir istemci sırrı saklayamaz. Böyle bir istemci yazıyorsan client_secret KULLANMA; PKCE ile çalış (aşağıda). Sırrı istemciye gömmek, sırrın herkese açık olması demektir.'
               : 'A client running in a browser or a mobile app cannot keep a secret. If you are writing one, do NOT use client_secret; use PKCE instead (below). Embedding the secret in a client means publishing it.'}
@@ -347,13 +347,13 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
       </Section>
 
       <Section id="oauth" title={tr ? '3. OAuth2 akışı' : '3. The OAuth2 flow'}>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Standart "authorization code" akışı (RFC 6749) artı PKCE. Üç adım: kullanıcıyı onay ekranına gönder, dönen kodu belirtece çevir, belirteçle API’yi çağır.'
             : 'The standard authorization-code flow (RFC 6749) plus PKCE. Three steps: send the user to the consent screen, exchange the returned code for a token, call the API with the token.'}
         </p>
 
-        <h3 className="pt-2 text-[13px] font-bold text-white">
+        <h3 className="pt-2 text-[14px] font-bold text-white">
           {tr ? '3.1 Kullanıcıyı onay ekranına gönder' : '3.1 Send the user to the consent screen'}
         </h3>
         <CodeBlock label="authorize" code={authorizeUrl} />
@@ -387,26 +387,26 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
           ]}
         />
 
-        <h3 className="pt-2 text-[13px] font-bold text-white">
+        <h3 className="pt-2 text-[14px] font-bold text-white">
           {tr ? '3.2 Kodu belirtece çevir' : '3.2 Exchange the code for a token'}
         </h3>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Kullanıcı izin verince tarayıcı, redirect_uri adresine ?code=...&state=... ile döner. Kod TEK KULLANIMLIK ve 10 dakika ömürlüdür. Takas isteğini SUNUCUNDAN yap.'
             : 'When the user approves, the browser returns to your redirect_uri with ?code=...&state=... The code is SINGLE-USE and lives 10 minutes. Make the exchange request FROM YOUR SERVER.'}
         </p>
         <CodeBlock label="POST /api/oauth/token" code={tokenExchange} />
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Gizli istemci (sunucu) client_secret gönderir; açık istemci (tarayıcı/mobil) onun yerine code_verifier gönderir. Hangisinin isteneceğini yetkilendirme anında code_challenge gönderip göndermediğin belirler.'
             : 'A confidential client (your server) sends client_secret; a public client sends code_verifier instead. Which one is required is decided by whether you sent a code_challenge at authorize time.'}
         </p>
         <CodeBlock label="200 OK" code={tokenResponse} />
 
-        <h3 className="pt-2 text-[13px] font-bold text-white">
+        <h3 className="pt-2 text-[14px] font-bold text-white">
           {tr ? '3.3 Belirteci yenile' : '3.3 Refresh the token'}
         </h3>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Erişim belirteci 1 saat, yenileme belirteci 30 gün yaşar. Yenileme DÖNERLİDİR: her yenilemede yeni bir çift verilir ve eskisi anında geçersizleşir. Yanıttaki yeni refresh_token’ı saklamayı unutma.'
             : 'Access tokens live 1 hour, refresh tokens 30 days. Refresh is ROTATING: each refresh issues a new pair and kills the old one. Remember to store the new refresh_token from the response.'}
@@ -453,7 +453,7 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
 
         <div className="c4e-card flex items-start gap-2.5 p-3.5">
           <ShieldAlert className="mt-0.5 h-4 w-4 flex-none text-indigo-300" />
-          <p className="text-[12.5px] leading-relaxed text-zinc-400">
+          <p className="text-[14px] leading-relaxed text-zinc-400">
             {tr
               ? 'Üye, verdiği erişimi Ayarlar > Bağlı Hesaplar > Bağlı Uygulamalar bölümünden istediği an kesebilir. Kestiği anda uygulamanın o üyeye ait BÜTÜN belirteçleri silinir; bir sonraki istek 401 invalid_token döner. Uygulaman bunu beklemeli ve kullanıcıyı yeniden yetkilendirmeye yönlendirmelidir.'
               : 'A member can revoke access any time under Settings > Connected Accounts > Connected Applications. ALL of your tokens for that member are deleted immediately and the next request returns 401 invalid_token. Your application should expect this and send the user back through authorization.'}
@@ -462,7 +462,7 @@ curl "${origin}/api/v1/communities/@react_tr/posts?limit=20"`;
       </Section>
 
       <Section id="kimlik" title={tr ? '5. Topluluk API: kimlik doğrulama' : '5. Community API: authentication'}>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Yazma isteklerinde anahtarı X-API-Key başlığında gönderin. Anahtarlar lnx_live_ ile başlar.'
             : 'Send the key in the X-API-Key header on write requests. Keys start with lnx_live_.'}
@@ -476,7 +476,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
         />
         <div className="flex items-start gap-3 rounded-xl border border-amber-700/40 bg-amber-950/25 p-3.5">
           <ShieldAlert className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400" />
-          <div className="space-y-1 text-[12px] leading-relaxed text-amber-200/90">
+          <div className="space-y-1 text-[13.5px] leading-relaxed text-amber-200/90">
             <p className="font-bold text-amber-200">
               {tr ? 'Anahtarı tarayıcıya koymayın.' : 'Never ship a key to the browser.'}
             </p>
@@ -487,7 +487,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
             </p>
           </div>
         </div>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Anahtarın veritabanında yalnızca SHA-256 özeti tutulur. Düz metni yalnızca oluşturulduğu anda, bir kez gösterilir; sonradan kurtarılamaz.'
             : 'Only the SHA-256 hash of a key is stored. The plaintext is shown once, at creation, and cannot be recovered afterwards.'}
@@ -495,7 +495,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
       </Section>
 
       <Section id="anahtar" title={tr ? '6. Anahtar yönetimi' : '6. Key management'}>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Anahtarları yalnızca topluluğun kurucusu (veya platform yöneticisi) yönetebilir. Arayüzden: Topluluklar → ilgili topluluk → API düğmesi → Anahtarlar sekmesi. HTTP üzerinden aşağıdaki uçlar kullanılabilir; bu uçlar oturum belirteci (Supabase Bearer token) ister, API anahtarı değil.'
             : 'Only the community founder (or a platform administrator) can manage keys. In the UI: Communities → the community → API button → Keys tab. Over HTTP the endpoints below apply; they take a session bearer token, not an API key.'}
@@ -607,7 +607,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
               ]
             ]}
           />
-          <p className="text-[12px] text-zinc-500">
+          <p className="text-[13.5px] text-zinc-500">
             {tr
               ? 'Hedef topluluk anahtardan belirlenir; adresteki handle yalnızca doğrulama içindir. Bir topluluğun anahtarı başka bir topluluğa gönderi atmak için kullanılamaz (403).'
               : 'The target community comes from the key; the handle in the path is only cross-checked. A key for one community cannot post into another (403).'}
@@ -624,7 +624,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
       </Section>
 
       <Section id="hatalar" title={tr ? '9. Hata kodları' : '9. Error codes'}>
-        <p className="text-[13px] leading-relaxed text-zinc-400">
+        <p className="text-[14px] leading-relaxed text-zinc-400">
           {tr
             ? 'Her hata { "success": false, "error": "..." } biçimindedir. Doğrulama hatalarında ayrıca field alanı döner.'
             : 'Every error is { "success": false, "error": "..." }. Validation errors also carry a field key.'}
@@ -657,7 +657,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
             [tr ? 'Topluluk başına etkin anahtar' : 'Active keys per community', '10']
           ]}
         />
-        <p className="text-[12px] leading-relaxed text-zinc-500">
+        <p className="text-[13.5px] leading-relaxed text-zinc-500">
           {tr
             ? 'Sınır aşıldığında 429 ve Retry-After başlığı döner. İstemcinizin üstel geri çekilme uygulaması beklenir.'
             : 'Exceeding a limit returns 429 with a Retry-After header. Clients are expected to back off exponentially.'}
@@ -665,7 +665,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
       </Section>
 
       <Section id="kurallar" title={tr ? '11. Kullanım kuralları' : '11. Acceptable use'}>
-        <ul className="space-y-2 text-[13px] leading-relaxed text-zinc-400">
+        <ul className="space-y-2 text-[14px] leading-relaxed text-zinc-400">
           {(tr
             ? [
                 'Yalnızca yönettiğiniz veya açıkça izin aldığınız topluluklara yayın yapın.',
@@ -690,7 +690,7 @@ Authorization: Bearer lnx_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`}
             </li>
           ))}
         </ul>
-        <p className="text-[12px] text-zinc-500">
+        <p className="text-[13.5px] text-zinc-500">
           <a href="/tos" className="text-blue-400 hover:text-blue-300">
             {tr ? 'Kullanım Şartları' : 'Terms of Service'}
           </a>

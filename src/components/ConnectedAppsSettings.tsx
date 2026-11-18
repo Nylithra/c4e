@@ -90,7 +90,7 @@ export const ConnectedAppsSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lan
               )}
               <div className="min-w-0 space-y-1">
                 <p className="truncate text-sm font-bold text-white">{item.app.name}</p>
-                <p className="truncate text-[11px] text-zinc-500">
+                <p className="truncate text-[13px] text-zinc-500">
                   {item.app.owner_username
                     ? `${tr ? 'geliştirici' : 'by'} @${item.app.owner_username}`
                     : tr
@@ -121,7 +121,7 @@ export const ConnectedAppsSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lan
           {/* Hangi izni verdiği AÇIKÇA yazıyor: "bağlı" demek, neye erişildiğini söylemez. */}
           <ul className="space-y-1 border-t border-white/[0.06] pt-2.5">
             {item.scopes.map((scope) => (
-              <li key={scope} className="flex items-start gap-2 text-[11.5px] text-zinc-400">
+              <li key={scope} className="flex items-start gap-2 text-[13px] text-zinc-400">
                 <span className="mt-1.5 h-1 w-1 flex-none rounded-full bg-indigo-400" />
                 <span>
                   {scopeInfo[scope] ? (tr ? scopeInfo[scope].tr : scopeInfo[scope].en) : scope}
@@ -133,7 +133,7 @@ export const ConnectedAppsSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lan
       ))}
 
       {error && (
-        <p className="user-text flex items-center gap-1.5 text-[11px] text-rose-300">
+        <p className="user-text flex items-center gap-1.5 text-[13px] text-rose-300">
           <AlertCircle className="h-3 w-3 flex-shrink-0" />
           {error}
         </p>

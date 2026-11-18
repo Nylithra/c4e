@@ -183,7 +183,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 min-w-[16px] rounded-full bg-red-500 px-1 text-center text-[10px] font-bold leading-4 text-white ring-2 ring-[#0a0a14]">
+              <span className="absolute top-1 right-1 min-w-[16px] rounded-full bg-red-500 px-1 text-center text-[12px] font-bold leading-4 text-white ring-2 ring-[#0a0a14]">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
@@ -241,12 +241,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <div className="flex items-center gap-1">
                     <span className="text-xs font-bold text-white truncate">{user.display_name}</span>
                     {hasAdminAccess && (
-                      <span className="px-1 py-0.2 rounded bg-white/[0.07] text-[9px] text-zinc-400 font-mono">
+                      <span className="px-1 py-0.2 rounded bg-white/[0.07] text-[11px] text-zinc-400 font-mono">
                         ADMIN
                       </span>
                     )}
                   </div>
-                  <span className="text-[11px] text-zinc-400 font-mono truncate block">@{user.username}</span>
+                  <span className="text-[13px] text-zinc-400 font-mono truncate block">@{user.username}</span>
                 </div>
               </div>
 
@@ -267,7 +267,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <span className="text-xs font-bold text-white block">
                         {language === 'tr' ? 'Telefona Nasıl İndirilir?' : 'How to Install on Phone'}
                       </span>
-                      <span className="text-[10px] text-zinc-400 font-mono block">
+                      <span className="text-[12px] text-zinc-400 font-mono block">
                         {language === 'tr' ? 'Kolay kurulum rehberi (PWA)' : 'PWA Setup guide'}
                       </span>
                     </div>
@@ -310,17 +310,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                       <div className="flex items-center gap-1.5">
                         {(item.isBetaModal || item.isBetaBadge) && (
-                          <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
+                          <span className="px-1.5 py-0.5 text-[11px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                             BETA
                           </span>
                         )}
                         {item.badge !== undefined && (
-                          <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-zinc-100 text-zinc-950 rounded-full">
+                          <span className="px-2 py-0.5 text-[12px] font-mono font-bold bg-zinc-100 text-zinc-950 rounded-full">
                             {item.badge}
                           </span>
                         )}
                         {item.isAdminBadge && (
-                          <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
+                          <span className="px-1.5 py-0.5 text-[11px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                             ADMIN
                           </span>
                         )}
@@ -358,7 +358,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <Bug className="w-4 h-4 text-red-400" />
                     <span>{language === 'tr' ? 'Bir Hata Bildir' : 'Report an Issue'}</span>
                   </div>
-                  <span className="text-[10px] font-mono font-bold bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded">
+                  <span className="text-[12px] font-mono font-bold bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded">
                     LOG
                   </span>
                 </button>
@@ -370,7 +370,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <Globe className="w-4 h-4 text-zinc-400" />
                     <span>{language === 'tr' ? 'Dil' : 'Language'}</span>
                   </div>
-                  <div className="flex items-center gap-1 font-mono text-[11px]">
+                  <div className="flex items-center gap-1 font-mono text-[13px]">
                     <button
                       onClick={() => onChangeLanguage('tr')}
                       className={`px-2 py-1 rounded-lg ${
@@ -437,7 +437,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <UserAvatar
                       src={user.avatar_url}
                       name={user.display_name || user.username}
-                      className={`h-7 w-7 text-[10px] ring-2 transition-colors ${
+                      className={`h-7 w-7 text-[12px] ring-2 transition-colors ${
                         isActive ? 'ring-zinc-300' : 'ring-white/[0.12]'
                       }`}
                     />
@@ -452,7 +452,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* Unread counters ride on the icon rather than adding a second row. */}
                 {item.badge ? (
-                  <span className="absolute right-[18%] top-1.5 min-w-[17px] rounded-full bg-red-500 px-1 text-center text-[10px] font-bold leading-[17px] text-white ring-2 ring-[#0a0a14]">
+                  <span className="absolute right-[18%] top-1.5 min-w-[17px] rounded-full bg-red-500 px-1 text-center text-[12px] font-bold leading-[17px] text-white ring-2 ring-[#0a0a14]">
                     {item.badge > 99 ? '99+' : item.badge}
                   </span>
                 ) : null}
@@ -497,7 +497,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     }
                   }}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`c4e-nav w-full justify-between text-[13px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  className={`c4e-nav w-full justify-between text-[14px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     isActive ? 'c4e-nav-on' : ''
                   }`}
                 >
@@ -512,17 +512,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                   <div className="flex items-center gap-1.5">
                     {(item.isBetaModal || item.isBetaBadge) && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
+                      <span className="px-1.5 py-0.5 text-[11px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                         BETA
                       </span>
                     )}
                     {item.badge !== undefined && (
-                      <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-zinc-100 text-zinc-950 rounded-full">
+                      <span className="px-2 py-0.5 text-[12px] font-mono font-bold bg-zinc-100 text-zinc-950 rounded-full">
                         {item.badge}
                       </span>
                     )}
                     {item.isAdminBadge && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
+                      <span className="px-1.5 py-0.5 text-[11px] font-bold font-mono bg-white/[0.07] text-zinc-300 border border-white/[0.12] rounded shadow-sm">
                         ADMIN
                       </span>
                     )}
@@ -560,18 +560,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <UserAvatar
                 src={user.avatar_url}
                 name={user.display_name || user.username}
-                className="w-9 h-9 ring-2 ring-white/[0.12] flex-shrink-0 text-[10px]"
+                className="w-9 h-9 ring-2 ring-white/[0.12] flex-shrink-0 text-[12px]"
               />
               <div className="truncate">
                 <div className="flex items-center gap-1 truncate">
                   <span className="text-xs font-bold text-white truncate">{user.display_name}</span>
                   {hasAdminAccess && (
-                    <span className="px-1 py-0.2 rounded bg-white/[0.07] text-[9px] text-zinc-400 font-mono">
+                    <span className="px-1 py-0.2 rounded bg-white/[0.07] text-[11px] text-zinc-400 font-mono">
                       ADMIN
                     </span>
                   )}
                 </div>
-                <span className="text-[11px] text-zinc-400 font-mono truncate block">@{user.username}</span>
+                <span className="text-[13px] text-zinc-400 font-mono truncate block">@{user.username}</span>
               </div>
             </div>
             <div className="flex items-center gap-1">

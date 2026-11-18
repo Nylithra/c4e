@@ -390,11 +390,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     <h3 className="text-base font-extrabold text-white flex items-center gap-2">
                       <span>{currentComm.name}</span>
                     </h3>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-400 font-semibold">
+                    <span className="text-[12px] font-mono px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-400 font-semibold">
                       {language === 'tr' ? 'Topluluk' : 'Community'}
                     </span>
                     {currentComm.created_by === currentUser.id && (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-300 flex items-center gap-1">
+                      <span className="text-[12px] font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-300 flex items-center gap-1">
                         <Crown className="w-2.5 h-2.5 text-amber-400" />
                         {language === 'tr' ? 'Kurucusunuz' : 'Founder'}
                       </span>
@@ -420,7 +420,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     <span>{currentComm.members_count.toLocaleString()} {language === 'tr' ? 'Üye' : 'Members'}</span>
                   </span>
 
-                  <span className="text-[11px] text-zinc-500">
+                  <span className="text-[13px] text-zinc-500">
                     {language === 'tr' ? 'Topluluk Profili' : 'Community Profile'}
                   </span>
                 </div>
@@ -521,7 +521,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 )}
 
                 {/* Metadata */}
-                <div className="pt-2 flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-zinc-400 font-mono">
+                <div className="pt-2 flex flex-wrap gap-x-4 gap-y-2 text-[13px] text-zinc-400 font-mono">
                   {profileData.custom_fields?.location && (
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5 text-zinc-500" />
@@ -574,7 +574,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     <h4 className="text-xs font-bold text-zinc-300 mb-2 flex items-center gap-1.5">
                       <GitBranch className="w-3.5 h-3.5 text-orange-400" />
                       <span>{language === 'tr' ? 'Vitrin Depoları' : 'Showcase Repositories'}</span>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/[0.07] font-mono text-zinc-400 font-bold">
+                      <span className="text-[12px] px-1.5 py-0.2 rounded-full bg-white/[0.07] font-mono text-zinc-400 font-bold">
                         {repos.length}
                       </span>
                     </h4>
@@ -592,11 +592,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                             <ExternalLink className="w-3 h-3 text-zinc-500 group-hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                           {repo.description && (
-                            <p className="text-[11px] text-zinc-400 line-clamp-2 mt-1 leading-relaxed">
+                            <p className="text-[13px] text-zinc-400 line-clamp-2 mt-1 leading-relaxed">
                               {repo.description}
                             </p>
                           )}
-                          <div className="flex items-center gap-3 mt-2 text-[10px] text-zinc-500 font-mono">
+                          <div className="flex items-center gap-3 mt-2 text-[12px] text-zinc-500 font-mono">
                             {repo.language && (
                               <span className="flex items-center gap-1 text-zinc-300">
                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
@@ -630,7 +630,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     {communities.filter(c => c.is_joined).map((comm) => (
                       <span
                         key={comm.id}
-                        className="text-[11px] font-mono px-2.5 py-1 rounded-xl bg-black/25 border border-white/[0.07] text-zinc-300 flex items-center gap-1.5"
+                        className="text-[13px] font-mono px-2.5 py-1 rounded-xl bg-black/25 border border-white/[0.07] text-zinc-300 flex items-center gap-1.5"
                       >
                         <img src={comm.avatar_url} alt={comm.name} className="w-3.5 h-3.5 rounded-full object-cover" />
                         <span>{comm.name}</span>

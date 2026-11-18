@@ -222,7 +222,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
                   <span>{language === 'tr' ? 'Topluluk Ayarları' : 'Community Settings'}</span>
                   {isOwner && (
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono">
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[12px] font-mono">
                       {language === 'tr' ? 'Kurucu / Sahip' : 'Owner'}
                     </span>
                   )}
@@ -333,7 +333,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                       </button>
                     )}
                   </div>
-                  <p className="text-[11px] text-zinc-500 font-mono">
+                  <p className="text-[13px] text-zinc-500 font-mono">
                     {language === 'tr' ? 'Maks 15MB (JPEG, PNG, WebP). Dahili editör ile kırpılabilir.' : 'Max 15MB. Can be cropped with in-site editor.'}
                   </p>
                 </div>
@@ -351,7 +351,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setName('')}
-                      className="text-[10px] text-zinc-500 hover:text-red-400 font-mono"
+                      className="text-[12px] text-zinc-500 hover:text-red-400 font-mono"
                     >
                       {language === 'tr' ? 'Temizle' : 'Clear'}
                     </button>
@@ -397,7 +397,7 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setDescription('')}
-                    className="text-[10px] text-zinc-500 hover:text-red-400 font-mono"
+                    className="text-[12px] text-zinc-500 hover:text-red-400 font-mono"
                   >
                     {language === 'tr' ? 'Açıklamayı Sil' : 'Clear Bio'}
                   </button>
@@ -439,12 +439,12 @@ export const CommunitySettingsModal: React.FC<CommunitySettingsModalProps> = ({
                     {isPrivate ? <Lock className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[11px] font-bold text-white">
+                    <span className="block text-[13px] font-bold text-white">
                       {isPrivate
                         ? (language === 'tr' ? 'Gizli Topluluk' : 'Private community')
                         : (language === 'tr' ? 'Herkese Açık Topluluk' : 'Public community')}
                     </span>
-                    <span className="block text-[10px] text-zinc-400 leading-relaxed">
+                    <span className="block text-[12px] text-zinc-400 leading-relaxed">
                       {isPrivate
                         ? (language === 'tr'
                             ? 'Gönderileri yalnızca üyeler görebilir; topluluk keşfedilebilir kalır.'

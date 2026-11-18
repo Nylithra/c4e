@@ -146,7 +146,7 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-bold text-zinc-100">{p.name}</span>
                         {p.about && (
-                          <span className="block truncate text-[11px] text-zinc-500">{p.about}</span>
+                          <span className="block truncate text-[13px] text-zinc-500">{p.about}</span>
                         )}
                       </span>
                     </button>
@@ -243,7 +243,7 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
                       <span className="truncate text-sm font-bold text-zinc-100">{community.name}</span>
                       {community.is_private && <Lock className="h-3 w-3 flex-none text-amber-400" />}
                     </span>
-                    <span className="block truncate font-mono text-[11px] text-zinc-500">
+                    <span className="block truncate font-mono text-[13px] text-zinc-500">
                       {community.handle}
                     </span>
                   </span>
@@ -263,7 +263,7 @@ export const ShareProjectToCommunityModal: React.FC<ShareProjectToCommunityModal
           )}
         </div>}
 
-        {project && <p className="text-[11px] leading-relaxed text-zinc-500">
+        {project && <p className="text-[13px] leading-relaxed text-zinc-500">
           {tr
             ? 'Bir proje birden fazla toplulukta paylaşılabilir. İstediğin zaman geri alabilirsin.'
             : 'A project can be shared with more than one community. You can undo this at any time.'}

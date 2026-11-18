@@ -101,7 +101,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
               <h3 className="text-sm font-bold text-white tracking-tight">
                 {language === 'tr' ? 'Telefona Nasıl İndirilir?' : 'How to Install on Phone?'}
               </h3>
-              <p className="text-[11px] text-zinc-400 font-mono">
+              <p className="text-[13px] text-zinc-400 font-mono">
                 {language === 'tr' ? '1 Dakikalık Kolay Kurulum Rehberi' : 'Easy 1-Minute Setup Guide'}
               </p>
             </div>
@@ -174,7 +174,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 <div className="space-y-1">
                   <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>{language === 'tr' ? 'Tarayıcı Menüsünü Açın' : 'Open Browser Menu'}</span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[10px] text-zinc-300 font-mono">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[12px] text-zinc-300 font-mono">
                       <MoreVertical className="w-3 h-3 text-zinc-400" /> {language === 'tr' ? 'Üç Nokta' : '3 Dots'}
                     </span>
                   </h4>
@@ -230,7 +230,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 <div className="space-y-1">
                   <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>{language === 'tr' ? 'Safari Paylaş Butonuna Dokunun' : 'Tap Safari Share Button'}</span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[10px] text-zinc-300 font-mono">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[12px] text-zinc-300 font-mono">
                       <Share2 className="w-3 h-3 text-blue-400" /> {language === 'tr' ? 'Paylaş' : 'Share'}
                     </span>
                   </h4>
@@ -249,7 +249,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 <div className="space-y-1">
                   <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>{language === 'tr' ? '"Ana Ekrana Ekle"yi Seçin' : 'Select "Add to Home Screen"'}</span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[10px] text-emerald-400 font-mono">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[12px] text-emerald-400 font-mono">
                       <PlusSquare className="w-3 h-3 text-emerald-400" /> +
                     </span>
                   </h4>
@@ -289,7 +289,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 <div className="space-y-1">
                   <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>{language === 'tr' ? 'Adres Çubuğundaki Yükle İkonuna Tıklayın' : 'Click Install Icon in URL Bar'}</span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[10px] text-zinc-300 font-mono">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/[0.07] border border-white/[0.12] text-[12px] text-zinc-300 font-mono">
                       <Download className="w-3 h-3 text-zinc-400" />
                     </span>
                   </h4>
@@ -335,7 +335,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
               </span>
             </button>
 
-            <p className="text-[11px] text-zinc-400 text-center font-mono">
+            <p className="text-[13px] text-zinc-400 text-center font-mono">
               {language === 'tr'
                 ? '💡 Not: Tarayıcı güvenlik kuralları gereği otomatik pencere açılmazsa yukarıdaki 3 adımı takip edin.'
                 : '💡 Note: If automatic popup is blocked by browser, simply follow the 3 steps above.'}

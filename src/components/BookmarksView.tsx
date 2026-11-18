@@ -64,7 +64,7 @@ export const BookmarksView: React.FC<BookmarksViewProps> = ({
                       <span className="font-bold text-white text-xs">{post.author.display_name}</span>
                       <span className="text-xs text-zinc-500 font-mono">@{post.author.username}</span>
                       <span className="text-xs text-zinc-600">·</span>
-                      <span className="text-[11px] text-zinc-500 font-mono">{post.time_ago}</span>
+                      <span className="text-[13px] text-zinc-500 font-mono">{post.time_ago}</span>
                     </div>
                   </div>
                 </div>

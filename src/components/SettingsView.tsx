@@ -253,7 +253,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-white text-sm">{user.display_name}</span>
                     {user.isAdmin && (
-                      <span className="px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/30 text-red-400 font-mono text-[10px] font-bold">
+                      <span className="px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/30 text-red-400 font-mono text-[12px] font-bold">
                         ADMIN
                       </span>
                     )}
@@ -287,7 +287,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <span className="text-xs font-bold text-white block group-hover:text-blue-400 transition-colors">
                       {language === 'tr' ? 'Ekip İlanı Webhook & Entegrasyonlar' : 'Job Listing Webhook & Integrations'}
                     </span>
-                    <span className="text-[11px] text-zinc-400 font-mono block">
+                    <span className="text-[13px] text-zinc-400 font-mono block">
                       {language === 'tr'
                         ? 'Discord, Jubbio ve Telegram bot bildirimleri, şablon ayarları'
                         : 'Discord, Jubbio and Telegram bot dispatchers & templates'}
@@ -311,7 +311,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <span className="text-xs font-bold text-white block group-hover:text-amber-400 transition-colors">
                       {language === 'tr' ? 'Bildirimler & Ses' : 'Notifications & Audio'}
                     </span>
-                    <span className="text-[11px] text-zinc-400 font-mono block">
+                    <span className="text-[13px] text-zinc-400 font-mono block">
                       {language === 'tr'
                         ? 'Masaüstü ve mobil bildirim izinleri, ses efektleri'
                         : 'Desktop/mobile push notification permissions and chime'}
@@ -335,7 +335,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <span className="text-xs font-bold text-white block group-hover:text-indigo-400 transition-colors">
                       {language === 'tr' ? 'Bağlı Hesaplar' : 'Connected Accounts'}
                     </span>
-                    <span className="text-[11px] text-zinc-400 font-mono block">
+                    <span className="text-[13px] text-zinc-400 font-mono block">
                       {language === 'tr'
                         ? 'GitHub depo erişimi ve Jubbio hesabı'
                         : 'GitHub repository access and Jubbio account'}
@@ -359,7 +359,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <span className="text-xs font-bold text-white block group-hover:text-purple-400 transition-colors">
                       {language === 'tr' ? 'Grup Davetleri & Gizlilik' : 'Group Invites & Privacy'}
                     </span>
-                    <span className="text-[11px] text-zinc-400 font-mono block">
+                    <span className="text-[13px] text-zinc-400 font-mono block">
                       {language === 'tr' ? 'Grup daveti alma izinleri ve gizlilik kontrolleri' : 'Group invite permissions and privacy filters'}
                     </span>
                   </div>
@@ -380,11 +380,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <div>
                     <span className="text-xs font-bold text-white block group-hover:text-amber-400 transition-colors flex items-center gap-2">
                       {language === 'tr' ? 'Gradyan Tema Stüdyosu' : 'Gradient Theme Studio'}
-                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[9px] font-black uppercase tracking-wider">
+                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-black uppercase tracking-wider">
                         {isUserSpark(user) ? 'Spark' : (language === 'tr' ? 'Kilitli' : 'Locked')}
                       </span>
                     </span>
-                    <span className="text-[11px] text-zinc-400 font-mono block">
+                    <span className="text-[13px] text-zinc-400 font-mono block">
                       {language === 'tr'
                         ? 'Tüm renkler, gradyan türü ve yönü — profilinizde herkese görünür'
                         : 'Every colour, gradient type and direction — visible on your profile'}
@@ -408,7 +408,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <span className="text-xs font-bold text-white block group-hover:text-cyan-400 transition-colors">
                       {language === 'tr' ? 'Dil Seçimi (TR / EN)' : 'Language (TR / EN)'}
                     </span>
-                    <span className="text-[11px] text-zinc-400 font-mono block">
+                    <span className="text-[13px] text-zinc-400 font-mono block">
                       {language === 'tr' ? 'Arayüz dili ayarları' : 'Interface language preferences'}
                     </span>
                   </div>
@@ -450,7 +450,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <div>
                 <label className="text-zinc-300 block mb-1 font-medium flex items-center justify-between">
                   <span>{language === 'tr' ? 'Kullanıcı Adı (@username)' : 'Username (@username)'}</span>
-                  <span className="text-[10px] font-mono text-blue-400">@{formData.username}</span>
+                  <span className="text-[12px] font-mono text-blue-400">@{formData.username}</span>
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2.5 text-zinc-500 font-mono">@</span>
@@ -624,7 +624,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <span>{language === 'tr' ? 'Bildirimler & Ses Ayarları' : 'Notifications & Sound Settings'}</span>
               </h3>
               {notifPermission === 'granted' && (
-                <span className="text-[11px] font-mono text-emerald-400 font-semibold flex items-center gap-1">
+                <span className="text-[13px] font-mono text-emerald-400 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>{language === 'tr' ? 'İzin Verildi' : 'Granted'}</span>
                 </span>
@@ -694,7 +694,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   : 'Third-party applications you granted access to your Code4Ever account. Revoking deletes that application\'s tokens immediately.'}
               </p>
               <ConnectedAppsSettings language={language} />
-              <p className="text-[11px] text-zinc-600">
+              <p className="text-[13px] text-zinc-600">
                 {language === 'tr' ? 'Kendi uygulamanı mı yapmak istiyorsun? ' : 'Want to build your own? '}
                 <a href="/dev/apps" className="text-indigo-300 underline-offset-2 hover:underline">
                   /dev/apps
@@ -723,7 +723,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <p className="text-xs font-bold text-white">
                   {language === 'tr' ? 'Grup Davetlerine İzin Ver' : 'Allow Group Invites'}
                 </p>
-                <p className="text-[11px] text-zinc-400 font-mono">
+                <p className="text-[13px] text-zinc-400 font-mono">
                   {formData.allow_group_invites !== false
                     ? language === 'tr'
                       ? 'Herkes grup daveti gönderebilir'
@@ -760,7 +760,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <p className="text-xs font-bold text-white">
                   {language === 'tr' ? 'Beğenilen Paylaşımların Görünürlüğü' : 'Liked Posts Visibility'}
                 </p>
-                <p className="text-[11px] text-zinc-400 font-mono">
+                <p className="text-[13px] text-zinc-400 font-mono">
                   {formData.show_liked_posts !== false
                     ? language === 'tr'
                       ? 'Açık: Profilinizde beğendiğiniz gönderiler herkese görünür'

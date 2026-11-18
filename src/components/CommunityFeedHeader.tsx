@@ -102,12 +102,12 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
 
         <span className="absolute top-3 right-3 flex items-center gap-1.5">
           {community.is_private && (
-            <span className="px-2.5 py-1 rounded-xl bg-amber-500/20 border border-amber-400/30 backdrop-blur-md text-[10px] font-black uppercase tracking-wider text-amber-200 flex items-center gap-1.5">
+            <span className="px-2.5 py-1 rounded-xl bg-amber-500/20 border border-amber-400/30 backdrop-blur-md text-[12px] font-black uppercase tracking-wider text-amber-200 flex items-center gap-1.5">
               <Lock className="w-3 h-3" />
               {language === 'tr' ? 'Gizli' : 'Private'}
             </span>
           )}
-          <span className="px-2.5 py-1 rounded-xl bg-black/60 border border-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
+          <span className="px-2.5 py-1 rounded-xl bg-black/60 border border-white/10 backdrop-blur-md text-[12px] font-black uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
             <Users className="w-3 h-3" />
             {language === 'tr' ? 'Topluluk Akışı' : 'Community feed'}
           </span>
@@ -136,7 +136,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
             <button
               type="button"
               onClick={handleCopyLink}
-              className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 text-[13px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
               title={language === 'tr' ? 'Bağlantıyı kopyala' : 'Copy link'}
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Link2 className="w-3.5 h-3.5" />}
@@ -149,7 +149,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
               <button
                 type="button"
                 onClick={() => onOpenSettings(community)}
-                className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 text-[11px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-zinc-300 text-[13px] font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Settings className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">{language === 'tr' ? 'Yönet' : 'Manage'}</span>
@@ -160,7 +160,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
               <button
                 type="button"
                 onClick={() => onToggleJoin(community.id)}
-                className={`px-4 py-2 rounded-xl text-[11px] font-black flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-[13px] font-black flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer ${
                   isJoined
                     ? 'bg-white/[0.07] hover:bg-red-500/15 hover:text-red-400 border border-white/[0.12] text-zinc-200'
                     : 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-600/20'
@@ -185,7 +185,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
         <div className="mt-3 space-y-2">
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-xl font-extrabold text-white tracking-tight">{community.name}</h2>
-            <span className="px-2 py-0.5 rounded-lg bg-purple-500/10 border border-purple-500/25 text-purple-300 text-[10px] font-bold font-mono">
+            <span className="px-2 py-0.5 rounded-lg bg-purple-500/10 border border-purple-500/25 text-purple-300 text-[12px] font-bold font-mono">
               @{handle}
             </span>
           </div>
@@ -194,7 +194,7 @@ export const CommunityFeedHeader: React.FC<CommunityFeedHeaderProps> = ({
             <p className="text-xs text-zinc-300 leading-relaxed max-w-2xl user-text">{community.description}</p>
           )}
 
-          <div className="flex items-center gap-4 flex-wrap text-[11px] text-zinc-400 font-mono pt-0.5">
+          <div className="flex items-center gap-4 flex-wrap text-[13px] text-zinc-400 font-mono pt-0.5">
             <span className="flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-purple-400" />
               <strong className="text-zinc-200">{memberCount}</strong>

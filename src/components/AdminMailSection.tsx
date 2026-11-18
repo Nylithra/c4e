@@ -357,7 +357,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
     if (!html.trim()) {
       return (
-        <pre className="c4e-well user-text whitespace-pre-wrap break-words p-4 text-[13px] leading-relaxed text-zinc-300">
+        <pre className="c4e-well user-text whitespace-pre-wrap break-words p-4 text-[14px] leading-relaxed text-zinc-300">
           {message.text || (tr ? '(Boş mesaj)' : '(Empty message)')}
         </pre>
       );
@@ -411,7 +411,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-bold text-zinc-200">{label}</span>
                   <span
-                    className={`rounded-full px-2 py-0.5 font-mono text-[10px] ${
+                    className={`rounded-full px-2 py-0.5 font-mono text-[12px] ${
                       cfg?.configured
                         ? 'bg-emerald-500/15 text-emerald-400'
                         : 'bg-white/[0.07] text-zinc-400'
@@ -420,7 +420,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                     {cfg?.configured ? (tr ? 'tanımlı' : 'configured') : tr ? 'eksik' : 'missing'}
                   </span>
                 </div>
-                <p className="user-text mt-1 font-mono text-[11px] text-zinc-500">
+                <p className="user-text mt-1 font-mono text-[13px] text-zinc-500">
                   {cfg?.configured
                     ? `${cfg.host}:${cfg.port}${cfg.secure ? ' · TLS' : ''}`
                     : tr
@@ -428,13 +428,13 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                     : 'Unavailable'}
                 </p>
                 {!cfg?.configured && (cfg as { reason?: string | null })?.reason && (
-                  <p className="user-text mt-1.5 text-[11px] leading-relaxed text-amber-300/90">
+                  <p className="user-text mt-1.5 text-[13px] leading-relaxed text-amber-300/90">
                     {(cfg as { reason?: string | null }).reason}
                   </p>
                 )}
                 {verified && (
                   <p
-                    className={`user-text mt-1.5 text-[11px] ${
+                    className={`user-text mt-1.5 text-[13px] ${
                       verified.ok ? 'text-emerald-400' : 'text-red-400'
                     }`}
                   >
@@ -451,7 +451,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
         </div>
 
         {!smtpReady && !imapReady && (
-          <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-700/40 bg-amber-950/25 p-3 text-[11px] leading-relaxed text-amber-200/90">
+          <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-700/40 bg-amber-950/25 p-3 text-[13px] leading-relaxed text-amber-200/90">
             <ShieldAlert className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400" />
             <span>
               {tr
@@ -541,7 +541,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
 
           {/* Sync state: what is stored, and when it was last refreshed. */}
           {imapReady && (
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-white/[0.07] px-3.5 py-2.5 text-[11px] text-zinc-500">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-white/[0.07] px-3.5 py-2.5 text-[13px] text-zinc-500">
               <span className="flex items-center gap-1.5">
                 <Clock className="h-3 w-3" />
                 {lastSyncedAt
@@ -562,7 +562,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
           )}
 
           {storeWarning && (
-            <div className="m-3.5 flex items-start gap-2 rounded-xl border border-amber-700/40 bg-amber-950/25 p-3 text-[11px] leading-relaxed text-amber-200/90">
+            <div className="m-3.5 flex items-start gap-2 rounded-xl border border-amber-700/40 bg-amber-950/25 p-3 text-[13px] leading-relaxed text-amber-200/90">
               <ShieldAlert className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400" />
               <span className="user-text">{storeWarning}</span>
             </div>
@@ -630,21 +630,21 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                         <UserAvatar
                           src=""
                           name={m.fromName || m.fromAddress || '?'}
-                          className="mt-0.5 h-8 w-8 flex-shrink-0 text-[10px]"
+                          className="mt-0.5 h-8 w-8 flex-shrink-0 text-[12px]"
                         />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-baseline justify-between gap-2">
                             <span className={`user-text truncate text-xs ${m.seen ? 'text-zinc-300' : 'font-bold text-white'}`}>
                               {m.fromName || m.fromAddress}
                             </span>
-                            <span className="flex-shrink-0 font-mono text-[10px] text-zinc-500">
+                            <span className="flex-shrink-0 font-mono text-[12px] text-zinc-500">
                               {formatDate(m.date)}
                             </span>
                           </div>
-                          <p className={`user-text mt-0.5 truncate text-[12px] ${m.seen ? 'text-zinc-400' : 'text-zinc-200'}`}>
+                          <p className={`user-text mt-0.5 truncate text-[13.5px] ${m.seen ? 'text-zinc-400' : 'text-zinc-200'}`}>
                             {m.subject}
                           </p>
-                          <p className="user-text mt-0.5 truncate text-[11px] text-zinc-600">{m.preview}</p>
+                          <p className="user-text mt-0.5 truncate text-[13px] text-zinc-600">{m.preview}</p>
                         </div>
                         {m.hasAttachments && <Paperclip className="mt-1 h-3 w-3 flex-shrink-0 text-zinc-500" />}
                       </div>
@@ -672,11 +672,11 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                 <div className="space-y-3">
                   <div>
                     <h4 className="user-text text-sm font-bold text-white">{selected.subject}</h4>
-                    <p className="user-text mt-1 font-mono text-[11px] text-zinc-400">
+                    <p className="user-text mt-1 font-mono text-[13px] text-zinc-400">
                       {selected.fromName ? `${selected.fromName} · ` : ''}
                       {selected.fromAddress}
                     </p>
-                    <p className="font-mono text-[11px] text-zinc-600">
+                    <p className="font-mono text-[13px] text-zinc-600">
                       {selected.date ? new Date(selected.date).toLocaleString('tr-TR') : ''}
                     </p>
                   </div>
@@ -690,7 +690,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                         setRawTo(selected.fromAddress);
                         setSubject(selected.subject.startsWith('Re:') ? selected.subject : `Re: ${selected.subject}`);
                       }}
-                      className="flex h-8 items-center gap-1.5 rounded-lg border border-white/[0.07] bg-white/[0.04] px-2.5 text-[11px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="flex h-8 items-center gap-1.5 rounded-lg border border-white/[0.07] bg-white/[0.04] px-2.5 text-[13px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <Send className="h-3.5 w-3.5" />
                       <span>{tr ? 'Yanıtla' : 'Reply'}</span>
@@ -700,7 +700,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                       <button
                         type="button"
                         onClick={() => setShowRemoteImages(true)}
-                        className="flex h-8 items-center gap-1.5 rounded-lg border border-amber-700/40 bg-amber-950/25 px-2.5 text-[11px] font-semibold text-amber-300 transition-colors hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="flex h-8 items-center gap-1.5 rounded-lg border border-amber-700/40 bg-amber-950/25 px-2.5 text-[13px] font-semibold text-amber-300 transition-colors hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         title={
                           tr
                             ? 'Uzak görseller IP adresinizi gönderene açar'
@@ -713,7 +713,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                     )}
 
                     {selected.attachments.length > 0 && (
-                      <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+                      <span className="flex items-center gap-1 text-[13px] text-zinc-500">
                         <Paperclip className="h-3 w-3" />
                         {selected.attachments.length} {tr ? 'ek' : 'attachments'}
                       </span>
@@ -745,7 +745,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                     setResolved(null);
                     setResolveError(null);
                   }}
-                  className="text-[11px] text-blue-400 hover:text-blue-300"
+                  className="text-[13px] text-blue-400 hover:text-blue-300"
                 >
                   {useRawAddress
                     ? tr ? 'Kullanıcı adıyla seç' : 'Pick by username'
@@ -797,7 +797,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
               )}
 
               {resolveError && (
-                <p className="user-text text-[11px] text-red-400">{resolveError}</p>
+                <p className="user-text text-[13px] text-red-400">{resolveError}</p>
               )}
 
               {resolved && (
@@ -805,7 +805,7 @@ export const AdminMailSection: React.FC<{ language: 'tr' | 'en' }> = ({ language
                   <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-400" />
                   <div className="min-w-0">
                     <p className="user-text text-xs font-bold text-white">{resolved.displayName}</p>
-                    <p className="user-text font-mono text-[11px] text-emerald-300/80">
+                    <p className="user-text font-mono text-[13px] text-emerald-300/80">
                       @{resolved.username} · {maskEmail(resolved.email)}
                     </p>
                   </div>

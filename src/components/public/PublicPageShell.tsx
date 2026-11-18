@@ -41,7 +41,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
           {/* Telefonda YANA KAYIYOR. Dört bağlantı 390px'e sığmıyordu ve sayfanın tamamını
               yatay kaydırılabilir hâle getiriyordu; şerit kendi içinde kayınca sayfa yerinde
               kalıyor. `shrink` olmadan flex öğesi kendi içeriğinden küçülmez. */}
-          <nav className="flex min-w-0 shrink items-center gap-1 overflow-x-auto no-scrollbar text-[11px] font-semibold">
+          <nav className="flex min-w-0 shrink items-center gap-1 overflow-x-auto no-scrollbar text-[13px] font-semibold">
             <a
               href="/dev/docs"
               className="flex min-h-10 flex-none items-center rounded-lg px-2.5 text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -74,7 +74,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
       <div className="border-b border-white/[0.07] bg-gradient-to-b from-zinc-900/40 to-transparent">
         <div className="mx-auto max-w-5xl px-5 py-10 sm:py-14">
           {eyebrow && (
-            <span className="mb-3 inline-block rounded-full border border-white/[0.12] bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-zinc-400">
+            <span className="mb-3 inline-block rounded-full border border-white/[0.12] bg-white/[0.04] px-2.5 py-1 font-mono text-[13px] text-zinc-400">
               {eyebrow}
             </span>
           )}
@@ -93,7 +93,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="flex min-h-9 items-center rounded-lg px-3 text-[12px] text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex min-h-9 items-center rounded-lg px-3 text-[13.5px] text-zinc-400 transition-colors hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {item.label}
                 </a>
@@ -106,7 +106,7 @@ export const PublicPageShell: React.FC<PublicPageShellProps> = ({
       </div>
 
       <footer className="border-t border-white/[0.07]">
-        <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-[11px] text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-[13px] text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
           <span className="font-mono">lanux.online — Code4Ever</span>
           <div className="flex flex-wrap items-center gap-4">
             <a href="/tos" className="inline-flex min-h-9 items-center rounded hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">

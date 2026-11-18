@@ -97,7 +97,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
               <span className="font-semibold text-white truncate">{currentCategory.name}</span>
             </div>
           ) : (
-            <span className="text-zinc-500 font-mono text-[11px]">
+            <span className="text-zinc-500 font-mono text-[13px]">
               {language === 'tr' ? 'Kategori Seç / Oluştur...' : 'Select / Create Category...'}
             </span>
           )}

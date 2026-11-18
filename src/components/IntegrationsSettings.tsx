@@ -206,7 +206,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
               <div>
                 <span className="text-sm font-bold text-white block">Discord Webhook Bildirimleri</span>
-                <span className="text-[11px] text-zinc-500 font-mono">
+                <span className="text-[13px] text-zinc-500 font-mono">
                   {language === 'tr' ? 'Discord kanal entegrasyonu' : 'Discord channel integration'}
                 </span>
               </div>
@@ -250,7 +250,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   placeholder="https://discord.com/api/webhooks/..."
                   className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                 />
-                <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
+                <span className="text-[12px] text-zinc-500 font-mono mt-1 block">
                   {language === 'tr' ? 'Kanal Ayarları > Entegrasyonlar > Webhook Oluştur' : 'Channel Settings > Integrations > Create Webhook'}
                 </span>
               </div>
@@ -328,13 +328,13 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                     href="https://jubbio.com/dev/docs/bot-api/webhooks"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[11px] text-purple-400 hover:underline flex items-center gap-1"
+                    className="text-[13px] text-purple-400 hover:underline flex items-center gap-1"
                   >
                     <span>Dokümantasyon</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
-                <span className="text-[11px] text-zinc-500 font-mono">
+                <span className="text-[13px] text-zinc-500 font-mono">
                   {language === 'tr' ? 'Jubbio sunucu ve kanal webhook API' : 'Jubbio server and channel webhook API'}
                 </span>
               </div>
@@ -466,7 +466,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
               <div>
                 <span className="text-sm font-bold text-white block">Telegram Bot Entegrasyonu</span>
-                <span className="text-[11px] text-zinc-500 font-mono">
+                <span className="text-[13px] text-zinc-500 font-mono">
                   {language === 'tr' ? 'Telegram kanal & grup bot bildirimi' : 'Telegram channel & group bot notifications'}
                 </span>
               </div>
@@ -510,7 +510,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   placeholder="123456789:ABCdefGHIjklMNOpqrs"
                   className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                 />
-                <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
+                <span className="text-[12px] text-zinc-500 font-mono mt-1 block">
                   @BotFather üzerinden alınan token
                 </span>
               </div>
@@ -531,7 +531,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   placeholder="@kanalim veya -100123456789"
                   className="c4e-input w-full px-3 py-2 text-xs font-mono text-white"
                 />
-                <span className="text-[10px] text-zinc-500 font-mono mt-1 block">
+                <span className="text-[12px] text-zinc-500 font-mono mt-1 block">
                   Mesajın iletileceği kanal veya grup kimliği
                 </span>
               </div>
@@ -578,11 +578,11 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
               <div className="flex-1 space-y-1">
                 <div className="font-bold flex items-center justify-between">
                   <span>{testResult.success ? 'Başarılı!' : 'Test Başarısız Oldu / Webhook Hatası'}</span>
-                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-black/40 text-zinc-400">
+                  <span className="text-[12px] uppercase font-mono px-2 py-0.5 rounded bg-black/40 text-zinc-400">
                     {testResult.platform}
                   </span>
                 </div>
-                <p className="text-[11px] leading-relaxed">{testResult.message}</p>
+                <p className="text-[13px] leading-relaxed">{testResult.message}</p>
               </div>
             </div>
 
@@ -623,7 +623,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                   </button>
                 </div>
 
-                <span className="text-[10px] text-zinc-400 font-mono">
+                <span className="text-[12px] text-zinc-400 font-mono">
                   {language === 'tr'
                     ? 'Hata logu ve istek detayları direkt admin paneline düşer.'
                     : 'Error logs are sent directly to the admin dashboard.'}
@@ -653,7 +653,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
             <span className="text-sm font-bold text-white block">
               {language === 'tr' ? 'Özelleştirilebilir Mesaj Şablonu' : 'Custom Message Template'}
             </span>
-            <span className="text-[11px] text-zinc-500 font-mono">
+            <span className="text-[13px] text-zinc-500 font-mono">
               {language === 'tr'
                 ? 'Başvuru geldiğinde kanala iletilecek mesaj içeriği'
                 : 'Message content dispatched upon receiving a job application'}
@@ -663,7 +663,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
           <button
             type="button"
             onClick={resetToDefaultTemplate}
-            className="text-[11px] font-mono text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="text-[13px] font-mono text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             {language === 'tr' ? 'Varsayılana Dön' : 'Reset to Default'}
           </button>
@@ -688,7 +688,7 @@ export const IntegrationsSettings: React.FC<IntegrationsSettingsProps> = ({ lang
                 className="c4e-ghost px-2.5 py-1.5 text-xs font-mono text-blue-400 hover:text-blue-300 flex items-center gap-1.5 cursor-pointer active:scale-95"
               >
                 <span>{v.tag}</span>
-                <span className="text-[10px] text-zinc-500">({v.label})</span>
+                <span className="text-[12px] text-zinc-500">({v.label})</span>
                 {copiedVariable === v.tag && <Check className="w-3 h-3 text-emerald-400" />}
               </button>
             ))}

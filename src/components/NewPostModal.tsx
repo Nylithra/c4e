@@ -174,7 +174,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
 
             {/* Target Community Selection */}
             <div className="c4e-well flex items-center justify-between px-3 py-2 text-xs min-h-[38px]">
-              <span className="text-zinc-400 font-mono text-[11px] flex items-center gap-1.5">
+              <span className="text-zinc-400 font-mono text-[13px] flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-purple-400" />
                 <span>{language === 'tr' ? 'Topluluk:' : 'Community:'}</span>
               </span>
@@ -210,12 +210,12 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
             {/* Character counter */}
             <div className="absolute right-3 bottom-3 flex items-center gap-1.5">
               {isSpark && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center gap-1 shadow-sm">
+                <span className="text-[12px] font-mono px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center gap-1 shadow-sm">
                   <Sparkles className="w-2.5 h-2.5" /> 1000 Spark
                 </span>
               )}
               <span
-                className={`text-[10px] font-mono px-2 py-0.5 rounded-md transition-all shadow-sm ${
+                className={`text-[12px] font-mono px-2 py-0.5 rounded-md transition-all shadow-sm ${
                   content.length > MAX_CONTENT_LENGTH
                     ? 'bg-red-500/20 text-red-400 border border-red-500/50 font-bold animate-pulse'
                     : content.length >= MAX_CONTENT_LENGTH * 0.8
@@ -290,7 +290,7 @@ export const NewPostModal: React.FC<NewPostModalProps> = ({
                 {/* Code Snippet Counter */}
                 <div className="absolute right-2.5 bottom-2.5">
                   <span
-                    className={`text-[10px] font-mono px-2 py-0.5 rounded-md transition-all shadow-sm ${
+                    className={`text-[12px] font-mono px-2 py-0.5 rounded-md transition-all shadow-sm ${
                       codeSnippet.length > MAX_CODE_LENGTH
                         ? 'bg-red-500/20 text-red-400 border border-red-500/50 font-bold animate-pulse'
                         : codeSnippet.length >= 4000

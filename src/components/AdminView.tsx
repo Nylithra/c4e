@@ -827,11 +827,11 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <div>
             <h1 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
               <span>Code4Ever Admin Paneli</span>
-              <span className="px-2 py-0.5 text-[10px] font-mono bg-blue-600 text-white rounded-full">
+              <span className="px-2 py-0.5 text-[12px] font-mono bg-blue-600 text-white rounded-full">
                 ADMIN: {currentUser.username}
               </span>
             </h1>
-            <p className="text-[11px] text-zinc-400 font-mono">
+            <p className="text-[13px] text-zinc-400 font-mono">
               Sistem yönetimi, Rozetler, Platform markası ve Abonelik ayarları
             </p>
           </div>
@@ -860,7 +860,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <Sparkles className="w-4 h-4 text-emerald-400" />
           <span>Kapalı Beta</span>
           {pendingBetaUsers.length > 0 && (
-            <span className="px-1.5 py-0.2 text-[10px] font-mono bg-amber-500 text-black rounded-full font-bold">
+            <span className="px-1.5 py-0.2 text-[12px] font-mono bg-amber-500 text-black rounded-full font-bold">
               {pendingBetaUsers.length}
             </span>
           )}
@@ -890,7 +890,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
         >
           <Award className="w-4 h-4 text-purple-400" />
           <span>Rozet Tanımları & Açıklamaları</span>
-          <span className="px-1.5 py-0.2 text-[10px] font-mono bg-purple-500/20 text-purple-300 rounded-full font-bold">
+          <span className="px-1.5 py-0.2 text-[12px] font-mono bg-purple-500/20 text-purple-300 rounded-full font-bold">
             {badgeDefinitions.length}
           </span>
         </button>
@@ -946,7 +946,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <Bug className="w-4 h-4 text-red-400" />
           <span>Sistem Hataları & Webhook Logları</span>
           {errorReports.length > 0 && (
-            <span className="px-1.5 py-0.2 text-[10px] font-mono bg-red-500 text-white rounded-full font-bold animate-pulse">
+            <span className="px-1.5 py-0.2 text-[12px] font-mono bg-red-500 text-white rounded-full font-bold animate-pulse">
               {errorReports.length}
             </span>
           )}
@@ -964,7 +964,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           <Flag className="w-4 h-4 text-amber-400" />
           <span>Gönderi Şikayetleri</span>
           {postReports.length > 0 && (
-            <span className="px-1.5 py-0.2 text-[10px] font-mono bg-amber-500 text-black rounded-full font-bold">
+            <span className="px-1.5 py-0.2 text-[12px] font-mono bg-amber-500 text-black rounded-full font-bold">
               {postReports.length}
             </span>
           )}
@@ -1114,7 +1114,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       />
                       <div className="min-w-0">
                         <h4 className="text-xs font-bold text-white truncate">{u.display_name}</h4>
-                        <span className="text-[10px] text-zinc-500 font-mono block">@{u.username}</span>
+                        <span className="text-[12px] text-zinc-500 font-mono block">@{u.username}</span>
                       </div>
                     </div>
                     <UserBadges user={u} showTextLabels={false} />
@@ -1167,17 +1167,17 @@ export const AdminView: React.FC<AdminViewProps> = ({
                         <div className="flex items-center gap-1.5">
                           <span className="text-xs font-bold text-white truncate">{u.display_name}</span>
                           {u.isBanned && (
-                            <span className="px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 text-[9px] font-mono font-bold">
+                            <span className="px-1.5 py-0.2 rounded bg-red-500/20 text-red-400 text-[11px] font-mono font-bold">
                               BANLI
                             </span>
                           )}
                           {u.suspendedUntil && new Date(u.suspendedUntil) > new Date() && (
-                            <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 text-[9px] font-mono font-bold">
+                            <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 text-[11px] font-mono font-bold">
                               ASKIDA
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] text-zinc-500 font-mono block">@{u.username}</span>
+                        <span className="text-[12px] text-zinc-500 font-mono block">@{u.username}</span>
                       </div>
                     </div>
                     <UserBadges user={u} showTextLabels={false} />
@@ -1248,7 +1248,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <Code className="w-4 h-4 text-red-400" />
                       <span className="text-xs font-bold">C4E Dev</span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold">
+                    <span className="text-[12px] font-mono font-bold">
                       {selectedUserForBadges.badges?.some(
                         (b) => b.id === 'c4e_dev' || b.label?.toLowerCase() === 'code4ever developer'
                       )
@@ -1280,7 +1280,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <CheckCircle2 className="w-4 h-4 text-purple-400" />
                       <span className="text-xs font-bold">C4E Yetkili</span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold">
+                    <span className="text-[12px] font-mono font-bold">
                       {selectedUserForBadges.badges?.some(
                         (b) => b.id === 'c4e_admin' || b.label?.toLowerCase() === 'code4ever yetkilisi'
                       )
@@ -1312,7 +1312,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <GitBranch className="w-4 h-4 text-orange-400" />
                       <span className="text-xs font-bold">Git+</span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold">
+                    <span className="text-[12px] font-mono font-bold">
                       {selectedUserForBadges.badges?.some(
                         (b) => b.id === 'git_plus' || b.label?.toLowerCase() === 'git+'
                       )
@@ -1344,7 +1344,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400/20" />
                       <span className="text-xs font-bold">Spark Destekçi</span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold">
+                    <span className="text-[12px] font-mono font-bold">
                       {selectedUserForBadges.badges?.some(
                         (b) => b.id === 'spark' || b.label?.toLowerCase().includes('spark')
                       )
@@ -1372,7 +1372,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <Home className="w-4 h-4 text-emerald-400 fill-emerald-500/20" />
                       <span className="text-xs font-bold">Yeşil Ev (Beta)</span>
                     </div>
-                    <span className="text-[10px] font-mono font-bold">
+                    <span className="text-[12px] font-mono font-bold">
                       {selectedUserForBadges.badges?.some(
                         (b) =>
                           b.id === 'beta_home' ||
@@ -1471,9 +1471,9 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-bold text-amber-300">Spark Destekçi Rolü Aktif</span>
-                        <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-mono font-bold">250MB Yükleme</span>
+                        <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[12px] font-mono font-bold">250MB Yükleme</span>
                       </div>
-                      <p className="text-[11px] text-zinc-400">
+                      <p className="text-[13px] text-zinc-400">
                         Bu kullanıcı Spark destekçi ayrıcalıklarına ve rozetine sahiptir.
                       </p>
                     </div>
@@ -1505,7 +1505,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                         <span className="text-xs font-bold text-white">
                           Abonelik: {selectedUserForBadges.subscription?.planName || (selectedUserForBadges.role === 'spark' ? 'Spark Destekçi' : 'Özel Plan')}
                         </span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                        <span className={`px-2 py-0.5 rounded text-[12px] font-mono font-bold ${
                           selectedUserForBadges.subscription?.isActive !== false
                             ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                             : 'bg-white/[0.07] text-zinc-400'
@@ -1513,7 +1513,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                           {selectedUserForBadges.subscription?.isActive !== false ? 'AKTİF' : 'İPTAL / PASİF'}
                         </span>
                       </div>
-                      <p className="text-[11px] text-zinc-400 mt-0.5">
+                      <p className="text-[13px] text-zinc-400 mt-0.5">
                         {selectedUserForBadges.subscription?.expiresAt
                           ? `Bitiş Tarihi: ${new Date(selectedUserForBadges.subscription.expiresAt).toLocaleDateString()}`
                           : 'Süresiz veya aktif abonelik'}
@@ -1547,7 +1547,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                         <Ban className="w-4 h-4 text-red-400" />
                         <span>Kalıcı Ban (Yasaklama)</span>
                       </span>
-                      <span className="text-[10px] font-mono text-zinc-500">
+                      <span className="text-[12px] font-mono text-zinc-500">
                         {selectedUserForBadges.isBanned ? 'YASAKLI' : 'AKTİF'}
                       </span>
                     </div>
@@ -1579,7 +1579,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                         <Clock className="w-4 h-4 text-amber-400" />
                         <span>Geçici Süreli Askıya Alma</span>
                       </span>
-                      <span className="text-[10px] font-mono text-zinc-500">
+                      <span className="text-[12px] font-mono text-zinc-500">
                         {selectedUserForBadges.suspendedUntil && new Date(selectedUserForBadges.suspendedUntil) > new Date()
                           ? 'ASKIDA'
                           : 'AKTİF'}
@@ -1645,7 +1645,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {/* Select User */}
               <div>
-                <label className="text-[11px] font-bold text-zinc-400 font-mono block mb-1">
+                <label className="text-[13px] font-bold text-zinc-400 font-mono block mb-1">
                   Kullanıcı Seç
                 </label>
                 <select
@@ -1664,7 +1664,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
               {/* Select Plan */}
               <div>
-                <label className="text-[11px] font-bold text-zinc-400 font-mono block mb-1">
+                <label className="text-[13px] font-bold text-zinc-400 font-mono block mb-1">
                   Abonelik Paketi
                 </label>
                 <select
@@ -1683,7 +1683,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
               {/* Select Duration */}
               <div>
-                <label className="text-[11px] font-bold text-zinc-400 font-mono block mb-1">
+                <label className="text-[13px] font-bold text-zinc-400 font-mono block mb-1">
                   Abonelik Süresi
                 </label>
                 <select
@@ -1729,7 +1729,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   )
                 </h3>
               </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.07] text-[11px] font-mono text-zinc-400">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.07] text-[13px] font-mono text-zinc-400">
                 <span className="c4e-live-dot w-1.5 h-1.5 rounded-full bg-emerald-400 text-emerald-400" />
                 <span>Doğrulama Kanalı: Aktif</span>
               </div>
@@ -1783,12 +1783,12 @@ export const AdminView: React.FC<AdminViewProps> = ({
                                 {supporter.display_name}
                               </span>
                               {isSpark && (
-                                <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[9px] font-mono font-bold">
+                                <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[11px] font-mono font-bold">
                                   SPARK
                                 </span>
                               )}
                             </div>
-                            <span className="text-[10px] text-zinc-500 font-mono block">
+                            <span className="text-[12px] text-zinc-500 font-mono block">
                               @{supporter.username}
                             </span>
                             <div className="pt-1">
@@ -1801,7 +1801,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                           {isSpark && (
                             <button
                               onClick={() => handleRemoveSupporterRole(supporter)}
-                              className="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-300 hover:text-white font-bold text-[11px] border border-red-500/30 transition-all flex items-center gap-1 cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500 text-red-300 hover:text-white font-bold text-[13px] border border-red-500/30 transition-all flex items-center gap-1 cursor-pointer"
                               title="Spark rolü ve rozetini sil"
                             >
                               <Trash2 className="w-3 h-3" />
@@ -1810,7 +1810,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                           )}
                           <button
                             onClick={() => handleCancelSubscription(supporter)}
-                            className="px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white font-bold text-[11px] border border-red-500/30 transition-all flex items-center gap-1 cursor-pointer shadow-sm active:scale-95"
+                            className="px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white font-bold text-[13px] border border-red-500/30 transition-all flex items-center gap-1 cursor-pointer shadow-sm active:scale-95"
                             title="Aboneliği sonlandır ve rozetleri kaldır"
                           >
                             <XCircle className="w-3 h-3" />
@@ -1852,7 +1852,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     <p className="text-xs text-zinc-400">{plan.description}</p>
                     {plan.badgeLabel && (
                       <div className="pt-2">
-                        <span className="text-[10px] font-mono text-zinc-500 block">Tanımlanacak Rozet:</span>
+                        <span className="text-[12px] font-mono text-zinc-500 block">Tanımlanacak Rozet:</span>
                         <UserBadges
                           badges={[
                             {
@@ -1938,15 +1938,15 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-sm font-bold text-white">{bDef.label}</h3>
                         {bDef.isDefault && (
-                          <span className="px-2 py-0.5 text-[9px] font-mono font-bold bg-white/[0.07] text-zinc-400 rounded-full">
+                          <span className="px-2 py-0.5 text-[11px] font-mono font-bold bg-white/[0.07] text-zinc-400 rounded-full">
                             VARSAYILAN
                           </span>
                         )}
-                        <span className="px-2 py-0.5 text-[9px] font-mono font-bold bg-purple-950/60 text-purple-300 border border-purple-800/40 rounded-full">
+                        <span className="px-2 py-0.5 text-[11px] font-mono font-bold bg-purple-950/60 text-purple-300 border border-purple-800/40 rounded-full">
                           Öncelik: {bDef.weight || 5}
                         </span>
                       </div>
-                      <span className="text-[10px] text-zinc-500 font-mono block mt-0.5">
+                      <span className="text-[12px] text-zinc-500 font-mono block mt-0.5">
                         ID: {bDef.id} • İkon: {bDef.icon}
                       </span>
                     </div>
@@ -1973,7 +1973,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
                   {/* Badge Preview Pill */}
                   <div className="p-3 rounded-2xl bg-black/40 border border-white/[0.07] flex items-center justify-between">
-                    <span className="text-[10px] text-zinc-400 font-mono">Önizleme:</span>
+                    <span className="text-[12px] text-zinc-400 font-mono">Önizleme:</span>
                     <UserBadges
                       badges={[
                         {
@@ -1990,7 +1990,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
                   {/* Description Box */}
                   <div className="c4e-well p-3 text-xs space-y-1">
-                    <div className="flex items-center gap-1.5 text-zinc-400 text-[10px] font-bold">
+                    <div className="flex items-center gap-1.5 text-zinc-400 text-[12px] font-bold">
                       <Info className="w-3.5 h-3.5 text-purple-400" />
                       <span>Rozet Açıklaması & Tooltip:</span>
                     </div>
@@ -2000,7 +2000,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/[0.07] flex items-center justify-between text-[11px] font-mono text-zinc-500">
+                <div className="pt-2 border-t border-white/[0.07] flex items-center justify-between text-[13px] font-mono text-zinc-500">
                   <span className="flex items-center gap-1.5">
                     <span className="w-3 h-3 rounded-full inline-block border border-white/[0.12]" style={{ backgroundColor: bDef.color }} />
                     {bDef.color}
@@ -2062,7 +2062,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   className="c4e-input w-full px-4 py-2.5 text-white text-xs font-mono"
                   required
                 />
-                <span className="text-[10px] text-zinc-500 font-mono block">
+                <span className="text-[12px] text-zinc-500 font-mono block">
                   Sağ alt köşede kartın ilk satırında görünen marka başlığı.
                 </span>
               </div>
@@ -2080,7 +2080,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   className="c4e-input w-full px-4 py-2.5 text-white text-xs font-mono"
                   required
                 />
-                <span className="text-[10px] text-zinc-500 font-mono block">
+                <span className="text-[12px] text-zinc-500 font-mono block">
                   Sağ alt köşede başlığın altında mavi/cyan fontla görünen alan adı linki.
                 </span>
               </div>
@@ -2132,7 +2132,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                     <Sparkles className="w-4 h-4 text-cyan-400" />
                     <span>Sağ Panel Canlı Önizlemesi</span>
                   </span>
-                  <span className="text-[10px] font-mono bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-800/40">
+                  <span className="text-[12px] font-mono bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-800/40">
                     CANLI
                   </span>
                 </div>
@@ -2151,26 +2151,26 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <h4 className="text-xs font-bold text-white tracking-wide">
                         {platformBrandTitle || 'Code4Ever Platform'}
                       </h4>
-                      <p className="text-[10px] text-blue-400 font-mono">
+                      <p className="text-[12px] text-blue-400 font-mono">
                         {platformBrandDomain || 'lanux.online'}
                       </p>
                     </div>
                   </div>
 
                   {platformBrandDescription && (
-                    <p className="text-[11px] text-zinc-400 leading-relaxed pt-1">
+                    <p className="text-[13px] text-zinc-400 leading-relaxed pt-1">
                       {platformBrandDescription}
                     </p>
                   )}
 
                   {platformBrandSlogan && (
-                    <div className="pt-1 flex items-center gap-1 text-[10px] text-amber-400 font-mono">
+                    <div className="pt-1 flex items-center gap-1 text-[12px] text-amber-400 font-mono">
                       <Sparkles className="w-3 h-3" />
                       <span>{platformBrandSlogan}</span>
                     </div>
                   )}
 
-                  <div className="pt-2 text-[9px] text-zinc-600 font-mono flex items-center justify-between">
+                  <div className="pt-2 text-[11px] text-zinc-600 font-mono flex items-center justify-between">
                     <span>© {new Date().getFullYear()} Code4Ever</span>
                     <span>v1.0-beta</span>
                   </div>
@@ -2263,7 +2263,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   }`}
                 >
                   <span>{pill.label}</span>
-                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-black/40 font-bold">
+                  <span className="px-1.5 py-0.2 rounded-full text-[12px] font-mono bg-black/40 font-bold">
                     {pill.count}
                   </span>
                 </button>
@@ -2325,7 +2325,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                             <span className="text-white font-semibold">{report.location}</span>
                           </div>
 
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold">
+                          <span className="px-2 py-0.5 rounded text-[12px] font-mono uppercase bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold">
                             {report.status || 'BEKLEMEDE'}
                           </span>
                         </div>
@@ -2340,7 +2340,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
                       {/* Description Block */}
                       <div className="c4e-well p-3.5 space-y-1">
-                        <div className="text-[11px] font-bold text-zinc-400 font-mono flex items-center gap-1.5">
+                        <div className="text-[13px] font-bold text-zinc-400 font-mono flex items-center gap-1.5">
                           <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
                           <span>Hata Açıklaması:</span>
                         </div>
@@ -2366,7 +2366,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                             <button
                               type="button"
                               onClick={() => handleCopyLog(report.id, report.logs || '')}
-                              className="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-[11px] font-mono text-zinc-300 flex items-center gap-1.5 cursor-pointer transition-colors"
+                              className="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.07] text-[13px] font-mono text-zinc-300 flex items-center gap-1.5 cursor-pointer transition-colors"
                             >
                               {copiedLogId === report.id ? (
                                 <>
@@ -2383,7 +2383,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                           </div>
 
                           <div
-                            className={`p-3 rounded-2xl bg-black/80 border border-zinc-900 font-mono text-[11px] text-emerald-400 overflow-x-auto ${
+                            className={`p-3 rounded-2xl bg-black/80 border border-zinc-900 font-mono text-[13px] text-emerald-400 overflow-x-auto ${
                               isExpanded ? 'max-h-96' : 'max-h-24'
                             } transition-all`}
                           >
@@ -2402,7 +2402,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                               className="w-6 h-6 rounded-full object-cover border border-white/[0.12]"
                             />
                           ) : (
-                            <div className="w-6 h-6 rounded-full bg-white/[0.07] flex items-center justify-center text-[10px] text-zinc-300 font-bold">
+                            <div className="w-6 h-6 rounded-full bg-white/[0.07] flex items-center justify-center text-[12px] text-zinc-300 font-bold">
                               {report.reporter_username?.charAt(0).toUpperCase() || 'U'}
                             </div>
                           )}
@@ -2411,7 +2411,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                             <strong className="text-zinc-200">
                               {report.reporter_display_name || report.reporter_username}
                             </strong>{' '}
-                            <span className="font-mono text-[11px] text-zinc-500">
+                            <span className="font-mono text-[13px] text-zinc-500">
                               (@{report.reporter_username})
                             </span>
                           </div>
@@ -2496,7 +2496,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
 
                   {/* Post Content Snippet */}
                   <div className="c4e-well p-3.5 space-y-1">
-                    <div className="text-[11px] font-mono text-zinc-500">Bildirilen İçerik:</div>
+                    <div className="text-[13px] font-mono text-zinc-500">Bildirilen İçerik:</div>
                     <p className="text-xs text-zinc-300 italic whitespace-pre-wrap leading-relaxed">
                       "{report.post_content}"
                     </p>
@@ -2517,7 +2517,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
                       <strong className="text-zinc-200">
                         {report.reporter_display_name || report.reporter_username}
                       </strong>{' '}
-                      <span className="font-mono text-[11px] text-zinc-500">
+                      <span className="font-mono text-[13px] text-zinc-500">
                         (@{report.reporter_username})
                       </span>
                     </div>

@@ -350,7 +350,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setCover(null)}
-                  className="flex min-h-9 items-center gap-1.5 rounded-xl bg-black/70 px-3 text-[11px] font-semibold text-white backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex min-h-9 items-center gap-1.5 rounded-xl bg-black/70 px-3 text-[13px] font-semibold text-white backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   <span>{tr ? 'Kaldır' : 'Remove'}</span>
@@ -359,7 +359,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
               <button
                 type="button"
                 onClick={() => coverInput.current?.click()}
-                className="flex min-h-9 items-center gap-1.5 rounded-xl bg-black/70 px-3 text-[11px] font-semibold text-white backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex min-h-9 items-center gap-1.5 rounded-xl bg-black/70 px-3 text-[13px] font-semibold text-white backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <ImagePlus className="h-3.5 w-3.5" />
                 <span>{tr ? 'Kapak seç' : 'Choose cover'}</span>
@@ -381,7 +381,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
         {editing ? (
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <label htmlFor="pp-ad" className="block text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+              <label htmlFor="pp-ad" className="block text-[13px] font-bold uppercase tracking-wide text-zinc-500">
                 {tr ? 'Proje adı' : 'Project name'}
               </label>
               <input
@@ -394,7 +394,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="pp-ozet" className="block text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+              <label htmlFor="pp-ozet" className="block text-[13px] font-bold uppercase tracking-wide text-zinc-500">
                 {tr ? 'Kısa tanıtım' : 'Short summary'}
               </label>
               <input
@@ -424,7 +424,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
               "@ad TypeScript owner/repo son commit 3 gün önce" tek bir karışık cümle gibi
               okunuyordu. Her parça artık kendi rozetinde: nerede bittiği belli.
             */}
-            <div className="flex flex-wrap items-center gap-2 text-[11px]">
+            <div className="flex flex-wrap items-center gap-2 text-[13px]">
               <a
                 href={`/@${project.owner_username}`}
                 className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-white/[0.05] px-3 font-mono text-zinc-300 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -512,7 +512,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
           </button>
 
           {!currentUserId && (
-            <span className="text-[11px] text-zinc-500">
+            <span className="text-[13px] text-zinc-500">
               {tr ? 'Beğenmek ve takip etmek için giriş yap.' : 'Sign in to like and follow.'}
             </span>
           )}
@@ -521,7 +521,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
         {/* AÇIKLAMA */}
         {editing ? (
           <div className="space-y-1.5">
-            <label htmlFor="pp-aciklama" className="block text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+            <label htmlFor="pp-aciklama" className="block text-[13px] font-bold uppercase tracking-wide text-zinc-500">
               {tr ? 'Proje açıklaması' : 'Project description'}
             </label>
             <textarea
@@ -535,9 +535,9 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                   ? 'Proje ne yapıyor, nasıl çalışıyor, neden yazdın?'
                   : 'What does it do, how does it work, why did you build it?'
               }
-              className="c4e-input w-full resize-y px-3 py-2.5 text-[13px] leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="c4e-input w-full resize-y px-3 py-2.5 text-[14px] leading-relaxed text-white placeholder-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
-            <p className="text-right text-[10px] text-zinc-600">{draft.description.length}/4000</p>
+            <p className="text-right text-[12px] text-zinc-600">{draft.description.length}/4000</p>
           </div>
         ) : project.description ? (
           (
@@ -547,7 +547,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                 yazanın niyetidir. HTML olarak basmıyoruz — React metni kaçışlıyor ve
                 kullanıcı içeriği hiçbir yerde ham HTML olarak render edilmiyor.
               */}
-              <p className="user-text whitespace-pre-wrap text-[13px] leading-[1.75] text-zinc-300">
+              <p className="user-text whitespace-pre-wrap text-[14px] leading-[1.75] text-zinc-300">
                 {project.description}
               </p>
             </div>
@@ -589,7 +589,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
         {/* GALERİ */}
         {(shownGallery.length > 0 || editing) && (
           <div className="space-y-2">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+            <p className="text-[13px] font-bold uppercase tracking-wide text-zinc-500">
               {tr ? 'Proje içerisinden görüntüler' : 'Images from the project'}
               {editing && (
                 <span className="ml-1 font-semibold normal-case text-zinc-600">
@@ -633,7 +633,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
                     type="button"
                     onClick={() => galleryInput.current?.click()}
                     disabled={busy}
-                    className="c4e-empty flex aspect-[4/3] w-full items-center justify-center gap-1.5 text-[11px] font-semibold text-zinc-500 transition-colors hover:border-indigo-400/40 hover:text-white disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="c4e-empty flex aspect-[4/3] w-full items-center justify-center gap-1.5 text-[13px] font-semibold text-zinc-500 transition-colors hover:border-indigo-400/40 hover:text-white disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
                     <span>{tr ? 'Görsel ekle' : 'Add image'}</span>
@@ -655,7 +655,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             </div>
 
             {editing && (
-              <p className="user-text text-[11px] leading-relaxed text-zinc-600">
+              <p className="user-text text-[13px] leading-relaxed text-zinc-600">
                 {tr
                   ? 'Görseller yüklenmeden önce küçültülür; telefon fotoğrafını olduğu gibi seçebilirsin.'
                   : 'Images are shrunk before upload, so a phone photo can be selected as is.'}
@@ -665,7 +665,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
         )}
 
         {error && (
-          <p className="user-text flex items-start gap-1.5 text-[11px] text-rose-300">
+          <p className="user-text flex items-start gap-1.5 text-[13px] text-rose-300">
             <AlertCircle className="mt-0.5 h-3 w-3 flex-shrink-0" />
             {error}
           </p>
@@ -692,7 +692,7 @@ export const ProjectPageView: React.FC<ProjectPageViewProps> = ({
             <X className="h-5 w-5" />
           </button>
           <img src={lightbox} alt="" className="max-h-full max-w-full rounded-2xl object-contain shadow-2xl" />
-          <p className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[11px] text-zinc-500">
+          <p className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[13px] text-zinc-500">
             {tr ? 'Kapatmak için ESC ya da bir yere tıkla' : 'Press ESC or click anywhere to close'}
           </p>
         </div>

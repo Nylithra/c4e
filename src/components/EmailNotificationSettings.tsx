@@ -161,7 +161,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
             <Mail className="h-3.5 w-3.5 text-blue-400" />
             <span>{tr ? 'E-posta bildirimleri' : 'E-mail notifications'}</span>
           </p>
-          <p className="user-text text-[11px] leading-relaxed text-zinc-400">
+          <p className="user-text text-[13px] leading-relaxed text-zinc-400">
             {tr
               ? 'Bekleyen bildirimlerin tek bir özet e-postada toplanıp gönderilir — her bildirim için ayrı posta gelmez.'
               : 'Pending notifications are collected into a single digest — never one e-mail per notification.'}
@@ -175,7 +175,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
       </div>
 
       {!master && (
-        <p className="user-text rounded-xl border border-white/[0.07] bg-white/[0.04] p-3 text-[11px] leading-relaxed text-zinc-400">
+        <p className="user-text rounded-xl border border-white/[0.07] bg-white/[0.04] p-3 text-[13px] leading-relaxed text-zinc-400">
           {tr
             ? 'Ana anahtar kapalı: hiçbir bildirim e-postası gönderilmiyor. Uygulama içi bildirimler etkilenmez.'
             : 'Master switch is off: no notification e-mails are sent. In-app notifications are unaffected.'}
@@ -190,8 +190,8 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
           }`}
         >
           <div className="space-y-0.5">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-zinc-300">{group.title}</p>
-            <p className="user-text text-[11px] leading-relaxed text-zinc-500">{group.hint}</p>
+            <p className="text-[13px] font-bold uppercase tracking-wide text-zinc-300">{group.title}</p>
+            <p className="user-text text-[13px] leading-relaxed text-zinc-500">{group.hint}</p>
           </div>
 
           <div className="divide-y divide-white/[0.06]">
@@ -199,7 +199,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
               <div key={item.id} className="flex items-center justify-between gap-3 py-2.5">
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-white">{item.label}</p>
-                  <p className="user-text text-[11px] text-zinc-500">{item.description}</p>
+                  <p className="user-text text-[13px] text-zinc-500">{item.description}</p>
                 </div>
                 <Toggle
                   checked={prefs.types[item.id] === true}
@@ -215,7 +215,7 @@ export const EmailNotificationSettings: React.FC<{ language: 'tr' | 'en' }> = ({
         </div>
       ))}
 
-      <div className="flex min-h-5 items-center gap-2 text-[11px]">
+      <div className="flex min-h-5 items-center gap-2 text-[13px]">
         {saving && (
           <span className="flex items-center gap-1.5 text-zinc-400">
             <Loader2 className="h-3 w-3 animate-spin" />

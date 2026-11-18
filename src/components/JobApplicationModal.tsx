@@ -133,7 +133,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
               <h3 className="text-sm font-bold text-white tracking-tight">
                 {language === 'tr' ? 'İlana Başvur' : 'Apply to Listing'}
               </h3>
-              <p className="text-[11px] text-zinc-400 font-mono truncate max-w-xs">
+              <p className="text-[13px] text-zinc-400 font-mono truncate max-w-xs">
                 {listing.title}
               </p>
             </div>
@@ -276,7 +276,7 @@ export const JobApplicationModal: React.FC<JobApplicationModalProps> = ({
                 className="c4e-input w-full px-3.5 py-2 text-xs text-white placeholder-zinc-500 resize-none"
                 required
               />
-              <div className="text-[10px] text-zinc-500 text-right mt-0.5 font-mono">
+              <div className="text-[12px] text-zinc-500 text-right mt-0.5 font-mono">
                 {description.length}/2000
               </div>
             </div>

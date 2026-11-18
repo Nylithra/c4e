@@ -84,11 +84,11 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
           <div>
             <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
               <span>{language === 'tr' ? 'İş & Ekip İlanları' : 'Job & Team Listings'}</span>
-              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-[10px] text-zinc-400 font-mono">
+              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-[12px] text-zinc-400 font-mono">
                 {jobListings.length}
               </span>
             </h2>
-            <p className="text-[11px] text-zinc-500 font-mono hidden sm:block">
+            <p className="text-[13px] text-zinc-500 font-mono hidden sm:block">
               {language === 'tr' ? 'Projelerinize ekip arkadaşı bulun veya yeni fırsatlara başvurun' : 'Find teammates or apply to software opportunities'}
             </p>
           </div>
@@ -230,12 +230,12 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                         >
                           {authorDisplayName}
                         </button>
-                        <span className="text-[11px] text-zinc-500 font-mono">@{authorUsername}</span>
+                        <span className="text-[13px] text-zinc-500 font-mono">@{authorUsername}</span>
                         <span className="text-zinc-600">·</span>
-                        <span className="text-[11px] text-zinc-500 font-mono">{job.time_ago || 'Yeni'}</span>
+                        <span className="text-[13px] text-zinc-500 font-mono">{job.time_ago || 'Yeni'}</span>
                       </div>
                       {authorRole && (
-                        <span className="text-[10px] text-zinc-400 font-mono">{authorRole}</span>
+                        <span className="text-[12px] text-zinc-400 font-mono">{authorRole}</span>
                       )}
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                   {/* Type Badge & Action */}
                   <div className="flex items-center gap-2">
                     <span
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${
+                      className={`px-3 py-1 rounded-full text-[13px] font-bold border flex items-center gap-1.5 ${
                         job.type === 'job'
                           ? 'bg-white/[0.04] border-white/[0.12] text-zinc-200'
                           : 'bg-white/[0.04] border-white/[0.12] text-zinc-200'
@@ -280,12 +280,12 @@ export const JobListingsView: React.FC<JobListingsViewProps> = ({
                 <div className="pt-3 border-t border-white/[0.07] flex items-center justify-between flex-wrap gap-3">
                   <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
                     <div className="c4e-card flex items-center gap-1.5 px-2.5 py-1">
-                      <span className="text-[10px] uppercase text-zinc-500">{language === 'tr' ? 'Kontenjan:' : 'Quota:'}</span>
+                      <span className="text-[12px] uppercase text-zinc-500">{language === 'tr' ? 'Kontenjan:' : 'Quota:'}</span>
                       <span className="text-white font-bold">{job.quota}</span>
                     </div>
 
                     <div className="c4e-card flex items-center gap-1.5 px-2.5 py-1">
-                      <span className="text-[10px] uppercase text-zinc-500">{language === 'tr' ? 'Başvuru:' : 'Applications:'}</span>
+                      <span className="text-[12px] uppercase text-zinc-500">{language === 'tr' ? 'Başvuru:' : 'Applications:'}</span>
                       <span className="text-white font-bold">{job.applications_count || job.applications?.length || 0}</span>
                     </div>
                   </div>

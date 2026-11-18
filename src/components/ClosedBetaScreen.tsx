@@ -56,7 +56,7 @@ export const ClosedBetaScreen: React.FC<ClosedBetaScreenProps> = ({
           <p className="text-xs text-zinc-300 leading-relaxed font-medium">
             Kapalı Betaya Başvurduğunuz İçin Teşekkürler Başvurunuz Onaylandığında Sizlere Ulaşabilmemiz İçin Bir Sosyal Medya Adresi Bırakınız:
           </p>
-          <p className="text-[11px] text-zinc-400 font-mono italic">
+          <p className="text-[13px] text-zinc-400 font-mono italic">
             ör: insta: nylithra
           </p>
         </div>
@@ -103,7 +103,7 @@ export const ClosedBetaScreen: React.FC<ClosedBetaScreenProps> = ({
               alt={user.display_name}
               className="w-6 h-6 rounded-full object-cover ring-1 ring-white/[0.12]"
             />
-            <span className="font-mono text-white text-[11px]">@{user.username}</span>
+            <span className="font-mono text-white text-[13px]">@{user.username}</span>
           </div>
 
           <button

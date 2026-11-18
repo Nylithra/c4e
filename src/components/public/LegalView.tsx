@@ -11,13 +11,13 @@ const EFFECTIVE_DATE = '14.09.2026';
 const CONTACT_EMAIL = 'destek@lanux.online';
 
 const Paragraph: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <p className="user-text text-[13px] leading-relaxed text-zinc-400">{children}</p>
+  <p className="user-text text-[14px] leading-relaxed text-zinc-400">{children}</p>
 );
 
 const List: React.FC<{ items: React.ReactNode[] }> = ({ items }) => (
   <ul className="space-y-2">
     {items.map((item, i) => (
-      <li key={i} className="flex gap-2.5 text-[13px] leading-relaxed text-zinc-400">
+      <li key={i} className="flex gap-2.5 text-[14px] leading-relaxed text-zinc-400">
         <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-zinc-600" />
         <span className="user-text">{item}</span>
       </li>
@@ -26,7 +26,7 @@ const List: React.FC<{ items: React.ReactNode[] }> = ({ items }) => (
 );
 
 const Notice: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="c4e-card p-3.5 text-[12px] leading-relaxed text-zinc-400">
+  <div className="c4e-card p-3.5 text-[13.5px] leading-relaxed text-zinc-400">
     {children}
   </div>
 );

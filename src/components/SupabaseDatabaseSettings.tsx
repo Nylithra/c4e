@@ -83,7 +83,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
           <span className="text-sm font-bold text-white">
             {language === 'tr' ? 'Canlı Tablo Durumu' : 'Live Table Status'}
           </span>
-          <span className="text-[11px] font-mono text-zinc-500">
+          <span className="text-[13px] font-mono text-zinc-500">
             {status?.connected
               ? (language === 'tr' ? '🟢 Supabase Bağlı' : '🟢 Supabase Connected')
               : (language === 'tr' ? '🟡 Yerel / Offline Mod' : '🟡 Local / Offline Mode')}
@@ -119,8 +119,8 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
                     <XCircle className="w-4 h-4 text-zinc-600" />
                   )}
                 </div>
-                <span className="text-[11px] text-zinc-400 block">{item.desc}</span>
-                <span className="text-[10px] font-mono text-zinc-500 mt-1 block">
+                <span className="text-[13px] text-zinc-400 block">{item.desc}</span>
+                <span className="text-[12px] font-mono text-zinc-500 mt-1 block">
                   {tableExists ? 'Tablo Mevcut & RLS Aktif' : 'Tablo Bulunamadı / Bekleniyor'}
                 </span>
               </div>
@@ -136,7 +136,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
             <span className="text-sm font-bold text-white block">
               {language === 'tr' ? 'Otomatik Tablo & Güvenlik SQL Scripti' : 'Auto Table & Security SQL Script'}
             </span>
-            <span className="text-[11px] text-zinc-500 font-mono">
+            <span className="text-[13px] text-zinc-500 font-mono">
               PostgreSQL RLS, Indexes & Tables
             </span>
           </div>
@@ -152,7 +152,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
         </div>
 
         <div className="relative">
-          <pre className="p-3.5 bg-black/25 border border-white/[0.07] rounded-xl text-[11px] font-mono text-zinc-300 max-h-48 overflow-y-auto leading-relaxed">
+          <pre className="p-3.5 bg-black/25 border border-white/[0.07] rounded-xl text-[13px] font-mono text-zinc-300 max-h-48 overflow-y-auto leading-relaxed">
             {SUPABASE_SETUP_SQL}
           </pre>
         </div>
@@ -161,7 +161,7 @@ export const SupabaseDatabaseSettings: React.FC<SupabaseDatabaseSettingsProps> =
           <Code2 className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
           <div>
             <span className="font-bold">Nasıl Kullanılır?</span>
-            <p className="text-[11px] text-zinc-400 mt-0.5">
+            <p className="text-[13px] text-zinc-400 mt-0.5">
               Supabase Dashboard'unuza girin &gt; Sol menüden <strong>SQL Editor</strong> seçin &gt; <strong>New Query</strong> butonuna basıp bu kodu yapıştırın ve <strong>Run</strong> diyerek çalıştırın. Tüm tablolar ve silme yetkileri anında aktif olacaktır.
             </p>
           </div>

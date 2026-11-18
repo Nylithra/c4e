@@ -88,7 +88,7 @@ export const ReportPostModal: React.FC<ReportPostModalProps> = ({
               <h3 className="text-sm font-bold text-white">
                 {language === 'tr' ? 'Gönderiyi Bildir / Şikayet Et' : 'Report Post to Moderation'}
               </h3>
-              <p className="text-[11px] text-zinc-400 font-mono">
+              <p className="text-[13px] text-zinc-400 font-mono">
                 @{post.author.username} paylaşılan gönderi
               </p>
             </div>
@@ -104,7 +104,7 @@ export const ReportPostModal: React.FC<ReportPostModalProps> = ({
 
         {/* Post Preview Snippet */}
         <div className="p-4 bg-black/25 border-b border-white/[0.07] text-xs text-zinc-300">
-          <div className="text-[10px] text-zinc-500 font-mono mb-1">Bildirilen İçerik Önizlemesi:</div>
+          <div className="text-[12px] text-zinc-500 font-mono mb-1">Bildirilen İçerik Önizlemesi:</div>
           <p className="line-clamp-2 italic text-zinc-400">
             "{post.content || (getSnippetCode() ? getSnippetCode().substring(0, 100) : 'Görsel / Medya paylaşımı')}"
           </p>

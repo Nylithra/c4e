@@ -177,7 +177,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                       className="flex items-start sm:items-center gap-3.5 sm:gap-4 overflow-hidden cursor-pointer flex-1 min-w-0"
                     >
                       <div className="relative flex-shrink-0">
-                        <UserAvatar src={comm.avatar_url} name={comm.name} className="w-20 h-20 sm:w-16 sm:h-16 rounded-2xl ring-2 ring-white/[0.08] shadow-xl group-hover:scale-105 transition-transform bg-white/[0.04] text-[10px]" />
+                        <UserAvatar src={comm.avatar_url} name={comm.name} className="w-20 h-20 sm:w-16 sm:h-16 rounded-2xl ring-2 ring-white/[0.08] shadow-xl group-hover:scale-105 transition-transform bg-white/[0.04] text-[12px]" />
                         <div className="absolute -bottom-1 -right-1 bg-purple-600/95 text-white p-1 rounded-lg border-2 border-white/[0.07] shadow-md">
                           <Users className="w-3 h-3" />
                         </div>
@@ -189,13 +189,13 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                             {comm.name}
                           </h3>
                           {comm.created_by === user?.id && (
-                            <span className="px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-300 font-mono flex items-center gap-1">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[12px] text-amber-300 font-mono flex items-center gap-1">
                               <Crown className="w-2.5 h-2.5 text-amber-400" />
                               {language === 'tr' ? 'Kurucu' : 'Founder'}
                             </span>
                           )}
                           {comm.is_private && (
-                            <span className="px-1.5 py-0.5 rounded bg-zinc-100/10 border border-zinc-500/30 text-[10px] text-zinc-200 font-mono flex items-center gap-1">
+                            <span className="px-1.5 py-0.5 rounded bg-zinc-100/10 border border-zinc-500/30 text-[12px] text-zinc-200 font-mono flex items-center gap-1">
                               <Lock className="w-2.5 h-2.5" />
                               {language === 'tr' ? 'Gizli' : 'Private'}
                             </span>
@@ -207,7 +207,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                             /c/@{comm.handle.replace(/^@/, '')}
                           </span>
                           <span className="text-zinc-600 text-xs hidden sm:inline">•</span>
-                          <span className="text-[11px] sm:text-xs text-zinc-400 font-mono flex items-center gap-1">
+                          <span className="text-[13px] sm:text-xs text-zinc-400 font-mono flex items-center gap-1">
                             <Users className="w-3 h-3 text-zinc-500" />
                             {comm.members_count.toLocaleString()} {language === 'tr' ? 'Üye' : 'Members'}
                           </span>
@@ -345,7 +345,7 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
 
             <form onSubmit={handleCreateSubmit} className="space-y-4 text-xs">
               {errorMessage && (
-                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-[11px] flex items-center gap-2">
+                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-[13px] flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
@@ -420,12 +420,12 @@ export const CommunitiesView: React.FC<CommunitiesViewProps> = ({
                     {isPrivate ? <Lock className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[11px] font-bold text-white">
+                    <span className="block text-[13px] font-bold text-white">
                       {isPrivate
                         ? (language === 'tr' ? 'Gizli Topluluk' : 'Private community')
                         : (language === 'tr' ? 'Herkese Açık Topluluk' : 'Public community')}
                     </span>
-                    <span className="block text-[10px] text-zinc-400 leading-relaxed">
+                    <span className="block text-[12px] text-zinc-400 leading-relaxed">
                       {isPrivate
                         ? (language === 'tr'
                             ? 'Gönderileri yalnızca üyeler görebilir. Topluluk keşfedilebilir kalır, herkes katılabilir.'

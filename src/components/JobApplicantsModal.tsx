@@ -43,7 +43,7 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
               <h3 className="text-sm font-bold text-white tracking-tight">
                 {language === 'tr' ? 'Gelen Başvurular' : 'Incoming Applications'}
               </h3>
-              <p className="text-[11px] text-zinc-400 font-mono truncate max-w-md">
+              <p className="text-[13px] text-zinc-400 font-mono truncate max-w-md">
                 {listing.title} ({applications.length} {language === 'tr' ? 'başvuru' : 'applications'})
               </p>
             </div>
@@ -100,12 +100,12 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
                         >
                           {app.name || app.applicant_display_name || app.applicant_username}
                         </button>
-                        <span className="text-[11px] text-zinc-500 font-mono">@{app.applicant_username}</span>
-                        <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-zinc-400 font-mono text-[10px]">
+                        <span className="text-[13px] text-zinc-500 font-mono">@{app.applicant_username}</span>
+                        <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-zinc-400 font-mono text-[12px]">
                           {app.age} {language === 'tr' ? 'yaşında' : 'y/o'}
                         </span>
                       </div>
-                      <span className="text-[10px] text-zinc-500 font-mono">{app.time_ago || 'Az önce'}</span>
+                      <span className="text-[12px] text-zinc-500 font-mono">{app.time_ago || 'Az önce'}</span>
                     </div>
                   </div>
 
@@ -138,22 +138,22 @@ export const JobApplicantsModal: React.FC<JobApplicantsModalProps> = ({
                 {/* Details Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                   <div className="c4e-card p-2.5">
-                    <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                    <span className="text-[12px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                       {language === 'tr' ? 'Deneyim:' : 'Experience:'}
                     </span>
                     <p className="text-zinc-200">{app.experience}</p>
                   </div>
                   <div className="c4e-card p-2.5">
-                    <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                    <span className="text-[12px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                       {language === 'tr' ? 'Bildiği Diller / Teknolojiler:' : 'Languages & Tech:'}
                     </span>
-                    <p className="text-zinc-200 font-mono text-[11px]">{app.languages}</p>
+                    <p className="text-zinc-200 font-mono text-[13px]">{app.languages}</p>
                   </div>
                 </div>
 
                 {/* Description */}
                 <div className="c4e-card p-2.5 text-xs">
-                  <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
+                  <span className="text-[12px] text-zinc-400 font-semibold uppercase tracking-wider block mb-1">
                     {language === 'tr' ? 'Açıklama:' : 'Applicant Note:'}
                   </span>
                   <p className="text-zinc-300 leading-relaxed font-sans">{app.description}</p>

@@ -163,7 +163,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
             <Bell className="w-5 h-5 text-zinc-300 flex-shrink-0" />
             <span className="truncate">{tr ? 'Bildirimler' : 'Notifications'}</span>
             {unreadCount > 0 && (
-              <span className="flex-shrink-0 rounded-full bg-red-500 px-2 text-[11px] font-bold leading-5 text-white">
+              <span className="flex-shrink-0 rounded-full bg-red-500 px-2 text-[13px] font-bold leading-5 text-white">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
@@ -174,7 +174,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
               type="button"
               onClick={onMarkAllAsRead}
               disabled={unreadCount === 0}
-              className="h-9 px-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-400 hover:text-white hover:border-white/[0.16] disabled:opacity-40 disabled:hover:text-zinc-400 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5 text-[11px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="h-9 px-2.5 rounded-xl bg-white/[0.04] border border-white/[0.07] text-zinc-400 hover:text-white hover:border-white/[0.16] disabled:opacity-40 disabled:hover:text-zinc-400 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1.5 text-[13px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               title={tr ? 'Tümünü okundu işaretle' : 'Mark all as read'}
             >
               <CheckCheck className="w-4 h-4" />
@@ -212,7 +212,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                 <span>{tab.label}</span>
                 {tab.count > 0 && (
                   <span
-                    className={`text-[10px] font-mono ${isActive ? 'text-zinc-600' : 'text-zinc-500'}`}
+                    className={`text-[12px] font-mono ${isActive ? 'text-zinc-600' : 'text-zinc-500'}`}
                   >
                     {tab.count}
                   </span>
@@ -227,7 +227,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
       {showPermissionPrompt && (
         <div className="c4e-card mx-4 mt-4 flex items-center gap-3 p-3">
           <Bell className="h-4 w-4 flex-shrink-0 text-zinc-400" />
-          <p className="flex-1 min-w-0 text-[11px] leading-snug text-zinc-400">
+          <p className="flex-1 min-w-0 text-[13px] leading-snug text-zinc-400">
             {tr
               ? 'Tarayıcı bildirimleri kapalı. Açarsan sekme arkadayken de haberin olur.'
               : 'Browser notifications are off. Turn them on to get notified while the tab is in the background.'}
@@ -235,7 +235,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
           <button
             type="button"
             onClick={handleEnableNotifications}
-            className="h-8 flex-shrink-0 rounded-lg bg-zinc-100 px-3 text-[11px] font-bold text-zinc-950 hover:bg-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="h-8 flex-shrink-0 rounded-lg bg-zinc-100 px-3 text-[13px] font-bold text-zinc-950 hover:bg-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {tr ? 'Aç' : 'Enable'}
           </button>
@@ -273,7 +273,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
         <div>
           {groups.map((group) => (
             <section key={group.id}>
-              <h3 className="bg-white/[0.03] px-5 py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500 border-y border-white/[0.07]">
+              <h3 className="bg-white/[0.03] px-5 py-2 text-[13px] font-bold uppercase tracking-wider text-zinc-500 border-y border-white/[0.07]">
                 {group.label}
               </h3>
 
@@ -305,7 +305,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                           <UserAvatar
                             src={item.actor?.avatar_url}
                             name={actorName || '?'}
-                            className="h-10 w-10 text-[11px] ring-1 ring-white/[0.08]"
+                            className="h-10 w-10 text-[13px] ring-1 ring-white/[0.08]"
                           />
                           <span
                             className={`absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border ${style.badge} ring-2 ring-[#0a0a14]`}
@@ -316,7 +316,7 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
 
                         <div className="min-w-0 flex-1">
                           <p
-                            className={`user-text text-[13px] leading-snug ${
+                            className={`user-text text-[14px] leading-snug ${
                               item.is_read ? 'text-zinc-400' : 'text-zinc-200'
                             }`}
                           >
@@ -324,13 +324,13 @@ export const NotificationsView: React.FC<NotificationsViewProps> = ({
                               <span className="font-bold text-white">{actorName}</span>
                             )}
                             {actorUsername && item.actor?.display_name && (
-                              <span className="ml-1 font-mono text-[11px] text-zinc-500">
+                              <span className="ml-1 font-mono text-[13px] text-zinc-500">
                                 @{actorUsername}
                               </span>
                             )}{' '}
                             <span>{item.content}</span>
                           </p>
-                          <span className="mt-1 block font-mono text-[11px] text-zinc-500">
+                          <span className="mt-1 block font-mono text-[13px] text-zinc-500">
                             {item.time_ago ||
                               (item.created_at
                                 ? new Date(item.created_at).toLocaleString(tr ? 'tr-TR' : 'en-US', {

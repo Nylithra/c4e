@@ -267,7 +267,7 @@ print(res.json()["post"]["url"])`;
     <button
       type="button"
       onClick={() => handleCopy(text, token)}
-      className="flex h-7 items-center gap-1 rounded-lg px-2 text-[11px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="flex h-7 items-center gap-1 rounded-lg px-2 text-[13px] text-zinc-400 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       {copied === token ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
       <span>{copied === token ? (tr ? 'Kopyalandı' : 'Copied') : (tr ? 'Kopyala' : 'Copy')}</span>
@@ -288,7 +288,7 @@ print(res.json()["post"]["url"])`;
         </span>
         <CopyButton text={code} token={token} />
       </div>
-      <pre className="overflow-x-auto rounded-xl border border-white/[0.07] bg-black/25 p-3 text-[11px] leading-relaxed text-zinc-300">
+      <pre className="overflow-x-auto rounded-xl border border-white/[0.07] bg-black/25 p-3 text-[13px] leading-relaxed text-zinc-300">
         {code}
       </pre>
     </div>
@@ -358,13 +358,13 @@ print(res.json()["post"]["url"])`;
             <div className="space-y-4">
               <div className="c4e-well space-y-2 p-3.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                  <span className="text-[13px] font-bold uppercase tracking-wider text-zinc-400">
                     Endpoint
                   </span>
                   <CopyButton text={endpointUrl} token="url" />
                 </div>
                 <div className="flex select-all items-center gap-2 overflow-x-auto rounded-lg bg-black p-2.5 font-mono text-xs text-emerald-400">
-                  <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[10px] font-bold text-emerald-300">
+                  <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[12px] font-bold text-emerald-300">
                     POST
                   </span>
                   <span>{endpointUrl}</span>
@@ -405,7 +405,7 @@ print(res.json()["post"]["url"])`;
           {/* ---------------- PLAYGROUND ---------------- */}
           {activeTab === 'playground' && (
             <form onSubmit={handleSendTestRequest} className="space-y-4">
-              <p className="text-[11px] leading-relaxed text-zinc-500">
+              <p className="text-[13px] leading-relaxed text-zinc-500">
                 {tr
                   ? 'Bu form gerçek bir HTTP isteği gönderir ve başarılı olursa topluluk akışına gerçek bir gönderi düşer.'
                   : 'This form sends a real HTTP request; on success a real post lands in the community feed.'}
@@ -524,7 +524,7 @@ print(res.json()["post"]["url"])`;
                     {testResult.url && (
                       <a
                         href={testResult.url}
-                        className="user-text inline-flex items-center gap-1 font-mono text-[11px] underline"
+                        className="user-text inline-flex items-center gap-1 font-mono text-[13px] underline"
                       >
                         {testResult.url}
                         <ExternalLink className="h-3 w-3" />
@@ -556,7 +556,7 @@ print(res.json()["post"]["url"])`;
                         <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                         <span>{tr ? 'Anahtar oluşturuldu' : 'Key created'}</span>
                       </div>
-                      <p className="text-[11px] leading-relaxed text-emerald-200/80">
+                      <p className="text-[13px] leading-relaxed text-emerald-200/80">
                         {tr
                           ? 'Bu anahtar bir daha gösterilmeyecek. Şimdi kopyalayın ve sunucu tarafında bir ortam değişkeninde saklayın.'
                           : 'This key will not be shown again. Copy it now and store it in a server-side environment variable.'}
@@ -566,7 +566,7 @@ print(res.json()["post"]["url"])`;
                           readOnly
                           value={freshKey}
                           aria-label={tr ? 'Yeni API anahtarı' : 'New API key'}
-                          className="min-w-0 flex-1 select-all rounded-xl border border-emerald-800/50 bg-black px-3 py-2 font-mono text-[11px] text-emerald-300"
+                          className="min-w-0 flex-1 select-all rounded-xl border border-emerald-800/50 bg-black px-3 py-2 font-mono text-[13px] text-emerald-300"
                         />
                         <CopyButton text={freshKey} token="fresh" />
                       </div>
@@ -634,16 +634,16 @@ print(res.json()["post"]["url"])`;
                             <div className="flex flex-wrap items-center gap-2">
                               <span className="text-xs font-bold text-white">{key.name}</span>
                               {key.revoked_at ? (
-                                <span className="rounded-full bg-white/[0.07] px-2 py-0.5 font-mono text-[10px] text-zinc-400">
+                                <span className="rounded-full bg-white/[0.07] px-2 py-0.5 font-mono text-[12px] text-zinc-400">
                                   {tr ? 'iptal' : 'revoked'}
                                 </span>
                               ) : (
-                                <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 font-mono text-[10px] text-emerald-400">
+                                <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 font-mono text-[12px] text-emerald-400">
                                   {tr ? 'etkin' : 'active'}
                                 </span>
                               )}
                             </div>
-                            <p className="user-text mt-0.5 font-mono text-[11px] text-zinc-500">
+                            <p className="user-text mt-0.5 font-mono text-[13px] text-zinc-500">
                               {key.key_prefix}… · {key.request_count} {tr ? 'istek' : 'requests'}
                               {key.last_used_at
                                 ? ` · ${tr ? 'son' : 'last'} ${new Date(key.last_used_at).toLocaleDateString(tr ? 'tr-TR' : 'en-US')}`
@@ -657,7 +657,7 @@ print(res.json()["post"]["url"])`;
                               onClick={() => handleRevokeKey(key.id)}
                               disabled={revokingId === key.id}
                               aria-label={tr ? 'Anahtarı iptal et' : 'Revoke key'}
-                              className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] px-3 text-[11px] font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-400 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                              className="flex h-9 items-center gap-1.5 rounded-xl border border-white/[0.07] px-3 text-[13px] font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-400 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             >
                               {revokingId === key.id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -672,7 +672,7 @@ print(res.json()["post"]["url"])`;
                     </ul>
                   )}
 
-                  <p className="text-[11px] leading-relaxed text-zinc-500">
+                  <p className="text-[13px] leading-relaxed text-zinc-500">
                     {tr
                       ? 'Anahtarlar veritabanında yalnızca SHA-256 özeti olarak tutulur; düz metni yalnızca oluşturulduğu anda görebilirsiniz. Sızdığından şüphelendiğiniz anahtarı iptal edin.'
                       : 'Keys are stored only as SHA-256 hashes; the plaintext is visible only at creation. Revoke any key you suspect has leaked.'}

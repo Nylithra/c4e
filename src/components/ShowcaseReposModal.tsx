@@ -133,7 +133,7 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
             <div>
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <span>{language === 'tr' ? 'Profilinde Depolarını Sergile' : 'Showcase Repositories'}</span>
-                <span className="px-2 py-0.5 rounded-md bg-white/[0.07] text-zinc-300 text-[10px] font-mono">
+                <span className="px-2 py-0.5 rounded-md bg-white/[0.07] text-zinc-300 text-[12px] font-mono">
                   {selectedList.length}/6
                 </span>
               </h3>
@@ -183,15 +183,15 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                       <GitBranch className="w-4 h-4 text-zinc-400 flex-shrink-0" />
                       <span className="text-xs font-bold text-white truncate">{repo.name}</span>
                       {repo.language && (
-                        <span className="px-1.5 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.07] text-[10px] text-zinc-300 font-mono">
+                        <span className="px-1.5 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.07] text-[12px] text-zinc-300 font-mono">
                           {repo.language}
                         </span>
                       )}
                     </div>
                     {repo.description && (
-                      <p className="text-[11px] text-zinc-400 truncate mt-1">{repo.description}</p>
+                      <p className="text-[13px] text-zinc-400 truncate mt-1">{repo.description}</p>
                     )}
-                    <div className="flex items-center gap-3 text-[11px] text-zinc-500 font-mono mt-1.5">
+                    <div className="flex items-center gap-3 text-[13px] text-zinc-500 font-mono mt-1.5">
                       <span className="flex items-center gap-1">
                         <Star className="w-3 h-3 text-amber-400" />
                         <span>{repo.stargazers_count}</span>
@@ -343,9 +343,9 @@ export const ShowcaseReposModal: React.FC<ShowcaseReposModalProps> = ({
                       )}
                     </div>
                     {repo.description && (
-                      <p className="text-[11px] text-zinc-400 line-clamp-1 mt-1">{repo.description}</p>
+                      <p className="text-[13px] text-zinc-400 line-clamp-1 mt-1">{repo.description}</p>
                     )}
-                    <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono mt-2">
+                    <div className="flex items-center gap-2 text-[12px] text-zinc-500 font-mono mt-2">
                       {repo.language && (
                         <span className="px-1.5 py-0.5 rounded bg-white/[0.04] text-zinc-300">{repo.language}</span>
                       )}

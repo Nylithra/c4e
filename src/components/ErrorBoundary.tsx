@@ -114,7 +114,7 @@ export class ErrorBoundary extends Component<Props, State> {
         {/* The message is what a member can actually quote when reporting the problem. */}
         {this.state.error?.message && (
           <p
-            className="user-text mt-5 max-w-sm font-mono text-[10px] leading-relaxed opacity-70"
+            className="user-text mt-5 max-w-sm font-mono text-[12px] leading-relaxed opacity-70"
             style={{ color: 'var(--muted-foreground)' }}
           >
             {this.state.error.message.slice(0, 200)}

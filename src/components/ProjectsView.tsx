@@ -129,7 +129,7 @@ const ProjectCard: React.FC<{
                 {project.name}
               </a>
 
-              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] text-zinc-500">
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] text-zinc-500">
                 <span className="font-mono">@{project.owner_username}</span>
                 {project.language && (
                   <span className="inline-flex items-center gap-1.5">
@@ -171,7 +171,7 @@ const ProjectCard: React.FC<{
           </div>
 
           {project.about && (
-            <p className="user-text line-clamp-2 text-[12.5px] leading-relaxed text-zinc-400">
+            <p className="user-text line-clamp-2 text-[14px] leading-relaxed text-zinc-400">
               {project.about}
             </p>
           )}
@@ -197,7 +197,7 @@ const ProjectCard: React.FC<{
               ? `${project.name} projesini beğen (${project.likes_count} beğeni)`
               : `Like ${project.name} (${project.likes_count} likes)`
           }
-          className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             liked
               ? 'bg-rose-500/15 text-rose-300'
               : 'text-zinc-400 hover:bg-white/[0.06] hover:text-white'
@@ -231,7 +231,7 @@ const ProjectCard: React.FC<{
               ? 'Takip et, her yeni commit için bildirim al'
               : 'Follow to get a notification on every new commit'
           }
-          className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          className={`flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold transition-colors disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
             followed
               ? 'bg-emerald-500/15 text-emerald-300'
               : 'text-zinc-400 hover:bg-white/[0.06] hover:text-white'
@@ -251,7 +251,7 @@ const ProjectCard: React.FC<{
             onClick={onShare}
             title={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
             aria-label={tr ? 'Bu projeyi bir topluluğa ekle' : 'Add this project to a community'}
-            className="flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[11px] font-semibold text-zinc-400 transition-colors hover:bg-indigo-500/[0.14] hover:text-indigo-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex min-h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold text-zinc-400 transition-colors hover:bg-indigo-500/[0.14] hover:text-indigo-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Users className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{tr ? 'Topluluğa ekle' : 'Add to community'}</span>
@@ -259,7 +259,7 @@ const ProjectCard: React.FC<{
         )}
 
         {project.last_commit_at && (
-          <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[11px] text-zinc-600">
+          <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[13px] text-zinc-600">
             <GitCommit className="h-3 w-3" />
             {timeAgo(project.last_commit_at, tr)}
           </span>
@@ -301,7 +301,7 @@ const HighlightCard: React.FC<{
       <ProjectMark project={project} size="h-11 w-11 text-sm" />
 
       <div className="min-w-0 flex-1">
-        <p className={`flex items-center gap-1.5 text-[10px] font-bold tracking-wide ${tone}`}>
+        <p className={`flex items-center gap-1.5 text-[12px] font-bold tracking-wide ${tone}`}>
           {icon}
           <span>{title}</span>
         </p>
@@ -316,14 +316,14 @@ const HighlightCard: React.FC<{
         >
           {project.name}
         </a>
-        <p className="user-text truncate font-mono text-[11px] text-zinc-500">
+        <p className="user-text truncate font-mono text-[13px] text-zinc-500">
           @{project.owner_username}
           {project.repo_full_name ? ` · ${project.repo_full_name}` : ''}
         </p>
       </div>
     </div>
 
-    <p className="relative mt-3 border-t border-white/[0.06] pt-2.5 text-[11px] font-semibold text-zinc-400">
+    <p className="relative mt-3 border-t border-white/[0.06] pt-2.5 text-[13px] font-semibold text-zinc-400">
       {subtitle}
     </p>
   </div>
@@ -444,7 +444,7 @@ const CreateProjectDialog: React.FC<{
             paylaşamıyordu.
           */}
           <div className="space-y-2">
-            <label htmlFor="proje-adi" className="block text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+            <label htmlFor="proje-adi" className="block text-[13px] font-bold uppercase tracking-wide text-zinc-500">
               {tr ? 'Proje adı' : 'Project name'}
             </label>
             <input
@@ -459,7 +459,7 @@ const CreateProjectDialog: React.FC<{
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="proje-hakkinda" className="block text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+            <label htmlFor="proje-hakkinda" className="block text-[13px] font-bold uppercase tracking-wide text-zinc-500">
               {tr ? 'Hakkında' : 'About'}
             </label>
             <textarea
@@ -471,18 +471,18 @@ const CreateProjectDialog: React.FC<{
               placeholder={tr ? 'Proje ne yapıyor?' : 'What does this project do?'}
               className="c4e-input w-full resize-none px-3 py-2.5 text-xs leading-relaxed text-white placeholder-zinc-600 focus-visible:ring-2 focus-visible:ring-ring"
             />
-            <p className="text-right text-[10px] text-zinc-600">{about.length}/600</p>
+            <p className="text-right text-[12px] text-zinc-600">{about.length}/600</p>
           </div>
 
           <div className="space-y-2 rounded-xl border border-white/[0.07] p-3">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+            <p className="text-[13px] font-bold uppercase tracking-wide text-zinc-500">
               {tr ? 'GitHub deposu' : 'GitHub repository'}{' '}
               <span className="font-semibold normal-case text-zinc-600">{tr ? '(isteğe bağlı)' : '(optional)'}</span>
             </p>
 
             {!wantRepo ? (
               <>
-                <p className="user-text text-[11px] leading-relaxed text-zinc-500">
+                <p className="user-text text-[13px] leading-relaxed text-zinc-500">
                   {tr
                     ? 'Depo eklersen her yeni commit takipçilerine bildirim olarak gider. Eklemezsen proje yine paylaşılır.'
                     : 'Attaching a repository sends a notification to your followers on every new commit. Without one the project is still shared.'}
@@ -490,14 +490,14 @@ const CreateProjectDialog: React.FC<{
                 <button
                   type="button"
                   onClick={loadRepos}
-                  className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-white/[0.07] text-[11px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-white/[0.07] text-[13px] font-semibold text-zinc-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Github className="h-3.5 w-3.5" />
                   <span>{tr ? 'GitHub deposu bağla' : 'Attach a GitHub repository'}</span>
                 </button>
               </>
             ) : loadingRepos ? (
-              <div className="flex items-center justify-center gap-2 p-4 text-[11px] text-zinc-500">
+              <div className="flex items-center justify-center gap-2 p-4 text-[13px] text-zinc-500">
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 <span>{tr ? 'Depoların yükleniyor...' : 'Loading your repositories...'}</span>
               </div>
@@ -509,7 +509,7 @@ const CreateProjectDialog: React.FC<{
               <div className="space-y-2">
                 <div className="flex items-start gap-2 rounded-lg border border-amber-700/50 bg-amber-950/20 p-2.5">
                   <AlertCircle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-amber-400" />
-                  <p className="user-text text-[11px] leading-relaxed text-amber-200/90">
+                  <p className="user-text text-[13px] leading-relaxed text-amber-200/90">
                     {tr
                       ? 'Depo bağlamak için GitHub hesabın gerekiyor (Ayarlar > Bağlı Hesaplar). Deponun gerçekten senin olduğunu böyle doğruluyoruz. Depo eklemeden de projeni paylaşabilirsin.'
                       : 'Attaching a repository needs your GitHub account (Settings > Connected Accounts). That is how we verify the repository is really yours. You can still share the project without one.'}
@@ -518,7 +518,7 @@ const CreateProjectDialog: React.FC<{
                 <button
                   type="button"
                   onClick={() => setWantRepo(false)}
-                  className="min-h-11 w-full rounded-xl border border-white/[0.07] text-[11px] font-semibold text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="min-h-11 w-full rounded-xl border border-white/[0.07] text-[13px] font-semibold text-zinc-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {tr ? 'Depo eklemeden devam et' : 'Continue without a repository'}
                 </button>
@@ -539,7 +539,7 @@ const CreateProjectDialog: React.FC<{
 
                 <div className="max-h-44 space-y-1.5 overflow-y-auto rounded-xl border border-white/[0.07] p-1.5">
                   {visible.length === 0 ? (
-                    <p className="p-4 text-center text-[11px] text-zinc-500">
+                    <p className="p-4 text-center text-[13px] text-zinc-500">
                       {tr ? 'Depo bulunamadı.' : 'No repositories found.'}
                     </p>
                   ) : (
@@ -554,8 +554,8 @@ const CreateProjectDialog: React.FC<{
                             : 'text-zinc-400 hover:bg-white/[0.06]'
                         }`}
                       >
-                        <span className="user-text min-w-0 text-[12px] font-semibold">{repo.name}</span>
-                        <span className="flex flex-shrink-0 items-center gap-1 text-[10px] text-zinc-500">
+                        <span className="user-text min-w-0 text-[13.5px] font-semibold">{repo.name}</span>
+                        <span className="flex flex-shrink-0 items-center gap-1 text-[12px] text-zinc-500">
                           <Star className="h-2.5 w-2.5" />
                           {repo.stargazers_count}
                         </span>
@@ -568,7 +568,7 @@ const CreateProjectDialog: React.FC<{
                   <button
                     type="button"
                     onClick={() => setSelected(null)}
-                    className="min-h-9 text-[11px] font-semibold text-zinc-500 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                    className="min-h-9 text-[13px] font-semibold text-zinc-500 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   >
                     {tr ? 'Depo seçimini kaldır' : 'Clear repository'}
                   </button>
@@ -578,7 +578,7 @@ const CreateProjectDialog: React.FC<{
           </div>
 
           {error && (
-            <p className="user-text flex items-start gap-1.5 text-[11px] text-red-400">
+            <p className="user-text flex items-start gap-1.5 text-[13px] text-red-400">
               <AlertCircle className="mt-0.5 h-3 w-3 flex-shrink-0" />
               {error}
             </p>
@@ -712,7 +712,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
             <h2 className="truncate text-lg font-extrabold tracking-tight text-white">
               {tr ? 'Projeler' : 'Projects'}
             </h2>
-            <p className="truncate text-[11px] text-zinc-500">
+            <p className="truncate text-[13px] text-zinc-500">
               {tr
                 ? 'Topluluğun yayınladığı işler — beğen, takip et, kendininkini ekle.'
                 : 'What the community is building — like, follow, add your own.'}
@@ -737,7 +737,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
                 type="button"
                 onClick={() => setSort(tab.key)}
                 aria-pressed={sort === tab.key}
-                className={`c4e-pill min-h-9 flex-none text-[11px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                className={`c4e-pill min-h-9 flex-none text-[13px] font-semibold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   sort === tab.key ? 'c4e-pill-on' : ''
                 }`}
               >
@@ -885,7 +885,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ user, language, onSh
           Takibin ne işe yaradığını bir kez açıkça söylüyoruz. Beğeni ve takip düğmeleri yan
           yana durduğunda aradaki fark ("biri vitrin, öteki abonelik") kendiliğinden anlaşılmaz.
         */}
-        <p className="user-text px-1 text-center text-[11px] leading-relaxed text-zinc-600">
+        <p className="user-text px-1 text-center text-[13px] leading-relaxed text-zinc-600">
           {tr
             ? 'Bir projeyi takip edersen her yeni commit için bildirim alırsın. Takip etmezsen sadece beğenirsin, bildirim gelmez.'
             : 'Follow a project to get a notification on every new commit. Without following you can still like it, but you get no notifications.'}

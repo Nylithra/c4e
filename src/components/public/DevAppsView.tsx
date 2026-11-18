@@ -76,10 +76,10 @@ const Field: React.FC<{ label: string; value: string; mono?: boolean; copyLabel:
   copyLabel
 }) => (
   <div className="space-y-1">
-    <p className="text-[10px] font-bold tracking-wide text-zinc-500">{label}</p>
+    <p className="text-[12px] font-bold tracking-wide text-zinc-500">{label}</p>
     <div className="flex items-center gap-2">
       <code
-        className={`c4e-code min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 text-[11.5px] text-zinc-200 ${
+        className={`c4e-code min-w-0 flex-1 overflow-x-auto whitespace-nowrap px-3 py-2 text-[13px] text-zinc-200 ${
           mono ? 'font-mono' : ''
         }`}
       >
@@ -123,7 +123,7 @@ const SecretPanel: React.FC<{ secret: string; tr: boolean; onClose: () => void }
       copyLabel={tr ? 'İstemci sırrını kopyala' : 'Copy client secret'}
     />
 
-    <p className="text-[11.5px] leading-relaxed text-amber-200/90">
+    <p className="text-[13px] leading-relaxed text-amber-200/90">
       {tr
         ? 'Bu değer yalnızca şimdi görünüyor. Sunucuda sadece özeti saklanıyor, dolayısıyla biz de geri getiremeyiz. Kaybedersen yenisini üretmen gerekir. Sırrı tarayıcıda çalışan bir koda KOYMA: oradan okunabilir.'
         : 'This value is shown only now. The server keeps just a hash of it, so we cannot recover it either. If you lose it, generate a new one. Never put the secret in browser-side code: it can be read from there.'}
@@ -173,7 +173,7 @@ const AppForm: React.FC<{
       }}
     >
       <div className="space-y-1.5">
-        <label htmlFor="app-name" className="block text-[11px] font-bold tracking-wide text-zinc-500">
+        <label htmlFor="app-name" className="block text-[13px] font-bold tracking-wide text-zinc-500">
           {tr ? 'Uygulama adı' : 'Application name'}
         </label>
         <input
@@ -185,7 +185,7 @@ const AppForm: React.FC<{
           placeholder={tr ? 'Örn. Benim Botum' : 'e.g. My Bot'}
           className="c4e-input min-h-11 w-full px-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
-        <p className="text-[11px] text-zinc-600">
+        <p className="text-[13px] text-zinc-600">
           {tr
             ? 'Onay ekranında üyeye bu ad gösterilir.'
             : 'This name is shown to members on the consent screen.'}
@@ -193,7 +193,7 @@ const AppForm: React.FC<{
       </div>
 
       <div className="space-y-1.5">
-        <label htmlFor="app-desc" className="block text-[11px] font-bold tracking-wide text-zinc-500">
+        <label htmlFor="app-desc" className="block text-[13px] font-bold tracking-wide text-zinc-500">
           {tr ? 'Kısa açıklama' : 'Short description'}
         </label>
         <input
@@ -207,7 +207,7 @@ const AppForm: React.FC<{
       </div>
 
       <div className="space-y-1.5">
-        <label htmlFor="app-site" className="block text-[11px] font-bold tracking-wide text-zinc-500">
+        <label htmlFor="app-site" className="block text-[13px] font-bold tracking-wide text-zinc-500">
           {tr ? 'Web sitesi (isteğe bağlı)' : 'Website (optional)'}
         </label>
         <input
@@ -215,12 +215,12 @@ const AppForm: React.FC<{
           value={website}
           onChange={(e) => setWebsite(e.target.value)}
           placeholder="https://..."
-          className="c4e-input min-h-11 w-full px-3 font-mono text-[13px] text-white placeholder:text-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="c4e-input min-h-11 w-full px-3 font-mono text-[14px] text-white placeholder:text-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
 
       <div className="space-y-1.5">
-        <label htmlFor="app-redirects" className="block text-[11px] font-bold tracking-wide text-zinc-500">
+        <label htmlFor="app-redirects" className="block text-[13px] font-bold tracking-wide text-zinc-500">
           {tr ? 'Yönlendirme adresleri' : 'Redirect URIs'}
         </label>
         <textarea
@@ -230,9 +230,9 @@ const AppForm: React.FC<{
           rows={3}
           required
           placeholder={'https://uygulamam.com/oauth/callback\nhttp://localhost:3000/callback'}
-          className="c4e-input w-full resize-y px-3 py-2.5 font-mono text-[12px] leading-relaxed text-white placeholder:text-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="c4e-input w-full resize-y px-3 py-2.5 font-mono text-[13.5px] leading-relaxed text-white placeholder:text-zinc-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
-        <p className="text-[11px] leading-relaxed text-zinc-600">
+        <p className="text-[13px] leading-relaxed text-zinc-600">
           {tr
             ? 'Her satıra bir adres. TAM EŞLEŞME aranır, joker yok — yetkilendirme kodu yalnızca buradaki adreslerden birine gönderilir. https zorunlu; yerel geliştirmede http://localhost kabul edilir.'
             : 'One address per line. Matched EXACTLY, no wildcards — the authorization code is only sent to one of these. https is required; http://localhost is accepted for local development.'}
@@ -240,7 +240,7 @@ const AppForm: React.FC<{
       </div>
 
       <div className="space-y-2">
-        <p className="text-[11px] font-bold tracking-wide text-zinc-500">
+        <p className="text-[13px] font-bold tracking-wide text-zinc-500">
           {tr ? 'İstenebilecek izinler' : 'Requestable scopes'}
         </p>
         <div className="space-y-1.5">
@@ -262,8 +262,8 @@ const AppForm: React.FC<{
                   className="mt-0.5 h-4 w-4 flex-none accent-indigo-500"
                 />
                 <span className="min-w-0">
-                  <span className="block font-mono text-[12px] font-bold text-zinc-100">{scope.key}</span>
-                  <span className="block text-[11.5px] leading-relaxed text-zinc-500">
+                  <span className="block font-mono text-[13.5px] font-bold text-zinc-100">{scope.key}</span>
+                  <span className="block text-[13px] leading-relaxed text-zinc-500">
                     {tr ? scope.tr : scope.en}
                   </span>
                 </span>
@@ -271,7 +271,7 @@ const AppForm: React.FC<{
             );
           })}
         </div>
-        <p className="text-[11px] leading-relaxed text-zinc-600">
+        <p className="text-[13px] leading-relaxed text-zinc-600">
           {tr
             ? 'Uygulaman yalnızca burada seçtiğin izinleri isteyebilir. Kullanıcı yine de onaylamak zorunda.'
             : 'Your app can only request the scopes selected here. The member still has to approve.'}
@@ -426,7 +426,7 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
             {secret && <SecretPanel secret={secret} tr={tr} onClose={() => setSecret(null)} />}
 
             {error && (
-              <div className="flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-3 text-[11.5px] leading-relaxed text-rose-200">
+              <div className="flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-3 text-[13px] leading-relaxed text-rose-200">
                 <AlertCircle className="mt-0.5 h-3.5 w-3.5 flex-none" />
                 <span>{error}</span>
               </div>
@@ -472,11 +472,11 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                         <div className="min-w-0">
                           <h3 className="truncate text-sm font-bold text-white">{app.name}</h3>
                           {app.description && (
-                            <p className="user-text mt-1 text-[11.5px] leading-relaxed text-zinc-400">
+                            <p className="user-text mt-1 text-[13px] leading-relaxed text-zinc-400">
                               {app.description}
                             </p>
                           )}
-                          <p className="mt-1.5 font-mono text-[11px] text-zinc-600">
+                          <p className="mt-1.5 font-mono text-[13px] text-zinc-600">
                             {tr ? 'istek' : 'requests'}: {app.request_count}
                             {app.last_used_at
                               ? ` · ${tr ? 'son kullanım' : 'last used'} ${new Date(
@@ -525,7 +525,7 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                       */}
                       {confirmDelete === app.id && (
                         <div className="rounded-xl border border-rose-500/30 bg-rose-500/[0.08] p-3.5 space-y-2.5">
-                          <p className="text-[11.5px] leading-relaxed text-rose-200">
+                          <p className="text-[13px] leading-relaxed text-rose-200">
                             {tr
                               ? `"${app.name}" kapatılsın mı? Bu uygulamaya izin vermiş herkesin erişimi anında kesilir ve geri alınamaz.`
                               : `Close "${app.name}"? Everyone who authorized it loses access immediately, and this cannot be undone.`}
@@ -535,7 +535,7 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                               type="button"
                               onClick={() => void handleDelete(app)}
                               disabled={busy}
-                              className="flex min-h-9 items-center gap-1.5 rounded-lg bg-rose-500/90 px-3 text-[11px] font-bold text-white transition-colors hover:bg-rose-500 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                              className="flex min-h-9 items-center gap-1.5 rounded-lg bg-rose-500/90 px-3 text-[13px] font-bold text-white transition-colors hover:bg-rose-500 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             >
                               {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                               {tr ? 'Evet, kapat' : 'Yes, close it'}
@@ -543,7 +543,7 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                             <button
                               type="button"
                               onClick={() => setConfirmDelete(null)}
-                              className="min-h-9 rounded-lg border border-white/[0.08] px-3 text-[11px] font-semibold text-zinc-300 transition-colors hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                              className="min-h-9 rounded-lg border border-white/[0.08] px-3 text-[13px] font-semibold text-zinc-300 transition-colors hover:text-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             >
                               {tr ? 'Vazgeç' : 'Cancel'}
                             </button>
@@ -558,11 +558,11 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                           copyLabel={tr ? 'client_id kopyala' : 'Copy client_id'}
                         />
                         <div className="space-y-1">
-                          <p className="text-[10px] font-bold tracking-wide text-zinc-500">client_secret</p>
-                          <p className="flex items-center gap-2 font-mono text-[11.5px] text-zinc-500">
+                          <p className="text-[12px] font-bold tracking-wide text-zinc-500">client_secret</p>
+                          <p className="flex items-center gap-2 font-mono text-[13px] text-zinc-500">
                             <Eye className="h-3.5 w-3.5 flex-none opacity-50" />
                             <span>{app.client_secret_prefix}…</span>
-                            <span className="font-sans text-[11px] text-zinc-600">
+                            <span className="font-sans text-[13px] text-zinc-600">
                               {tr
                                 ? '— tam değeri yalnızca üretildiği anda görünür'
                                 : '— the full value is visible only when generated'}
@@ -575,7 +575,7 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                         {app.scopes.map((scope) => (
                           <span
                             key={scope}
-                            className="rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[10.5px] text-zinc-300"
+                            className="rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[12px] text-zinc-300"
                           >
                             {scope}
                           </span>
@@ -583,12 +583,12 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                       </div>
 
                       <div className="space-y-1">
-                        <p className="text-[10px] font-bold tracking-wide text-zinc-500">
+                        <p className="text-[12px] font-bold tracking-wide text-zinc-500">
                           {tr ? 'Yönlendirme adresleri' : 'Redirect URIs'}
                         </p>
                         <ul className="space-y-1">
                           {app.redirect_uris.map((uri) => (
-                            <li key={uri} className="truncate font-mono text-[11.5px] text-zinc-400">
+                            <li key={uri} className="truncate font-mono text-[13px] text-zinc-400">
                               {uri}
                             </li>
                           ))}
@@ -623,7 +623,7 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
                 )}
 
                 {apps.length >= limit && (
-                  <p className="text-[11px] text-zinc-600">
+                  <p className="text-[13px] text-zinc-600">
                     {tr
                       ? `Uygulama sınırına ulaştın (${limit}). Kullanmadığın birini kapatarak yer açabilirsin.`
                       : `You reached the application limit (${limit}). Close one you no longer use to make room.`}
@@ -634,13 +634,13 @@ export const DevAppsView: React.FC<DevAppsViewProps> = ({ language, isAuthentica
           </Section>
 
           <Section id="nasil" title={tr ? 'Buradan sonrası' : 'What comes next'}>
-            <div className="c4e-card space-y-3 p-5 text-[12.5px] leading-relaxed text-zinc-400">
+            <div className="c4e-card space-y-3 p-5 text-[14px] leading-relaxed text-zinc-400">
               <p>
                 {tr
                   ? 'Uygulamanı oluşturduktan sonra kullanıcıyı şu adrese gönder; o da izin verdiğinde senin yönlendirme adresine bir kod düşer:'
                   : 'Once your application exists, send the user here; when they approve, a code lands on your redirect URI:'}
               </p>
-              <code className="c4e-code block overflow-x-auto whitespace-pre px-3.5 py-3 font-mono text-[11.5px] text-zinc-200">
+              <code className="c4e-code block overflow-x-auto whitespace-pre px-3.5 py-3 font-mono text-[13px] text-zinc-200">
                 {`${origin}/oauth/authorize?client_id=...&redirect_uri=...&scope=identify&state=...`}
               </code>
               <p>

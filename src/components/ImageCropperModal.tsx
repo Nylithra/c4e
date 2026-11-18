@@ -115,7 +115,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
               <h3 className="text-sm font-bold text-white">
                 {language === 'tr' ? 'Fotoğrafı Kırp & Düzenle' : 'Crop & Edit Photo'}
               </h3>
-              <p className="text-[11px] text-zinc-400 font-mono">
+              <p className="text-[13px] text-zinc-400 font-mono">
                 {language === 'tr' ? 'Sürükleyerek konumlandırın ve yakınlaştırın' : 'Drag to position and zoom'}
               </p>
             </div>
@@ -168,7 +168,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
             <div />
           </div>
 
-          <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-[10px] font-mono text-zinc-400 pointer-events-none flex items-center gap-1">
+          <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-[12px] font-mono text-zinc-400 pointer-events-none flex items-center gap-1">
             <Move className="w-3 h-3" />
             <span>{language === 'tr' ? 'Sürükle' : 'Drag'}</span>
           </div>

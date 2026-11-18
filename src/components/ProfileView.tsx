@@ -567,13 +567,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                       </a>
                     </div>
                     {repo.description && (
-                      <p className="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed font-sans">
+                      <p className="text-[13px] text-zinc-400 line-clamp-2 leading-relaxed font-sans">
                         {repo.description}
                       </p>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-3 text-[10px] text-zinc-400 font-mono pt-1 border-t border-zinc-900">
+                  <div className="flex items-center gap-3 text-[12px] text-zinc-400 font-mono pt-1 border-t border-zinc-900">
                     {repo.language && (
                       <span className="px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.07] text-zinc-300">
                         {repo.language}
@@ -677,12 +677,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                       onClick={() => onSelectCommunity && onSelectCommunity(comm)}
                       className="c4e-well p-2.5 hover:border-purple-500/50 flex items-center gap-3 cursor-pointer group"
                     >
-                      <UserAvatar src={comm.avatar_url} name={comm.name} className="w-8 h-8 rounded-xl ring-1 ring-white/[0.08] flex-shrink-0 text-[10px]" />
+                      <UserAvatar src={comm.avatar_url} name={comm.name} className="w-8 h-8 rounded-xl ring-1 ring-white/[0.08] flex-shrink-0 text-[12px]" />
                       <div className="truncate">
                         <span className="text-xs font-bold text-white truncate block group-hover:text-purple-300">
                           {comm.name}
                         </span>
-                        <span className="text-[10px] text-zinc-500 font-mono block truncate">{comm.handle}</span>
+                        <span className="text-[12px] text-zinc-500 font-mono block truncate">{comm.handle}</span>
                       </div>
                     </div>
                   ))}
@@ -783,7 +783,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                               @{authorProfile.username}
                             </span>
                             <span className="text-xs text-zinc-600">·</span>
-                            <span className="text-[11px] text-zinc-500 font-mono">{post.time_ago}</span>
+                            <span className="text-[13px] text-zinc-500 font-mono">{post.time_ago}</span>
                           </div>
                         </div>
                       </div>
@@ -829,7 +829,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                           </a>
                         </div>
                         {post.project_card.description && <p className="text-xs text-zinc-400">{post.project_card.description}</p>}
-                        <div className="flex items-center gap-4 text-[10px] font-mono text-zinc-500 pt-1">
+                        <div className="flex items-center gap-4 text-[12px] font-mono text-zinc-500 pt-1">
                           <span className="text-blue-400">{post.project_card.language}</span>
                           <span className="flex items-center gap-1"><Star className="w-3 h-3 text-amber-400" /> {post.project_card.stars}</span>
                           <span className="flex items-center gap-1"><GitFork className="w-3 h-3" /> {post.project_card.forks}</span>
@@ -945,7 +945,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                           <span className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
                             <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
                             <span>{language === 'tr' ? 'Yorumlar' : 'Comments'}</span>
-                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/[0.07] text-zinc-400 font-mono">
+                            <span className="text-[12px] px-1.5 py-0.2 rounded-full bg-white/[0.07] text-zinc-400 font-mono">
                               {commentsCount}
                             </span>
                           </span>
@@ -963,9 +963,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                                       className="w-5 h-5 rounded-full object-cover ring-1 ring-white/[0.08]"
                                     />
                                     <span className="text-xs font-bold text-zinc-200">{comment.author?.display_name}</span>
-                                    <span className="text-[10px] text-zinc-500 font-mono">@{comment.author?.username}</span>
+                                    <span className="text-[12px] text-zinc-500 font-mono">@{comment.author?.username}</span>
                                   </div>
-                                  <span className="text-[10px] text-zinc-600 font-mono">
+                                  <span className="text-[12px] text-zinc-600 font-mono">
                                     {comment.created_at ? new Date(comment.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                                   </span>
                                 </div>
@@ -1014,14 +1014,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </h3>
 
             {errorMessage && (
-              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-[11px] flex items-center gap-2">
+              <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-[13px] flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
             {successMessage && (
-              <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 font-mono text-[11px] flex items-center gap-2 animate-in fade-in">
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 font-mono text-[13px] flex items-center gap-2 animate-in fade-in">
                 <Check className="w-4 h-4 flex-shrink-0" />
                 <span>{successMessage}</span>
               </div>
@@ -1260,7 +1260,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </p>
 
             {postToDelete.content && (
-              <div className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] text-[11px] text-zinc-400 line-clamp-2 italic font-mono">
+              <div className="p-2.5 rounded-xl bg-black/25 border border-white/[0.07] text-[13px] text-zinc-400 line-clamp-2 italic font-mono">
                 "{postToDelete.content}"
               </div>
             )}

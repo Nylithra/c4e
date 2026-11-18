@@ -64,13 +64,13 @@ const LinkCard: React.FC<{
           <p className="flex flex-wrap items-center gap-2 text-sm font-bold text-white">
             <span>{name}</span>
             {linked && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/12 px-2 py-0.5 text-[12px] font-semibold text-emerald-300">
                 <CheckCircle2 className="h-2.5 w-2.5" />
                 {handle ? `@${handle}` : 'Bağlı'}
               </span>
             )}
           </p>
-          <p className="user-text text-[11.5px] leading-relaxed text-zinc-400">{description}</p>
+          <p className="user-text text-[13px] leading-relaxed text-zinc-400">{description}</p>
         </div>
       </div>
 
@@ -97,13 +97,13 @@ const LinkCard: React.FC<{
       )}
     </div>
 
-    {note && <p className="user-text text-[11px] leading-relaxed text-amber-300/90">{note}</p>}
+    {note && <p className="user-text text-[13px] leading-relaxed text-amber-300/90">{note}</p>}
   </div>
 );
 
 /** Jubbio'nun lucide'de ikonu yok; tasarım dilinin harf işaretini kullanıyoruz. */
 const JubbioMark: React.FC = () => (
-  <span className="c4e-mono-av h-5 w-5 rounded-md text-[11px]" aria-hidden="true">
+  <span className="c4e-mono-av h-5 w-5 rounded-md text-[13px]" aria-hidden="true">
     J
   </span>
 );
@@ -244,7 +244,7 @@ export const AccountLinksSettings: React.FC<{ language: 'tr' | 'en' }> = ({ lang
         }
       />
 
-      <div className="min-h-5 text-[11px]">
+      <div className="min-h-5 text-[13px]">
         {error && (
           <span className="user-text flex items-start gap-1.5 text-rose-300">
             <AlertCircle className="mt-0.5 h-3 w-3 flex-shrink-0" />

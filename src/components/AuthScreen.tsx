@@ -155,7 +155,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
       <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center gap-10 px-5 py-14 lg:flex-row lg:items-center lg:gap-16 lg:py-10">
         {/* ------------------------------------------------ SOL: platform nedir */}
         <div className="hidden min-w-0 flex-1 lg:block">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-[11px] font-semibold text-zinc-300 backdrop-blur-md">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-[13px] font-semibold text-zinc-300 backdrop-blur-md">
             <Sparkles className="h-3.5 w-3.5 text-indigo-300" />
             {tr ? 'Türkiye geliştirici ekosistemi' : 'Developer ecosystem'}
           </span>
@@ -176,8 +176,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                 <span className="mb-2.5 flex h-8 w-8 items-center justify-center rounded-xl bg-white/[0.06] text-indigo-200">
                   {feature.icon}
                 </span>
-                <p className="text-[13px] font-bold text-white">{feature.title[language]}</p>
-                <p className="mt-1 text-[11.5px] leading-relaxed text-zinc-500">
+                <p className="text-[14px] font-bold text-white">{feature.title[language]}</p>
+                <p className="mt-1 text-[13px] leading-relaxed text-zinc-500">
                   {feature.body[language]}
                 </p>
               </li>
@@ -193,7 +193,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
             <h1 className="text-3xl font-extrabold tracking-tight">
               <span className="c4e-gradient-text">Code4Ever</span>
             </h1>
-            <p className="mx-auto mt-2 max-w-xs text-[13px] leading-relaxed text-zinc-400">
+            <p className="mx-auto mt-2 max-w-xs text-[14px] leading-relaxed text-zinc-400">
               {tr
                 ? 'Yazılımcılar için sosyal akış, proje vitrini ve topluluklar.'
                 : 'Social feed, project showcase and communities for developers.'}
@@ -213,7 +213,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
             {authError && (
               <div
                 role="alert"
-                className="user-text mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-3 text-[11.5px] leading-relaxed text-amber-200"
+                className="user-text mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-3 text-[13px] leading-relaxed text-amber-200"
               >
                 {authError}
               </div>
@@ -240,7 +240,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               )}
             </button>
 
-            <p className="mt-3 text-center text-[11px] leading-relaxed text-zinc-500">
+            <p className="mt-3 text-center text-[13px] leading-relaxed text-zinc-500">
               {tr
                 ? 'Profil resmin, biyografin ve kamuya açık depoların otomatik gelir.'
                 : 'Your avatar, bio and public repositories are synced automatically.'}
@@ -250,14 +250,14 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                 ağırlıkta okunurdu; oysa biri hesap açıyor, öteki yalnızca gezdiriyor. */}
             <div className="my-5 flex items-center gap-3">
               <span className="h-px flex-1 bg-white/[0.08]" />
-              <span className="text-[10px] font-semibold tracking-wider text-zinc-600">
+              <span className="text-[12px] font-semibold tracking-wider text-zinc-600">
                 {tr ? 'YA DA' : 'OR'}
               </span>
               <span className="h-px flex-1 bg-white/[0.08]" />
             </div>
 
             {isClosedBetaActive ? (
-              <div className="flex items-center justify-center gap-2 rounded-2xl border border-amber-500/20 bg-amber-500/[0.07] px-4 py-3 text-center text-[11.5px] font-semibold text-amber-300">
+              <div className="flex items-center justify-center gap-2 rounded-2xl border border-amber-500/20 bg-amber-500/[0.07] px-4 py-3 text-center text-[13px] font-semibold text-amber-300">
                 <Sparkles className="h-3.5 w-3.5 flex-none" />
                 <span>
                   {tr ? 'Kapalı beta — misafir girişi kapalı' : 'Closed beta — guest login disabled'}
@@ -283,7 +283,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               </button>
             )}
 
-            <div className="mt-6 flex items-center justify-center gap-2 border-t border-white/[0.07] pt-4 text-[11px] text-zinc-500">
+            <div className="mt-6 flex items-center justify-center gap-2 border-t border-white/[0.07] pt-4 text-[13px] text-zinc-500">
               <Shield className="h-3.5 w-3.5 flex-none text-emerald-400/90" />
               <span>
                 {tr
@@ -304,7 +304,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                   <span className="block text-xs font-bold text-zinc-200">
                     {feature.title[language]}
                   </span>
-                  <span className="block truncate text-[11px] text-zinc-500">
+                  <span className="block truncate text-[13px] text-zinc-500">
                     {feature.body[language]}
                   </span>
                 </span>
@@ -312,7 +312,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
             ))}
           </ul>
 
-          <p className="mt-7 text-center text-[11px] text-zinc-600">
+          <p className="mt-7 text-center text-[13px] text-zinc-600">
             Lanux Software Systems &copy; 2026
           </p>
         </div>

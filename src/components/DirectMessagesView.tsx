@@ -1046,7 +1046,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 >
                   <span>{tab.label}</span>
                   {tab.badge && tab.badge > 0 ? (
-                    <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] flex items-center justify-center font-bold animate-pulse">
+                    <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[12px] flex items-center justify-center font-bold animate-pulse">
                       {tab.badge}
                     </span>
                   ) : null}
@@ -1083,13 +1083,13 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                           />
                           <div className="flex-1 min-w-0">
                             <h4 className="text-xs font-bold text-white truncate">{invite.group_name}</h4>
-                            <p className="text-[11px] text-zinc-400 truncate">
+                            <p className="text-[13px] text-zinc-400 truncate">
                               {invite.invited_by_name} (@{invite.invited_by_username}) davet etti
                             </p>
                           </div>
                         </div>
                         {invite.group_description && (
-                          <p className="text-[11px] text-zinc-400 line-clamp-2">{invite.group_description}</p>
+                          <p className="text-[13px] text-zinc-400 line-clamp-2">{invite.group_description}</p>
                         )}
                         <div className="flex gap-2 pt-1">
                           <button
@@ -1149,7 +1149,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                             }`}
                           />
                           {conv.type === 'group' ? (
-                            <span className="w-4 h-4 rounded-full bg-purple-600 text-white text-[9px] flex items-center justify-center absolute -bottom-1 -right-1 font-bold">
+                            <span className="w-4 h-4 rounded-full bg-purple-600 text-white text-[11px] flex items-center justify-center absolute -bottom-1 -right-1 font-bold">
                               <Users className="w-2.5 h-2.5" />
                             </span>
                           ) : (
@@ -1166,25 +1166,25 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                             <span className="text-xs font-bold text-white truncate flex items-center gap-1.5">
                               <span>{conv.title}</span>
                               {conv.type === 'group' && conv.membersCount && (
-                                <span className="text-[10px] font-mono text-zinc-500">
+                                <span className="text-[12px] font-mono text-zinc-500">
                                   ({conv.membersCount})
                                 </span>
                               )}
                             </span>
-                            <span className="text-[10px] text-zinc-500 font-mono">
+                            <span className="text-[12px] text-zinc-500 font-mono">
                               {formatTimeAgo(conv.lastMessageTimestamp, language)}
                             </span>
                           </div>
 
                           <div className="flex items-center justify-between mt-0.5">
-                            <p className="text-[11px] text-zinc-400 truncate max-w-[190px]">
+                            <p className="text-[13px] text-zinc-400 truncate max-w-[190px]">
                               {conv.lastMessageSender && conv.type === 'group'
                                 ? `${conv.lastMessageSender}: `
                                 : ''}
                               {conv.lastMessageText}
                             </p>
                             {conv.type === 'direct' && isTargetOnline && (
-                              <span className="text-[9px] font-medium text-emerald-400">Çevrim içi</span>
+                              <span className="text-[11px] font-medium text-emerald-400">Çevrim içi</span>
                             )}
                           </div>
                         </div>
@@ -1268,12 +1268,12 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                     <h3 className="text-xs font-bold text-white flex items-center gap-1.5 truncate">
                       <span>{selectedGroup ? selectedGroup.name : (selectedTargetUser?.display_name || selectedTargetUser?.username || 'Sohbet')}</span>
                       {selectedGroup && (
-                        <span className="px-1.5 py-0.2 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] rounded font-mono">
+                        <span className="px-1.5 py-0.2 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[12px] rounded font-mono">
                           Grup
                         </span>
                       )}
                     </h3>
-                    <p className="text-[11px] text-zinc-400 font-mono truncate">
+                    <p className="text-[13px] text-zinc-400 font-mono truncate">
                       {selectedGroup
                         ? `${selectedGroup.members?.length || 0} üye`
                         : Boolean(selectedTargetUser?.username && onlineUsers.has(selectedTargetUser.username.toLowerCase()))
@@ -1342,7 +1342,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                               title={language === 'tr' ? 'Cihazdan Fotoğraf Değiştir' : 'Change Photo from Device'}
                             >
                               <Camera className="w-5 h-5 text-white" />
-                              <span className="text-[9px] font-semibold mt-0.5">{language === 'tr' ? 'Değiştir' : 'Change'}</span>
+                              <span className="text-[11px] font-semibold mt-0.5">{language === 'tr' ? 'Değiştir' : 'Change'}</span>
                             </button>
                           </>
                         )}
@@ -1356,7 +1356,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                           <button
                             type="button"
                             onClick={() => groupEditAvatarInputRef.current?.click()}
-                            className="mt-1 text-[11px] text-purple-400 hover:text-purple-300 flex items-center gap-1 font-medium transition-colors cursor-pointer"
+                            className="mt-1 text-[13px] text-purple-400 hover:text-purple-300 flex items-center gap-1 font-medium transition-colors cursor-pointer"
                           >
                             <Camera className="w-3 h-3" />
                             <span>{language === 'tr' ? 'Cihazdan Fotoğrafı Güncelle' : 'Update Photo from Device'}</span>
@@ -1379,7 +1379,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                       <span className="font-bold text-white">
                         {language === 'tr' ? 'Üyeler' : 'Members'} ({selectedGroup.members?.length || 0})
                       </span>
-                      <span className="text-[10px] text-zinc-500 font-mono">
+                      <span className="text-[12px] text-zinc-500 font-mono">
                         {language === 'tr'
                           ? 'Yönetim: Mobilde 2sn basılı tut / Masaüstünde sağ tıkla'
                           : 'Admin: Long-press 2s on mobile / Right click'}
@@ -1414,18 +1414,18 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                                 <p className="text-xs font-bold text-white truncate flex items-center gap-1.5">
                                   <span>{member.display_name}</span>
                                   {isMemberCreator && (
-                                    <span className="px-1.5 py-0.2 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[9px] rounded font-mono flex items-center gap-0.5">
+                                    <span className="px-1.5 py-0.2 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] rounded font-mono flex items-center gap-0.5">
                                       <Crown className="w-2.5 h-2.5" />
                                       <span>Kurucu</span>
                                     </span>
                                   )}
                                   {isMemberAdmin && !isMemberCreator && (
-                                    <span className="px-1.5 py-0.2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] rounded font-mono">
+                                    <span className="px-1.5 py-0.2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] rounded font-mono">
                                       Yönetici
                                     </span>
                                   )}
                                 </p>
-                                <p className="text-[10px] text-zinc-500 font-mono">@{member.username}</p>
+                                <p className="text-[12px] text-zinc-500 font-mono">@{member.username}</p>
                               </div>
                             </div>
 
@@ -1468,7 +1468,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
               <div className="flex-1 overflow-y-auto p-4 space-y-3.5 min-h-0">
                 {/* E2EE Banner */}
                 <div className="flex justify-center my-2">
-                  <div className="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-[11px] text-zinc-400 flex items-center gap-2 font-mono shadow-sm">
+                  <div className="px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-[13px] text-zinc-400 flex items-center gap-2 font-mono shadow-sm">
                     <Lock className="w-3.5 h-3.5 text-emerald-400" />
                     <span>
                       {language === 'tr'
@@ -1516,9 +1516,9 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
 
                         {/* Group sender name */}
                         {selectedGroup && !isMe && (
-                          <div className="flex items-center gap-1.5 pl-1 text-[11px] text-zinc-400 font-bold">
+                          <div className="flex items-center gap-1.5 pl-1 text-[13px] text-zinc-400 font-bold">
                             <span>{msg.sender_display_name}</span>
-                            <span className="text-zinc-600 font-mono text-[10px]">
+                            <span className="text-zinc-600 font-mono text-[12px]">
                               @{msg.sender_username}
                             </span>
                           </div>
@@ -1571,10 +1571,10 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                                     : 'bg-white/[0.04] border-blue-500 text-zinc-300'
                                 }`}
                               >
-                                <p className="font-bold text-[10px] opacity-80">
+                                <p className="font-bold text-[12px] opacity-80">
                                   @{typeof msg.reply_to === 'object' ? (msg.reply_to.sender_username || 'kullanıcı') : 'yanıt'}
                                 </p>
-                                <p className="line-clamp-1 text-[11px]">
+                                <p className="line-clamp-1 text-[13px]">
                                   {typeof msg.reply_to === 'object' ? (msg.reply_to.text || '') : String(msg.reply_to)}
                                 </p>
                               </div>
@@ -1614,7 +1614,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                                 <FileText className="w-5 h-5 opacity-80" />
                                 <div className="min-w-0 flex-1">
                                   <p className="text-xs font-bold truncate">{msg.media_name || 'Dosya'}</p>
-                                  <p className="text-[10px] opacity-70">Belge</p>
+                                  <p className="text-[12px] opacity-70">Belge</p>
                                 </div>
                               </div>
                             )}
@@ -1622,7 +1622,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                             {/* Code Snippet */}
                             {isCodeSnippet ? (
                               <div className="rounded-xl overflow-hidden bg-[#0d1117] text-zinc-100 p-3 font-mono text-xs border border-white/[0.12] my-1">
-                                <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.07] text-[10px] text-zinc-400">
+                                <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.07] text-[12px] text-zinc-400">
                                   <span className="flex items-center gap-1">
                                     <Code className="w-3 h-3 text-blue-400" />
                                     <span>Kod Bloğu</span>
@@ -1652,12 +1652,12 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
 
                             {/* Message Footer: Time + Edited Indicator + Status Checkmarks */}
                             <div
-                              className={`flex items-center justify-end gap-1.5 pt-0.5 text-[10px] font-mono ${
+                              className={`flex items-center justify-end gap-1.5 pt-0.5 text-[12px] font-mono ${
                                 isMe ? 'text-blue-200' : 'text-zinc-400'
                               }`}
                             >
                               {msg.is_edited && (
-                                <span className="opacity-75 italic text-[9px]">
+                                <span className="opacity-75 italic text-[11px]">
                                   ({language === 'tr' ? 'düzenlendi' : 'edited'})
                                 </span>
                               )}
@@ -1859,7 +1859,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
           className="fixed z-50 w-56 rounded-2xl bg-white/[0.04] border border-white/[0.09] shadow-2xl p-1.5 space-y-1 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150 select-none"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="px-3 py-1.5 border-b border-white/[0.07] text-[11px] font-bold text-zinc-300 truncate">
+          <div className="px-3 py-1.5 border-b border-white/[0.07] text-[13px] font-bold text-zinc-300 truncate">
             @{memberContextMenu.member.username}
           </div>
 
@@ -2065,12 +2065,12 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                           <div className="flex items-center gap-1.5">
                             <p className="text-xs font-bold text-white">{u.display_name}</p>
                             {isUserOnline && (
-                              <span className="text-[9px] text-emerald-400 font-medium font-mono">
+                              <span className="text-[11px] text-emerald-400 font-medium font-mono">
                                 Çevrim içi
                               </span>
                             )}
                           </div>
-                          <p className="text-[10px] text-zinc-500 font-mono">
+                          <p className="text-[12px] text-zinc-500 font-mono">
                             @{u.username} · {u.role || 'Geliştirici'}
                           </p>
                         </div>
@@ -2141,7 +2141,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                 />
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 rounded-2xl flex flex-col items-center justify-center text-white transition-opacity">
                   <Camera className="w-6 h-6" />
-                  <span className="text-[10px] font-semibold mt-1">{language === 'tr' ? 'Değiştir' : 'Change'}</span>
+                  <span className="text-[12px] font-semibold mt-1">{language === 'tr' ? 'Değiştir' : 'Change'}</span>
                 </div>
               </div>
 
@@ -2158,7 +2158,7 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
 
               {/* Preset Icon Selector */}
               <div className="flex items-center gap-1.5 pt-1">
-                <span className="text-[10px] text-zinc-500 mr-1">{language === 'tr' ? 'Hazır Simgeler:' : 'Presets:'}</span>
+                <span className="text-[12px] text-zinc-500 mr-1">{language === 'tr' ? 'Hazır Simgeler:' : 'Presets:'}</span>
                 {[
                   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
                   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150&auto=format&fit=crop&q=80',
@@ -2410,12 +2410,12 @@ export const DirectMessagesView: React.FC<DirectMessagesViewProps> = ({
                         />
                         <div>
                           <p className="text-xs font-bold text-white">{candidate.display_name}</p>
-                          <p className="text-[10px] text-zinc-500 font-mono">@{candidate.username}</p>
+                          <p className="text-[12px] text-zinc-500 font-mono">@{candidate.username}</p>
                         </div>
                       </div>
 
                       {isAlreadyIn ? (
-                        <span className="text-[10px] text-zinc-500 font-mono">Zaten Üye</span>
+                        <span className="text-[12px] text-zinc-500 font-mono">Zaten Üye</span>
                       ) : (
                         <button
                           type="button"
