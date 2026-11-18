@@ -1382,6 +1382,40 @@ $$;
 -- 4.1 Profiles: a member may edit their own profile, but never grant themselves
 -- administrator rights, the verified tick, the paid supporter tier, a ban lift or beta
 -- approval — and never claim a reserved system username.
+-- -------------------------------------------------------------
+-- PROFİL GÖRSELLERİNDE BOYUT SINIRI
+-- -------------------------------------------------------------
+--
+-- NEDEN BURADA, SUNUCUDA DEĞİL: avatar ve kapak görselleri data URL olarak
+-- `profiles.avatar_url` / `profiles.banner_url` içinde duruyor ve istemci bu satırı
+-- RLS ile DOĞRUDAN yazıyor — arka ucun 500 bin karakterlik sınırı (MAX_IMAGE_CHARS)
+-- bu yolu hiç görmüyor. İstemcideki küçültme de bir kolaylık, denetim değil: isteği
+-- elle kuran biri onu hiç çalıştırmıyor ve animasyonlu GIF'ler zaten küçültülmüyor.
+--
+-- SINIRSIZ BIRAKMANIN BEDELİ: 13 MB'lık bir GIF avatar, base64 olarak satıra giriyor
+-- ve ardından ÜYE LİSTESİNİ açan HERKES tarafından indiriliyor. Tek bir hesap, kendi
+-- profilini güncelleyerek bütün platformun bant genişliğini tüketebiliyor.
+--
+-- Sınır veritabanında, çünkü tek güvenilir yer orası: üç yazma yolu da (istemci, arka
+-- uç, SQL düzenleyici) buradan geçiyor.
+CREATE OR REPLACE FUNCTION public.assert_profile_media_size(avatar TEXT, banner TEXT)
+RETURNS VOID
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+BEGIN
+  -- 520 bin karakter: uygulamanın kendi 500 bin sınırının biraz üstü, yuvarlama payı.
+  IF length(coalesce(avatar, '')) > 520000 THEN
+    RAISE EXCEPTION 'Avatar görseli çok büyük (% karakter, sınır 520000). Daha küçük bir görsel yükleyin.',
+      length(avatar);
+  END IF;
+  IF length(coalesce(banner, '')) > 520000 THEN
+    RAISE EXCEPTION 'Kapak görseli çok büyük (% karakter, sınır 520000). Daha küçük bir görsel yükleyin.',
+      length(banner);
+  END IF;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.protect_profile_privileges()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -1397,6 +1431,11 @@ DECLARE
   new_custom JSONB := coalesce(NEW.custom_fields, '{}'::jsonb);
   protected_key TEXT;
 BEGIN
+  -- Boyut sınırı AYRICALIKTAN ÖNCE geliyor ve kimseye muafiyet tanımıyor: arka uç da,
+  -- yönetici de bu satıra megabaytlarca base64 yazamaz. Aşağıdaki muafiyet yalnızca
+  -- "hangi alanlar yazılabilir" sorusuyla ilgili.
+  PERFORM public.assert_profile_media_size(NEW.avatar_url, NEW.banner_url);
+
   -- The service role (backend with the service key) and administrators are unrestricted.
   IF auth.role() = 'service_role' OR public.is_platform_admin() THEN
     RETURN NEW;
@@ -1469,6 +1508,8 @@ DECLARE
     'support', 'staff', 'moderator', 'security', 'official', 'api', 'bot'
   ];
 BEGIN
+  PERFORM public.assert_profile_media_size(NEW.avatar_url, NEW.banner_url);
+
   -- auth.uid() IS NULL means there is no end-user session behind this insert: the SQL
   -- editor, a migration or the service key. Those callers already had to get past the
   -- profiles_insert_self policy, which a signed-out client cannot, so seeding the founder
@@ -1511,6 +1552,147 @@ CREATE TRIGGER trg_protect_profile_insert
 BEFORE INSERT ON public.profiles
 FOR EACH ROW EXECUTE FUNCTION public.protect_profile_insert();
 
+-- -------------------------------------------------------------
+-- ETKİLEŞİM DİZİLERİNDE SAHİPLİK
+-- -------------------------------------------------------------
+--
+-- NEDEN GEREKLİ: gönderi UPDATE politikası bilerek geniş (`auth.uid() IS NOT NULL`),
+-- çünkü beğeni ve yorum, gönderinin SAHİBİ olmayan üyeler tarafından yazılıyor.
+-- Hangi sütunun yazılabileceğini alttaki tetikleyici kısıtlıyor ve içerik sütunları
+-- gerçekten korunuyor. Ama etkileşim sütunları BÜTÜNÜYLE istemciden alınıyordu:
+-- istemci `comments` dizisini okuyup kendi yorumunu ekleyip geri yazıyor, veritabanı
+-- da gelen diziyi olduğu gibi kabul ediyordu.
+--
+-- SONUÇ: giriş yapmış herhangi bir üye, bir başkasının gönderisine
+--   * BAŞKASININ KULLANICI ADIYLA yorum yazabiliyordu (author.username serbestti),
+--   * o gönderideki BÜTÜN yorumları silebiliyordu (boş dizi göndermek yeterliydi),
+--   * `liked_by` listesine başka üyeleri ekleyebiliyordu (sahte beğeni),
+--   * `likes_count`'u istediği sayıya çekebiliyordu.
+-- Bunların hiçbiri gönderi sahibi olmayı gerektirmiyordu; tek koşul giriş yapmaktı.
+--
+-- ÇÖZÜMÜN BİÇİMİ: istemciden gelen dizi artık DOĞRUDAN yazılmıyor. Depodaki dizi
+-- temel alınıyor ve istemcinin tek etkisi "ben bu listede var mıyım" sorusunun yanıtı
+-- oluyor. Böylece yeni bir etkileşim sütunu eklendiğinde de varsayılan davranış
+-- korumalı kalıyor: açıkça birleştirilmeyen bir sütun hiç değişmiyor.
+
+/** Depodaki listeyi temel alır; yalnızca ÇAĞIRANIN kendi adını ekler ya da çıkarır. */
+CREATE OR REPLACE FUNCTION public.apply_own_membership(old_list JSONB, new_list JSONB, me TEXT)
+RETURNS JSONB
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+DECLARE
+  stored JSONB := coalesce(old_list, '[]'::jsonb);
+  wanted JSONB := coalesce(new_list, '[]'::jsonb);
+  kept   JSONB;
+  present BOOLEAN;
+BEGIN
+  -- Oturumu olmayan çağırana ait bir "kendi adı" yok: liste olduğu gibi kalır.
+  IF me IS NULL OR me = '' THEN RETURN stored; END IF;
+
+  -- İstemcinin GÖNDERDİĞİ listede kendisi var mı? Tek okuduğumuz bilgi bu.
+  SELECT EXISTS (
+    SELECT 1 FROM jsonb_array_elements_text(wanted) AS e(v) WHERE lower(e.v) = me
+  ) INTO present;
+
+  -- Depodaki listeden çağıranın kendi adı (hangi büyük/küçük harfle yazılmış olursa
+  -- olsun) çıkarılır; geri kalan herkes olduğu gibi korunur.
+  SELECT coalesce(jsonb_agg(e.v), '[]'::jsonb) INTO kept
+  FROM jsonb_array_elements_text(stored) AS e(v)
+  WHERE lower(e.v) <> me;
+
+  IF present THEN
+    -- Adın istemcinin yazdığı hâli korunuyor (ör. "Ayse" yerine "ayse" yazmamak için):
+    -- karşılaştırma küçük harfle yapılıyor, saklanan değer gelen değer.
+    RETURN kept || jsonb_build_array((
+      SELECT e.v FROM jsonb_array_elements_text(wanted) AS e(v)
+      WHERE lower(e.v) = me LIMIT 1
+    ));
+  END IF;
+  RETURN kept;
+END;
+$$;
+
+/**
+ * Yorumları birleştirir: çağıran yalnızca KENDİ yorumlarını ekleyip çıkarabilir;
+ * başkasının yorumu ne silinebilir ne değiştirilebilir ne de uydurulabilir.
+ *
+ * Sıra korunuyor: normal akışta (istemci okuduğu diziye kendi yorumunu ekleyip geri
+ * yazar) sonuç gelen dizinin aynısı oluyor. Yarış durumunda — iki üye aynı anda yorum
+ * yazar ve ikincisi birincinin yorumunu görmemiş bir dizi gönderir — kaybolan yorum
+ * sonuna geri ekleniyor: sıra biraz kayıyor ama hiçbir yorum kaybolmuyor.
+ */
+CREATE OR REPLACE FUNCTION public.merge_own_entries(
+  old_items JSONB, new_items JSONB, me TEXT, owner_path TEXT[]
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+DECLARE
+  stored   JSONB := coalesce(old_items, '[]'::jsonb);
+  incoming JSONB := coalesce(new_items, '[]'::jsonb);
+  result   JSONB := '[]'::jsonb;
+  item     JSONB;
+  original JSONB;
+  kept_ids TEXT[] := ARRAY[]::text[];
+  item_id  TEXT;
+BEGIN
+  IF me IS NULL OR me = '' THEN RETURN stored; END IF;
+
+  FOR item IN SELECT e FROM jsonb_array_elements(incoming) AS e LOOP
+    item_id := item->>'id';
+
+    IF lower(coalesce(item #>> owner_path, '')) = me THEN
+      -- Çağıranın kendi kaydı: eklemekte, düzeltmekte, silmekte serbest.
+      result := result || jsonb_build_array(item);
+      IF item_id IS NOT NULL AND item_id <> '' THEN
+        kept_ids := kept_ids || item_id;
+      END IF;
+      CONTINUE;
+    END IF;
+
+    -- Başkasının kaydı: ancak depodaki kaydın BİREBİR AYNISIYSA kabul edilir.
+    -- Tek harfi değişmişse ya da hiç yoksa, gelen kayıt sessizce düşürülür — bu,
+    -- "başkasının adına kayıt yazma" ve "başkasının kaydını düzenleme" yollarının
+    -- ikisini de aynı anda kapatıyor.
+    original := NULL;
+    IF item_id IS NOT NULL AND item_id <> '' THEN
+      SELECT e INTO original
+      FROM jsonb_array_elements(stored) AS e
+      WHERE e->>'id' = item_id
+      LIMIT 1;
+    END IF;
+
+    IF original IS NOT NULL AND original = item THEN
+      result := result || jsonb_build_array(original);
+      kept_ids := kept_ids || item_id;
+    END IF;
+  END LOOP;
+
+  -- Gelen dizide OLMAYAN, başkasına ait kayıtlar geri konuyor: bir üye bir başkasının
+  -- kaydını silemez.
+  FOR item IN SELECT e FROM jsonb_array_elements(stored) AS e LOOP
+    item_id := item->>'id';
+    IF lower(coalesce(item #>> owner_path, '')) <> me
+       AND NOT (item_id IS NOT NULL AND item_id <> '' AND item_id = ANY (kept_ids)) THEN
+      result := result || jsonb_build_array(item);
+    END IF;
+  END LOOP;
+
+  RETURN result;
+END;
+$$;
+
+/** Yorumlar için merge_own_entries: sahiplik `author.username` alanında duruyor. */
+CREATE OR REPLACE FUNCTION public.merge_own_comments(old_comments JSONB, new_comments JSONB, me TEXT)
+RETURNS JSONB
+LANGUAGE sql
+IMMUTABLE
+AS $$
+  SELECT public.merge_own_entries(old_comments, new_comments, me, ARRAY['author', 'username']);
+$$;
+
 -- 4.2 Posts: everybody may like / repost / bookmark / comment, nobody but the author (or an
 -- administrator) may change the content of a post.
 CREATE OR REPLACE FUNCTION public.restrict_post_updates()
@@ -1538,13 +1720,33 @@ BEGIN
   -- columns across, so any column that is not explicitly listed here (today's content
   -- columns and any added later) simply cannot be changed by a non-author.
   merged := OLD;
-  merged.likes_count := NEW.likes_count;
-  merged.liked_by := NEW.liked_by;
-  merged.comments := NEW.comments;
-  merged.comments_count := NEW.comments_count;
-  merged.reposts_count := NEW.reposts_count;
-  merged.reposted_by := NEW.reposted_by;
-  merged.bookmarked_by := NEW.bookmarked_by;
+
+  -- Listeler istemciden OLDUĞU GİBİ alınmıyor: depodaki liste temel, istemcinin etkisi
+  -- yalnızca kendi adının girip çıkması. Ayrıntısı apply_own_membership'te.
+  merged.liked_by      := public.apply_own_membership(OLD.liked_by, NEW.liked_by, me);
+  merged.reposted_by   := public.apply_own_membership(OLD.reposted_by, NEW.reposted_by, me);
+  merged.bookmarked_by := public.apply_own_membership(OLD.bookmarked_by, NEW.bookmarked_by, me);
+  merged.comments      := public.merge_own_comments(OLD.comments, NEW.comments, me);
+
+  /*
+   * SAYAÇLAR İSTEMCİDEN ALINMIYOR, DİZİDEN TÜRETİLİYOR.
+   *
+   * Eskiden `likes_count` doğrudan gelen değerdi: herhangi bir üye bir gönderinin
+   * beğeni sayısını istediği sayıya çekebiliyordu. Artık sayaç, yukarıda birleştirilmiş
+   * listenin uzunluğundaki DEĞİŞİM kadar oynuyor.
+   *
+   * Neden "fark" da doğrudan uzunluk değil: eldeki kayıtlarda sayaç ile liste zaten
+   * birbirini tutmuyor (tohumlanmış gönderilerde liked_by boş ama likes_count dolu).
+   * Doğrudan uzunluğa eşitlemek bu sayaçları sıfırlar; farkı uygulamak eldeki payı
+   * korurken keyfi atlamayı kapatıyor.
+   */
+  merged.likes_count := greatest(0, coalesce(OLD.likes_count, 0)
+    + jsonb_array_length(merged.liked_by) - jsonb_array_length(coalesce(OLD.liked_by, '[]'::jsonb)));
+  merged.reposts_count := greatest(0, coalesce(OLD.reposts_count, 0)
+    + jsonb_array_length(merged.reposted_by) - jsonb_array_length(coalesce(OLD.reposted_by, '[]'::jsonb)));
+  merged.comments_count := greatest(0, coalesce(OLD.comments_count, 0)
+    + jsonb_array_length(merged.comments) - jsonb_array_length(coalesce(OLD.comments, '[]'::jsonb)));
+
   RETURN merged;
 END;
 $$;
@@ -1585,6 +1787,7 @@ DECLARE
   me TEXT := public.current_username();
   merged public.communities;
   gercek_proje INTEGER;
+  gercek_uye INTEGER;
 BEGIN
   /*
    * PROJE SAYACI HER YOLDA BİRLEŞİM TABLOSUNDAN YENİDEN HESAPLANIR.
@@ -1607,20 +1810,37 @@ BEGIN
     JOIN public.projects p ON p.id::text = cp.project_id
    WHERE cp.community_id = OLD.id::text AND p.is_deleted = false;
 
+  -- Üye sayacı da aynı gerekçeyle kaynağından sayılıyor (üyelik
+  -- profiles.joined_communities içinde durur): yükten gelen değere hiçbir yolda
+  -- güvenilmiyor, sahibin ve yöneticinin yoluna da uygulanıyor.
+  SELECT count(*) INTO gercek_uye
+    FROM public.profiles pr
+   WHERE (CASE WHEN jsonb_typeof(pr.joined_communities) = 'array'
+               THEN pr.joined_communities ELSE '[]'::jsonb END) ? OLD.id::text;
+
   IF auth.role() = 'service_role' OR public.is_platform_admin() THEN
     NEW.projects_count := gercek_proje;
+    NEW.members_count := gercek_uye;
     RETURN NEW;
   END IF;
 
   IF (OLD.created_by IS NOT NULL AND OLD.created_by::text = auth.uid()::text)
      OR (me IS NOT NULL AND lower(coalesce(OLD.creator_username, '')) = me) THEN
     NEW.projects_count := gercek_proje;
+    NEW.members_count := gercek_uye;
     RETURN NEW;
   END IF;
 
-  -- Non-owners may only move the member counter (join / leave).
+  /*
+   * ÜYE SAYACI DA YÜKTEN DEĞİL TABLODAN OKUNUYOR.
+   *
+   * Eskiden `members_count` doğrudan gelen değerdi: sahibi olmayan herhangi bir üye
+   * bir topluluğun üye sayısını istediği sayıya çekebiliyordu. Üyelik
+   * `profiles.joined_communities` içinde durduğu için sayaç, tam yukarıdaki
+   * projects_count gibi, kaynağından yeniden sayılıyor.
+   */
   merged := OLD;
-  merged.members_count := NEW.members_count;
+  merged.members_count := gercek_uye;
   merged.projects_count := gercek_proje;
   merged.updated_at := NOW();
   RETURN merged;
@@ -1652,11 +1872,28 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  -- Applicants may only append to the application arrays.
+  /*
+   * BAŞVURULAR SAHİBİNE GÖRE BİRLEŞTİRİLİYOR.
+   *
+   * Yorumunun söylediği şey ("applicants may only append") kodda zorlanmıyordu: dizi
+   * istemciden olduğu gibi alınıyordu. Giriş yapmış herhangi bir üye, ilan sahibi
+   * olmadan, bir ilandaki BÜTÜN başvuruları silebiliyor ya da bir başkasının adına
+   * başvuru uydurabiliyordu. Başvuru kaydı ad, yaş, deneyim ve açıklama taşıyor; yani
+   * uydurulan şey boş bir satır değil, birinin adına yazılmış bir özgeçmiş.
+   *
+   * Artık çağıran yalnızca KENDİ başvurusunu ekleyip çıkarabiliyor; başkasının kaydı
+   * ne siliniyor ne değiştiriliyor. Sahiplik `applicant_username` alanında.
+   */
   merged := OLD;
-  merged.applications := NEW.applications;
-  merged.applied_by := NEW.applied_by;
-  merged.applications_count := NEW.applications_count;
+  merged.applications := public.merge_own_entries(
+    OLD.applications, NEW.applications, me, ARRAY['applicant_username']
+  );
+  merged.applied_by := public.apply_own_membership(OLD.applied_by, NEW.applied_by, me);
+
+  -- Sayaç istemciden değil, birleştirilmiş dizideki değişimden türetiliyor.
+  merged.applications_count := greatest(0, coalesce(OLD.applications_count, 0)
+    + jsonb_array_length(merged.applications)
+    - jsonb_array_length(coalesce(OLD.applications, '[]'::jsonb)));
   RETURN merged;
 END;
 $$;
@@ -1705,11 +1942,35 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  -- Members may join / leave and refresh the last-message preview; renaming, re-avataring
-  -- and changing the admin list stays with the group owner and its admins.
+  /*
+   * ÜYE LİSTESİ SAHİPLİĞE GÖRE BİRLEŞTİRİLİYOR.
+   *
+   * `merged.members := NEW.members` gelen listeyi olduğu gibi yazıyordu. Politika
+   * yalnızca "giriş yapmış olmak" istediği için, grubun üyesi OLMAYAN biri bile bir
+   * grubun üye listesini baştan yazabiliyordu: bütün üyeleri atmak ya da listeye
+   * istediği kişileri eklemek için grupla hiçbir ilgisi olması gerekmiyordu.
+   *
+   * Artık çağıranın tek yapabildiği kendini listeye eklemek ya da çıkarmak — katılma
+   * ve ayrılma akışları bunlar. Başkasını atma, sahibi ve yöneticilerde kalıyor
+   * (yukarıdaki erken dönüş).
+   */
   merged := OLD;
-  merged.members := NEW.members;
-  merged.last_message := NEW.last_message;
+  merged.members := public.apply_own_membership(OLD.members, NEW.members, me);
+
+  /*
+   * SON MESAJ ÖNİZLEMESİNİ YALNIZCA ÜYE TAZELEYEBİLİR.
+   *
+   * Bu alan grup listesinde sohbetin son satırı olarak gösteriliyor. Serbest
+   * bırakıldığında, gruba hiç girmemiş biri sohbette hiç yazılmamış bir cümleyi
+   * oradaymış gibi gösterebiliyordu.
+   */
+  IF me IS NOT NULL AND me <> '' AND EXISTS (
+    SELECT 1 FROM jsonb_array_elements_text(coalesce(merged.members, '[]'::jsonb)) AS e(v)
+    WHERE lower(e.v) = me
+  ) THEN
+    merged.last_message := NEW.last_message;
+  END IF;
+
   merged.updated_at := NOW();
   RETURN merged;
 END;
@@ -2425,6 +2686,10 @@ GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
 
 GRANT EXECUTE ON FUNCTION public.current_username() TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.is_platform_admin() TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.assert_profile_media_size(TEXT, TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.apply_own_membership(JSONB, JSONB, TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.merge_own_comments(JSONB, JSONB, TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.merge_own_entries(JSONB, JSONB, TEXT, TEXT[]) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.owns_profile(TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.owns_profile(UUID) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.is_conversation_participant(TEXT) TO anon, authenticated;

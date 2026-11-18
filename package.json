@@ -10,7 +10,8 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "build:vercel": "vite build && esbuild src/server/vercelEntry.ts --bundle --platform=node --format=cjs --packages=external --banner:js='/* OLUSTURULMUS DOSYA - ELLE DUZENLEMEYIN. Kaynak: src/server/vercelEntry.ts. Yeniden uretmek icin: npm run build:fn */' --outfile=api/index.js",
-    "build:fn": "esbuild src/server/vercelEntry.ts --bundle --platform=node --format=cjs --packages=external --banner:js='/* OLUSTURULMUS DOSYA - ELLE DUZENLEMEYIN. Kaynak: src/server/vercelEntry.ts. Yeniden uretmek icin: npm run build:fn */' --outfile=api/index.js"
+    "build:fn": "esbuild src/server/vercelEntry.ts --bundle --platform=node --format=cjs --packages=external --banner:js='/* OLUSTURULMUS DOSYA - ELLE DUZENLEMEYIN. Kaynak: src/server/vercelEntry.ts. Yeniden uretmek icin: npm run build:fn */' --outfile=api/index.js",
+    "test:guvenlik": "node tests/guvenlik/oauth_yenileme.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -32,7 +33,6 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
-    "firebase": "^12.17.1",
     "imapflow": "^2.0.3",
     "jose": "^6.2.12",
     "lucide-react": "^0.546.0",

@@ -1250,7 +1250,17 @@ app.post(
   }
 );
 
+/*
+ * Hız sınırlayıcının çalıştığını doğrulamak için kullanılan tanılama ucu.
+ * ÜRETİMDE KAPALI: kimlik istemeyen ve her çağrıda 200 dönen bir uç, başka hiçbir işe
+ * yaramasa bile saldırganın hız sınırı eşiklerini bedava ölçmesine yarıyor.
+ * Geliştirmede açık kalıyor, çünkü orada ölçülmesi gereken şey tam olarak bu.
+ */
 app.post('/api/rate-limit-test', rateLimit({ scope: 'rate-limit-test', windowMs: 60000, max: 60 }), (req: Request, res: Response) => {
+  if (IS_PRODUCTION) {
+    res.status(404).json({ error: 'not_found' });
+    return;
+  }
   res.json({ status: 'allowed', timestamp: new Date().toISOString() });
 });
 
@@ -1266,11 +1276,25 @@ app.post('/api/license/validate', rateLimit({ scope: 'license', windowMs: 60000,
     return;
   }
 
-  res.json({
-    valid: true,
-    tier: licenseKey.toUpperCase().includes('PRO') ? 'Pro' : 'Developer',
-    rate_limit: licenseKey.toUpperCase().includes('PRO') ? 5000 : 1000,
-    expires_at: '2027-12-31T23:59:59Z'
+  /*
+   * BURADA DOĞRULANACAK BİR ŞEY YOK — ve bu ucun eski hâli bunu söylemiyordu.
+   *
+   * Eski sürüm biçime uyan HER dizge için `valid: true` dönüyordu ve katmanı
+   * "anahtarın içinde PRO yazıyor mu" sorusuna göre seçiyordu: `C4E-PRO1-AAAA-AAAA`
+   * yazan herkes, kimlik doğrulaması olmayan bir uçtan, 5000 istek/saat hakkı olan bir
+   * Pro lisansı onayı alıyordu. Lisansları tutan bir tablo ya da satın alma kaydı yok;
+   * yani o yanıt bir doğrulama değil, uydurmaydı.
+   *
+   * ARTIK KAPALI TARAFTAN HATA DÖNÜYOR. Bir entegrasyon buna güveniyorsa, uydurma bir
+   * "evet" almak yerine sesli biçimde başarısız olması doğru olan. Gerçek bir lisans
+   * deposu eklendiğinde sorgu bu gövdeye gelecek.
+   */
+  res.status(501).json({
+    valid: false,
+    error: 'license_validation_unavailable',
+    message:
+      'Lisans doğrulama arka ucu bu kurulumda tanımlı değil. Bu uç, doğrulanmamış bir ' +
+      'anahtarı geçerli saymaz.'
   });
 });
 
@@ -2847,10 +2871,25 @@ app.post(
     }
 
     if (grantType === 'refresh_token') {
-      // Yenilemede PKCE yok (doğrulayıcı tek seferlikti), dolayısıyla gizli istemciler
-      // sırrı sunmalı. Açık istemciler (sırrı olmayan) için sırrın doğrulanamaması
-      // beklenen durum; o yüzden sır VERİLDİYSE doğrulanıyor.
-      if (clientSecret && !clientSecretMatches(app, clientSecret)) {
+      /*
+       * YENİLEMEDE İSTEMCİ KİMLİĞİ ZORUNLU.
+       *
+       * Yenilemede PKCE yok: doğrulayıcı tek seferlikti ve kodla birlikte tükendi.
+       * Geriye istemciyi kanıtlayacak tek şey olarak istemci sırrı kalıyor.
+       *
+       * İlk sürüm sırrı YALNIZCA GÖNDERİLDİYSE doğruluyordu ("açık istemcilerde sır
+       * olmaz" varsayımıyla). Ama bu kurulumda açık istemci YOK: registerApp her
+       * uygulamaya bir client_secret üretiyor, yani client_secret_hash her satırda
+       * dolu. Sonuç şuydu: sızmış tek bir refresh_token, sır hiç bilinmeden,
+       * 30 gün boyunca sınırsız erişim belirteci üretmeye yetiyordu — hem de
+       * sırrı değiştirmek bunu kesmiyordu.
+       *
+       * Artık sırrı olan bir uygulama için sır ŞART. Sırrı olmayan (gelecekte
+       * eklenebilecek gerçek açık istemci) bir uygulamada doğrulanacak bir şey
+       * olmadığı için yenileme belirtecinin kendisi tek kanıt olarak kalıyor.
+       */
+      const isConfidential = Boolean(app.client_secret_hash);
+      if (isConfidential && !clientSecretMatches(app, clientSecret)) {
         return fail('invalid_client', 'client_secret doğrulanamadı.', 401);
       }
 
