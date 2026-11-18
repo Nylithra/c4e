@@ -2669,6 +2669,46 @@ END $$;
 
 GRANT INSERT, UPDATE, DELETE ON public.profiles TO authenticated;
 
+-- job_listings: BAŞVURU GÖVDELERİ DIŞINDA her şey herkese açık.
+--
+-- `job_listings_select_public` politikası bilerek `USING (true)`: ilanlar zaten
+-- herkese görünsün diye var. Ama satırda `applications` sütunu duruyor ve içindeki
+-- her kayıt başvuranın ADINI, YAŞINI, DENEYİMİNİ ve yazdığı açıklamayı taşıyor.
+-- Tablo düzeyinde verilmiş `GRANT SELECT`, anon anahtarını eline geçiren HERKESİN
+-- `select=applications` çalıştırıp platformdaki bütün başvuruları toplamasına
+-- yetiyordu — oturum bile gerekmiyordu. RLS satır düzeyinde çalıştığı için bunu
+-- kapatan tek mekanizma sütun düzeyinde yetki; `profiles.email` için de bu
+-- kullanılmıştı.
+--
+-- VERİ KAYBI YOK: başvurular asıl olarak `public.job_applications` tablosunda
+-- duruyor ve oradaki politika (`job_applications_select_involved`) onları yalnızca
+-- BAŞVURANA, İLAN SAHİBİNE ve yöneticiye gösteriyor. `job_listings.applications`
+-- o verinin kopyası; okunmaz olması doğru tarafı kapatıyor, görmesi gerekenin
+-- görüşünü değiştirmiyor.
+--
+-- YAZMA TABLO DÜZEYİNDE KALIYOR: başvuran kendi kaydını yazabilmeli. Diziyi
+-- okumadan yazmak da güvenli, çünkü `restrict_job_listing_updates` tetikleyicisi
+-- gelen dizide bulunmayan başkasına ait kayıtları geri koyuyor.
+--
+-- Sütun listesi canlı tablodan türetiliyor: sonradan eklenen bir sütun varsayılan
+-- olarak okunabilir olur, gizli kalan yalnızca `applications` olur.
+DO $$
+DECLARE
+  readable TEXT;
+BEGIN
+  SELECT string_agg(quote_ident(column_name), ', ' ORDER BY ordinal_position)
+    INTO readable
+    FROM information_schema.columns
+   WHERE table_schema = 'public'
+     AND table_name = 'job_listings'
+     AND column_name <> 'applications';
+
+  -- Tablo düzeyindeki SELECT geri alınıyor, yerine sütun listesi veriliyor. Yoksa
+  -- genel yetki sütun yetkisini gölgeler ve kısıt hiç uygulanmaz.
+  EXECUTE 'REVOKE SELECT ON public.job_listings FROM anon, authenticated';
+  EXECUTE format('GRANT SELECT (%s) ON public.job_listings TO anon, authenticated', readable);
+END $$;
+
 -- public.community_api_keys is intentionally absent from both grant lists above: browsers
 -- never touch key material, the backend reaches it with the service role key only.
 --

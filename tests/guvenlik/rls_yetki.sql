@@ -285,6 +285,42 @@ SELECT pg_temp.kontrol('üye kimlik bağlantısı uyduramıyor', '<null>',
   (SELECT coalesce(github_username, '<null>') FROM public.profiles WHERE username = 'saldirgan'));
 
 -- =============================================================
+-- G. SÜTUN DÜZEYİNDE OKUMA YETKİSİ
+-- =============================================================
+--
+-- RLS satır düzeyinde çalışıyor, yani "bu satırı görebilir misin" sorusunu
+-- yanıtlıyor; "bu satırın şu sütununu görebilir misin" sorusunu yanıtlayan tek
+-- mekanizma sütun düzeyinde yetki. Herkese açık satırlarda duran hassas sütunlar
+-- bu yüzden burada sınanıyor.
+\echo ''
+\echo '--- G. Sütun düzeyinde okuma yetkisi ---'
+
+SELECT pg_temp.kontrol('job_listings.applications anon tarafindan okunamiyor', 'false',
+  has_column_privilege('anon', 'public.job_listings', 'applications', 'SELECT')::text);
+SELECT pg_temp.kontrol('job_listings.applications uyeler tarafindan okunamiyor', 'false',
+  has_column_privilege('authenticated', 'public.job_listings', 'applications', 'SELECT')::text);
+SELECT pg_temp.kontrol('ilanin kendisi hala herkese acik', 'true',
+  has_column_privilege('anon', 'public.job_listings', 'title', 'SELECT')::text);
+SELECT pg_temp.kontrol('basvuran kendi kaydini yazabilmek icin UPDATE yetkisini koruyor', 'true',
+  has_column_privilege('authenticated', 'public.job_listings', 'applications', 'UPDATE')::text);
+
+SELECT pg_temp.kontrol('profiles.email anon tarafindan okunamiyor', 'false',
+  has_column_privilege('anon', 'public.profiles', 'email', 'SELECT')::text);
+SELECT pg_temp.kontrol('profiles.lanux_refresh_token okunamiyor', 'false',
+  has_column_privilege('authenticated', 'public.profiles', 'lanux_refresh_token', 'SELECT')::text);
+SELECT pg_temp.kontrol('kullanici adi hala herkese acik', 'true',
+  has_column_privilege('anon', 'public.profiles', 'username', 'SELECT')::text);
+
+-- Anahtar malzemesi ve belirteçler tarayıcıya hiç gitmiyor: bu tablolara
+-- hiçbir yetki verilmemiş olmalı.
+SELECT pg_temp.kontrol('community_api_keys tarayiciya kapali', 'false',
+  has_table_privilege('authenticated', 'public.community_api_keys', 'SELECT')::text);
+SELECT pg_temp.kontrol('oauth_tokens tarayiciya kapali', 'false',
+  has_table_privilege('authenticated', 'public.oauth_tokens', 'SELECT')::text);
+SELECT pg_temp.kontrol('oauth_apps tarayiciya kapali', 'false',
+  has_table_privilege('authenticated', 'public.oauth_apps', 'SELECT')::text);
+
+-- =============================================================
 -- ÖZET
 -- =============================================================
 \echo ''

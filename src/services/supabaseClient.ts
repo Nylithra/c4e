@@ -360,6 +360,22 @@ export const PUBLIC_PROFILE_COLUMNS =
   'github_username,github_linked_at,jubbio_user_id,jubbio_username,jubbio_avatar_url,jubbio_linked_at';
 
 /**
+ * Bir tarayıcının okumasına izin verilen ilan sütunları — bilerek `*` DEĞİL.
+ *
+ * `job_listings.applications` anon ve authenticated rollerinden sütun düzeyinde
+ * yetkiyle saklanıyor (bkz. supabase_schema.sql): dizideki her kayıt başvuranın
+ * adını, yaşını, deneyimini ve yazdığı açıklamayı taşıyor, ilan satırı ise herkese
+ * açık. PostgREST `select=*`'i her sütunun okunmasına çeviriyor ve o yetki artık
+ * bunu reddediyor, bu yüzden sütunlar tek tek yazılıyor.
+ *
+ * Başvuruları görmesi gerekenler onları `job_applications` tablosundan alıyor;
+ * oradaki politika erişimi başvurana, ilan sahibine ve yöneticiye sınırlıyor.
+ */
+export const PUBLIC_JOB_LISTING_COLUMNS =
+  'id,type,title,description,quota,author,author_id,status,' +
+  'applied_by,applications_count,created_at';
+
+/**
  * supabase-js infers the row shape from a STRING LITERAL select, so a runtime-built column
  * list degrades to an error type. The cast tells it to type the result as a full row, which
  * is accurate: this selects every column except `email`, and no caller reads `email` here.
@@ -1568,7 +1584,7 @@ export async function fetchJobListingsFromSupabase(): Promise<JobListing[]> {
     try {
       const { data, error } = await client
         .from('job_listings')
-        .select('*')
+        .select(PUBLIC_JOB_LISTING_COLUMNS)
         .order('created_at', { ascending: false });
 
       if (!error && Array.isArray(data)) {
@@ -1590,6 +1606,16 @@ export async function fetchJobListingsFromSupabase(): Promise<JobListing[]> {
               parsedAuthor = { ...parsedAuthor, ...item.author };
             }
 
+            /*
+             * `applications` bu sorguda HİÇ GELMİYOR: sütun, anon ve authenticated
+             * rollerinden sütun düzeyinde yetkiyle saklanıyor (başvuru gövdeleri
+             * başvuranın adını, yaşını ve özgeçmişini taşıyor, ilan satırı ise herkese
+             * açık). Dizi aşağıda `job_applications` tablosundan dolduruluyor; oradaki
+             * politika onu yalnızca başvurana, ilan sahibine ve yöneticiye gösteriyor.
+             *
+             * Eski kurulumdan kalmış bir satır sütunu yine döndürürse diye ayrıştırma
+             * duruyor, ama normal akışta boş kalıyor.
+             */
             let parsedApps: any[] = [];
             if (Array.isArray(item.applications)) {
               parsedApps = item.applications;
@@ -1620,7 +1646,16 @@ export async function fetchJobListingsFromSupabase(): Promise<JobListing[]> {
               status: item.status || 'active',
               applications: parsedApps,
               applied_by: parsedAppliedBy,
-              applications_count: parsedApps.length,
+              /*
+               * Sayaç SATIRDAN okunuyor, dizinin uzunluğundan değil: dizi artık
+               * yalnızca görmeye yetkili olan için doluyor, oysa "kaç başvuru var"
+               * bilgisi herkese açık. Uzunluktan türetmek, başvuruları göremeyen
+               * herkese 0 gösterirdi. `applications_count` sütunu okunabilir ve
+               * tetikleyici onu yükten değil dizideki değişimden türetiyor.
+               */
+              applications_count: Number.isFinite(Number(item.applications_count))
+                ? Number(item.applications_count)
+                : parsedApps.length,
               created_at: item.created_at || new Date().toISOString(),
               time_ago: 'Az önce'
             });
@@ -1661,7 +1696,18 @@ export async function fetchJobListingsFromSupabase(): Promise<JobListing[]> {
                 };
                 existingApps.push(formattedApp);
                 target.applications = existingApps;
-                target.applications_count = existingApps.length;
+                /*
+                 * Sayaç yalnızca YUKARI doğru düzeltiliyor.
+                 *
+                 * `job_applications` RLS ile süzülüyor: başvuran yalnızca kendi
+                 * kaydını görüyor. Sayacı burada dizinin uzunluğuna EŞİTLEMEK,
+                 * 12 başvurulu bir ilanda başvuranın ekranında "1" yazdırırdı.
+                 * Satırdan okunan gerçek sayı daha büyükse o korunuyor.
+                 */
+                target.applications_count = Math.max(
+                  Number(target.applications_count) || 0,
+                  existingApps.length
+                );
                 if (!target.applied_by?.includes(appItem.applicant_username)) {
                   target.applied_by = [...(target.applied_by || []), appItem.applicant_username];
                 }
@@ -1935,9 +1981,15 @@ export async function submitJobApplication(
 
   if (!targetJob && client) {
     try {
-      const { data } = await client.from('job_listings').select('*').eq('id', jobId).maybeSingle();
+      const { data } = await client
+        .from('job_listings')
+        .select(PUBLIC_JOB_LISTING_COLUMNS)
+        .eq('id', jobId)
+        .maybeSingle();
       if (data) {
-        targetJob = data as JobListing;
+        // Sütun listesi değişken olduğu için istemci satır tipini çıkaramıyor;
+        // `applications` alanı burada hiç okunmuyor (sütun yetkisi onu saklıyor).
+        targetJob = data as unknown as JobListing;
       }
     } catch {}
   }
