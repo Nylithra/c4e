@@ -228,7 +228,21 @@ const app = express();
 installAsyncGuard(app);
 
 const PORT = Number(env('PORT', '3000'));
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+/*
+ * ÜRETİM TESPİTİ: NODE_ENV YETERLİ DEĞİL.
+ *
+ * Vercel projesinin ortam değişkenlerinde NODE_ENV TANIMLI DEĞİL. Platform onu
+ * çalışma anında kendisi veriyor, ama bu esbuild ile paketlenmiş özel bir sunucu
+ * için garanti edilmiş bir davranış değil ve proje yapılandırmasında görünmüyor.
+ * Vercel'in GARANTİ ETTİĞİ işaret VERCEL_ENV: üretim dağıtımlarında 'production'.
+ *
+ * Yanlış tarafa düşmenin bedeli var, çünkü bu değere bakan yerler güvenlikle
+ * ilgili: OAuth akış çerezinin `secure` bayrağı (çerez PKCE doğrulayıcısını
+ * taşıyor, bayrak düşerse düz HTTP üzerinden de gönderilir) ve ters vekil güveni.
+ * Bu yüzden iki işaretten biri yeterli sayılıyor.
+ */
+const IS_PRODUCTION =
+  process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
 
 /**
  * `trust proxy` must reflect the real deployment, otherwise `req.ip` is either spoofable
